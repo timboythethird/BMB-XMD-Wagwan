@@ -154,7 +154,7 @@ ${format(os.totalmem() - os.freemem())}/${format(os.totalmem())}
       }
 
       // Send random audio as a voice note
-      const audioFolder = __dirname + "/../xh_clinton/";
+      const audioFolder = __dirname + "/../bmb/";
       console.log(`[DEBUG] menu: Audio folder path: ${audioFolder}`);
 
       // Check if folder exists
