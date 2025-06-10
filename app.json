@@ -2,7 +2,7 @@
   "name":"B.M.B-TECH",
   "description":"Best whatsapp bot💥 developed by bmb tech🇹🇿 ",
   "keywords":["bot","node","baileys","whatsapp"],
-  "logo":"https://files.catbox.moe/8vdclj.jpg",
+  "logo":"https://files.catbox.moe/hflcbc.jpg",
   "repository":"https://github.com/ekitale/maths-project",
   "succes_url":"/",
   "stack":"heroku-24",
@@ -65,7 +65,7 @@
      "BOT_MENU_LINKS" : {
     
       "description":"add one or many link for your bot menu  ; eg : url1,url2,url3.....",
-      "value":"https://i.ibb.co/zHjR0CKp/nexus-xmd.jpg",
+      "value":"https://files.catbox.moe/hflcbc.jpg",
       "required":false
        
      },
@@ -105,7 +105,7 @@
     
     "desc": "Your number , dont put '+' and put you area code(exemple of kenya '254')",
     "required":true,
-    "value": "255"
+    "value": "255767862457"
   },
     "WARN_COUNT":
   {
