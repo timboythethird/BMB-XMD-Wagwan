@@ -1,24 +1,49 @@
-const { zokou } = require("../framework/zokou");
-const fancy = require("../scs/stylish");
+const util = require('util');
+const { zokou } = require(__dirname + '/../framework/zokou');
+const axios = require('axios');
 
-zokou({ nomCom: "fancy", categorie: "Fun", reaction: "〽️" }, async (dest, zk, commandeOptions) => {
-    const { arg, repondre, prefixe } = commandeOptions;
-    const id = arg[0]?.match(/\d+/)?.join('');
-    const text = arg.slice(1).join(" ");
+zokou(
+  {
+    nomCom: 'fancy',
+    categorie: 'Tools',
+    reaction: '✨',
+  },
+  async (dest, zk, commandeOptions) => {
+    const { ms, repondre, arg, nomAuteurMessage } = commandeOptions;
 
     try {
-        if (id === undefined || text === undefined) {
-            return await repondre(`\nExemple : ${prefixe}fancy 10 bmb-tech\n` + String.fromCharCode(8206).repeat(4001) + fancy.list('B.M.B-TECH', fancy));
-        }
+      console.log('DEBUG - fancy triggered:', { arg, nomAuteurMessage });
 
-        const selectedStyle = fancy[parseInt(id) - 1];
-        if (selectedStyle) {
-            return await repondre(fancy.apply(selectedStyle, text));
-        } else {
-            return await repondre('_Style introuvable :(_');
-        }
-    } catch (error) {
-        console.error(error);
-        return await repondre('_Une erreur s\'est produite :(_');
+      if (!arg[0]) {
+        return repondre(`BMB TECH\n\n◈━━━━━━━━━━━━━━━━◈\n│❒ YO ${nomAuteurMessage}, DON’T BE BLAND! Give me some text, like .fancy bmb! 😡\n◈━━━━━━━━━━━━━━━━◈`);
+      }
+
+      const text = arg.join(' ').trim();
+      await repondre(`BMB-TECH\n\n◈━━━━━━━━━━━━━━━━◈\n│❒ Yo ${nomAuteurMessage}, jazzing up "${text}" like a pro! 🔍\n◈━━━━━━━━━━━━━━━━◈`);
+
+      const apiUrl = `https://api.giftedtech.web.id/api/tools/fancy?apikey=gifted&text=${encodeURIComponent(text)}`;
+      const response = await axios.get(apiUrl);
+      const data = response.data;
+
+      if (!data.success || !data.results || data.results.length === 0) {
+        return repondre(`BMB-TECH\n\n◈━━━━━━━━━━━━━━━━◈\n│❒ OOPS, ${nomAuteurMessage}! No fancy styles for "${text}"! Try something cooler! 😣\n◈━━━━━━━━━━━━━━━━◈`);
+      }
+
+      // Pick a random stylized text
+      const fancyText = data.results[Math.floor(Math.random() * data.results.length)].result;
+
+      await zk.sendMessage(
+        dest,
+        {
+          text: `BMB-TECH\n\n◈━━━━━━━━━━━━━━━━◈\n│❒ BOOM, ${nomAuteurMessage}! Your text’s now a masterpiece! 🔥\n│❒ Fancy Text: ${fancyText}\n│❒ Powered by 𝙱.𝙼.𝙱-𝚇𝙼𝙳\n◈━━━━━━━━━━━━━━━━◈`,
+          footer: `Hey ${nomAuteurMessage}! I'm Bmb-Tech, created by 𝙱.𝙼.𝙱-𝚇𝙼𝙳 😎`,
+        },
+        { quoted: ms }
+      );
+
+    } catch (e) {
+      console.error('Fancy text error:', e);
+      await repondre(`BMB-TECH\n\n◈━━━━━━━━━━━━━━━━◈\n│❒ TOTAL FLOP, ${nomAuteurMessage}! Something crashed: ${e.message} 😡 Fix it or bounce! 😣\n◈━━━━━━━━━━━━━━━━◈`);
     }
-});
+  }
+);
