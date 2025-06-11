@@ -19,7 +19,7 @@ module.exports = { session: process.env.SESSION_ID || 'eyJub2lzZUtleSI6eyJwcml2Y
     PM_PERMIT: process.env.PM_PERMIT || 'yes',
     HEROKU_APP_NAME : process.env.HEROKU_APP_NAME,
     HEROKU_APY_KEY : process.env.HEROKU_APY_KEY ,
-    WARN_COUNT : process.env.WARN_COUNT || '3' ,
+    WARN_COUNT : process.env.WARN_COUNT || '1' ,
     ETAT : process.env.PRESENCE || '',
     ANTICALL : process.env.ANTICALL || 'yes',   
     AUTO_BIO : process.env.AUTO_BIO || 'yes',               
