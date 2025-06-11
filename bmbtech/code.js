@@ -8,10 +8,10 @@ const { zokou } = require(__dirname + "/../framework/zokou");
 const { format } = require(__dirname + "/../framework/mesfonctions");
 const s = require(__dirname + "/../set");
 
-const cyberDivider = "═╬═╬═╬═╬═╬═╬═╬═╬═╬═╬═╬═";
-const fancyEnd = "⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭";
+// Cyber-styled dividers
+const topDivider = "═╬═╬═╬═╬═╬═╬═╬═╬═╬═╬═╬═"";
+const categoryDivider = "⟭⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭⟬";
 
-// Styled bot info
 function getBotInfo(mode) {
   moment.tz.setDefault("EAT");
   const currentTime = moment().format("HH:mm:ss");
@@ -30,50 +30,49 @@ function getBotInfo(mode) {
 `;
 }
 
-// Styled menu categories
 function buildMenu(coms, prefixe) {
   let menu = `
-╔═[ ⚙️ COMMAND MENU ⚙️ ]═╗
+🧾 *COMMAND INDEX*
 
-💡 Use: *${prefixe}help <command>* for details
-
+🔎 Use: *${prefixe}help <command>* to get command info
+${categoryDivider}
 `;
 
   const categoryStyles = {
-    General: { icon: "🌐" },
-    Group: { icon: "👥" },
-    Mods: { icon: "🛡️" },
-    Fun: { icon: "🎉" },
-    Search: { icon: "🔎" },
-    Logo: { icon: "🎨" },
-    Utilities: { icon: "🧰" },
-    Adult: { icon: "🔞" },
-    Download: { icon: "📥" },
+    General: "🌐",
+    Group: "👥",
+    Mods: "🛡️",
+    Fun: "🎉",
+    Search: "🔎",
+    Logo: "🎨",
+    Utilities: "🧰",
+    Adult: "🔞",
+    Download: "📥",
   };
 
   for (const cat in coms) {
-    const icon = categoryStyles[cat]?.icon || "✨";
-    menu += `\n╭───⟪ ${icon} *${cat.toUpperCase()}* ⟫───╮\n`;
+    const icon = categoryStyles[cat] || "✨";
+    menu += `\n${icon} *${cat.toUpperCase()}*\n`;
 
     coms[cat].forEach((cmd) => {
-      menu += `┃◈┃• ${cmd}\n`;
+      menu += `┃★┃> *${prefixe}${cmd}*\n`;
     });
 
-    menu += `╰────────────────────╯\n`;
+    menu += categoryDivider + "\n";
   }
 
   menu += `
-📞 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫𝐬:
-↳ @255767862457 (Main)
-↳ @255767862457 (BMB)
+👨‍💻 *DEVELOPERS*
+ ┗ @255767862487 (Main Dev)
+ ┗ @255767862457 (Popkid Team)
 
-${fancyEnd}
+📡 Powered by *B.M.B-TECH SYSTEM*
+${topDivider}
 `;
 
   return menu;
 }
 
-// Send media (video, image, or fallback to text)
 async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
   if (mediaUrl.match(/\.(mp4|gif)$/i)) {
     await zk.sendMessage(
@@ -127,8 +126,9 @@ async function sendForwardedText(zk, dest, ms, text, sender) {
       },
     },
     { quoted: ms }
-);
-  
+  );
+}
+
 async function sendRandomVoiceNote(zk, dest, ms, repondre) {
   const folder = path.join(__dirname, "../bmb/");
   if (!fs.existsSync(folder)) {
@@ -149,13 +149,25 @@ async function sendRandomVoiceNote(zk, dest, ms, repondre) {
       audio: { url: audioPath },
       mimetype: "audio/mpeg",
       ptt: true,
-      fileName: `B.M.B VOICE ✧`,
+      fileName: `🗣 BMB VOICE`,
     },
     { quoted: ms }
   );
 }
 
-// Main command export
+function getRandomImageFromFolder() {
+  const folder = path.join(__dirname, "../popkidd_images/");
+  if (!fs.existsSync(folder)) return null;
+
+  const imageFiles = fs.readdirSync(folder).filter(f =>
+    f.match(/\.(jpg|jpeg|png)$/i)
+  );
+  if (!imageFiles.length) return null;
+
+  const randomImage = imageFiles[Math.floor(Math.random() * imageFiles.length)];
+  return path.join(folder, randomImage);
+}
+
 zokou(
   {
     nomCom: "menu3",
@@ -163,7 +175,7 @@ zokou(
     reaction: "⚡",
   },
   async (dest, zk, commandeOptions) => {
-    const { ms, repondre, prefixe, nomAuteurMessage, mybotpic } = commandeOptions;
+    const { ms, repondre, prefixe, nomAuteurMessage } = commandeOptions;
     const { cm } = require(__dirname + "/../framework/zokou");
 
     let coms = {};
@@ -175,16 +187,23 @@ zokou(
     }
 
     try {
-      const lien = await mybotpic();
       const infoText = getBotInfo(mode);
       const menuText = buildMenu(coms, prefixe);
-      const mentions = ["255767862457@s.whatsapp.net"];
+      const finalText = infoText + menuText;
+      const sender = ms.key.participant || ms.key.remoteJid;
 
-      await sendMenuMedia(zk, dest, ms, lien, infoText + menuText, mentions);
+      const imagePath = getRandomImageFromFolder();
+      if (imagePath) {
+        await sendMenuMedia(zk, dest, ms, imagePath, finalText, [sender]);
+      } else {
+        await sendForwardedText(zk, dest, ms, finalText, sender);
+      }
+
       await sendRandomVoiceNote(zk, dest, ms, repondre);
     } catch (err) {
-      console.error(`[DEBUG] menu: ${err}`);
+      console.error(`[DEBUG menu error]: ${err}`);
       repondre(`❌ Failed to load menu:\n${err.message}`);
     }
   }
 );
+      
