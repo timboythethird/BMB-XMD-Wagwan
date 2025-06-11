@@ -5,7 +5,7 @@ const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 
 zokou({
-  nomCom: "ping2",
+  nomCom: "ping",
   desc: "Check bot response speed",
   categorie: "General",
   reaction: "⚡",
