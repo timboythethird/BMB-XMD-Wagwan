@@ -8,10 +8,10 @@ const { zokou } = require(__dirname + "/../framework/zokou");
 const { format } = require(__dirname + "/../framework/mesfonctions");
 const s = require(__dirname + "/../set");
 
-// Cyber-styled dividers
-const topDivider = "▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃";
-const categoryDivider = "━━━━━━━━━━━━━━";
+const cyberDivider = "═╬═╬═╬═╬═╬═╬═╬═╬═╬═╬═╬═";
+const fancyEnd = "⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭";
 
+// Styled bot info
 function getBotInfo(mode) {
   moment.tz.setDefault("EAT");
   const currentTime = moment().format("HH:mm:ss");
@@ -19,61 +19,61 @@ function getBotInfo(mode) {
   const totalRAM = format(os.totalmem());
 
   return `
-╭═〔 🚀 *B.M.B-TECH BOT SYSTEM* 〕═╮
-│
-│ ⚙️ *Status:* ONLINE
-│ 🔰 *Mode:* ${mode.toUpperCase()}
-│ ⏱ *Time:* ${currentTime} (EAT)
-│ 🧠 *Dev:* @254111385747
-│ 🖥 *RAM:* ${usedRAM} / ${totalRAM}
-│
-╰═${topDivider}═╯
+╔═══[ 🤖 B.M.B-TECH BOT ]═══╗
+
+🧠 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫: @255767862457
+🌐 𝐌𝐨𝐝𝐞: ${mode.toUpperCase()}
+⏰ 𝐓𝐢𝐦𝐞: ${currentTime} (EAT)
+💾 𝐑𝐀𝐌: ${usedRAM} / ${totalRAM}
+
+╚═══${cyberDivider}═══╝
 `;
 }
 
+// Styled menu categories
 function buildMenu(coms, prefixe) {
   let menu = `
-🧾 *COMMAND INDEX*
+╔═[ ⚙️ COMMAND MENU ⚙️ ]═╗
 
-🔎 Use: *${prefixe}help <command>* to get command info
-${categoryDivider}
+💡 Use: *${prefixe}help <command>* for details
+
 `;
 
   const categoryStyles = {
-    General: "🌐",
-    Group: "👥",
-    Mods: "🛡️",
-    Fun: "🎉",
-    Search: "🔎",
-    Logo: "🎨",
-    Utilities: "🧰",
-    Adult: "🔞",
-    Download: "📥",
+    General: { icon: "🌐" },
+    Group: { icon: "👥" },
+    Mods: { icon: "🛡️" },
+    Fun: { icon: "🎉" },
+    Search: { icon: "🔎" },
+    Logo: { icon: "🎨" },
+    Utilities: { icon: "🧰" },
+    Adult: { icon: "🔞" },
+    Download: { icon: "📥" },
   };
 
   for (const cat in coms) {
-    const icon = categoryStyles[cat] || "✨";
-    menu += `\n${icon} *${cat.toUpperCase()}*\n`;
+    const icon = categoryStyles[cat]?.icon || "✨";
+    menu += `\n╭───⟪ ${icon} *${cat.toUpperCase()}* ⟫───╮\n`;
 
     coms[cat].forEach((cmd) => {
-      menu += `┃◈┃🔸 *${prefixe}${cmd}*\n`;
+      menu += `┃◈┃• ${cmd}\n`;
     });
 
-    menu += categoryDivider + "\n";
+    menu += `╰────────────────────╯\n`;
   }
 
   menu += `
-👨‍💻 *DEVELOPERS*
- ┗ @255767862457 (Main Dev)
- ┗ @255767862457 (Popkid Team)
+📞 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫𝐬:
+↳ @255767862457 (Main)
+↳ @255767862457 (BMB)
 
-📡 Powered by *B.M.B-TECH SYSTEM*
-${topDivider}
+${fancyEnd}
 `;
 
   return menu;
 }
 
+// Send media (video, image, or fallback to text)
 async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
   if (mediaUrl.match(/\.(mp4|gif)$/i)) {
     await zk.sendMessage(
@@ -93,7 +93,7 @@ async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
       {
         image: { url: mediaUrl },
         caption,
-        footer: "⚡ B.M.B-XBOT ⚡",
+        footer: "⚡ BMB-XBOT ⚡",
         mentions,
       },
       { quoted: ms }
@@ -127,9 +127,8 @@ async function sendForwardedText(zk, dest, ms, text, sender) {
       },
     },
     { quoted: ms }
-  );
-}
-
+);
+  
 async function sendRandomVoiceNote(zk, dest, ms, repondre) {
   const folder = path.join(__dirname, "../bmb/");
   if (!fs.existsSync(folder)) {
@@ -150,12 +149,13 @@ async function sendRandomVoiceNote(zk, dest, ms, repondre) {
       audio: { url: audioPath },
       mimetype: "audio/mpeg",
       ptt: true,
-      fileName: `🗣 BMB VOICE`,
+      fileName: `B.M.B VOICE ✧`,
     },
     { quoted: ms }
   );
 }
 
+// Main command export
 zokou(
   {
     nomCom: "menu3",
@@ -178,15 +178,13 @@ zokou(
       const lien = await mybotpic();
       const infoText = getBotInfo(mode);
       const menuText = buildMenu(coms, prefixe);
-      const finalText = infoText + menuText;
-      const sender = ms.key.participant || ms.key.remoteJid;
+      const mentions = ["255767862457@s.whatsapp.net"];
 
-      await sendForwardedText(zk, dest, ms, finalText, sender);
+      await sendMenuMedia(zk, dest, ms, lien, infoText + menuText, mentions);
       await sendRandomVoiceNote(zk, dest, ms, repondre);
     } catch (err) {
-      console.error(`[DEBUG menu error]: ${err}`);
+      console.error(`[DEBUG] menu: ${err}`);
       repondre(`❌ Failed to load menu:\n${err.message}`);
     }
   }
 );
-       
