@@ -8,8 +8,8 @@ const { zokou } = require(__dirname + "/../framework/zokou");
 const { format } = require(__dirname + "/../framework/mesfonctions");
 const s = require(__dirname + "/../set");
 
-const cyberDivider = "═╬═╬═╬═╬═╬═╬═╬═╬═╬═╬═╬═";
-const fancyEnd = "⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭⟬⟭";
+const cyberDivider = "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓";
+const fancyEnd = "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓";
 
 // Styled bot info
 function getBotInfo(mode) {
