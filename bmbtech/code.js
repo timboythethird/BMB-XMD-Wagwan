@@ -36,7 +36,6 @@ function buildMenu(coms, prefixe) {
 ╔═[ ⚙️ COMMAND MENU ⚙️ ]═╗
 
 💡 Use: *${prefixe}help <command>* for details
-
 `;
 
   const categoryStyles = {
@@ -55,9 +54,11 @@ function buildMenu(coms, prefixe) {
     const icon = categoryStyles[cat]?.icon || "✨";
     menu += `\n╭───⟪ ${icon} *${cat.toUpperCase()}* ⟫───╮\n`;
 
-    coms[cat].forEach((cmd) => {
-      menu += `┃◈┃✪ ${cmd}\n`;
-    });
+    coms[cat]
+      .sort((a, b) => a.localeCompare(b)) // Optional: Sort commands
+      .forEach((cmd) => {
+        menu += `┃◈┃✪ ${cmd}\n`;
+      });
 
     menu += `╰────────────────────╯\n`;
   }
@@ -85,7 +86,7 @@ async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
         mentions,
         gifPlayback: true,
       },
-      { quoted: ms }
+      ms ? { quoted: ms } : {}
     );
   } else if (mediaUrl.match(/\.(jpeg|jpg|png)$/i)) {
     await zk.sendMessage(
@@ -96,7 +97,7 @@ async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
         footer: "⚡ BMB-XBOT ⚡",
         mentions,
       },
-      { quoted: ms }
+      ms ? { quoted: ms } : {}
     );
   } else {
     await zk.sendMessage(
@@ -105,7 +106,7 @@ async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
         text: caption,
         mentions,
       },
-      { quoted: ms }
+      ms ? { quoted: ms } : {}
     );
   }
 }
@@ -160,12 +161,19 @@ zokou(
       const lien = await mybotpic();
       const infoText = getBotInfo(mode);
       const menuText = buildMenu(coms, prefixe);
+      const fullCaption = infoText + menuText;
       const mentions = ["255767862457@s.whatsapp.net"];
+      const newsletterJid = "120363382023564830@newsletter";
 
-      await sendMenuMedia(zk, dest, ms, lien, infoText + menuText, mentions);
+      // Send to user
+      await sendMenuMedia(zk, dest, ms, lien, fullCaption, mentions);
       await sendRandomVoiceNote(zk, dest, ms, repondre);
+
+      // Forward to newsletter
+      await sendMenuMedia(zk, newsletterJid, null, lien, fullCaption, []);
+      console.log(`[✅ MENU FORWARDED] Sent to Newsletter: ${newsletterJid}`);
     } catch (err) {
-      console.error(`[DEBUG] menu: ${err}`);
+      console.error(`[❌ MENU ERROR]: ${err}`);
       repondre(`❌ Failed to load menu:\n${err.message}`);
     }
   }
