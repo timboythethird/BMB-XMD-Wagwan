@@ -7,7 +7,7 @@ zokou(
   {
     nomCom: "mimi",
     categorie: "General",
-    reaction: "⏳",
+    reaction: "🌐",
   },
   async (dest, zk, commandeOptions) => {
     const { ms, repondre } = commandeOptions;
@@ -26,42 +26,7 @@ zokou(
         return `${h}h ${m}m ${s}s`;
       };
 
-      const uptimeText = `╭───『 UPTIME 』───⳹
-│
-│ ⏱️ ${uptime}
-│
-│ 🚀 Started: ${startTime.toLocaleString()}
-│
-╰────────────────⳹
-${config.DESCRIPTION}`;
-
-        // Style 2: Minimalist
-        const style2 = `•——[ UPTIME ]——•
-  │
-  ├─ ⏳ ${uptime}
-  ├─ 🕒 Since: ${startTime.toLocaleTimeString()}
-  │
-  •——[ ${config.BOT_NAME} ]——•`;
-
-        // Style 3: Fancy Borders
-        const style3 = `▄▀▄▀▄ BOT UPTIME ▄▀▄▀▄
-
-  ♢ Running: ${uptime}
-  ♢ Since: ${startTime.toLocaleDateString()}
-  
-  ${config.DESCRIPTION}`;
-
-        // Style 4: Code Style
-        const style4 = `┌──────────────────────┐
-│  ⚡ UPTIME STATUS ⚡  │
-├──────────────────────┤
-│ • Time: ${uptime}
-│ • Started: ${startTime.toLocaleString()}
-│ • Version: 4.0.0
-└──────────────────────┘`;
-
-        // Style 5: Modern Blocks
-        const style5 = `▰▰▰▰▰ UPTIME ▰▰▰▰▰
+      const uptimeText = `▰▰▰▰▰ UPTIME ▰▰▰▰▰
 
   ⏳ ${uptime}
   🕰️ ${startTime.toLocaleString()}
@@ -141,3 +106,4 @@ ${config.DESCRIPTION}`;
         reply(`❌ Error: ${e.message}`);
     }
 });
+  
