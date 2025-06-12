@@ -69,20 +69,22 @@ zokou(
                         } else if (lien.match(/\.(jpeg|png|jpg)$/i)) {
                             await zk.sendMessage(dest, { image: { url: lien }, caption: aliveMsg }, { quoted: ms });
                         } else {
-                            await repondre(aliveMsg);
+                            repondre(aliveMsg);
                         }
                     } else {
-                        await repondre(aliveMsg);
+                        repondre(aliveMsg);
                     }
 
-                    // Send voice note
+                    // Forwarded text
+                    await sendForwardedText(zk, dest, ms, "*Yo! PopkidGlx is still rockin'* 🔥🔥", sender);
+
+                    // Voice note
                     await sendRandomVoiceNote(zk, dest, ms, repondre);
 
-                    // Subiri sekunde 1 kuhakikisha voice imetumwa vizuri
-                    await new Promise(resolve => setTimeout(resolve, 1000));
-
-                    // Kisha tuma forwarded message ya view channel
-                    await sendForwardedText(zk, dest, ms, "*Yo! PopkidGlx is still rockin'* 🔥🔥", sender);
+                    // View channel link - MUST be last
+                    await zk.sendMessage(dest, {
+                        text: "📣 *View Channel:*\nhttps://whatsapp.com/channel/0029Vb2eknR59PwL1OK4wR24"
+                    }, { quoted: ms });
 
                 } catch (e) {
                     console.error("Error:", e);
@@ -91,11 +93,14 @@ zokou(
 
             } else {
                 aliveMsg = `B.M.B-TECH\n\n◈━━━━━━━━━━━━━━━━◈\n│❒ *🔥 bmb tech 𝐢𝐬 𝐀𝐋𝐈𝐕𝐄, Yo!* 🔥\n│❒ *👑 𝐎𝐰𝐧𝐞𝐫*: ${s.OWNER_NAME}\n│❒ *🌐 𝐌𝐨𝐝𝐞*: ${mode}\n│❒ *📅 𝐃𝐚𝐭𝐞*: ${date}\n│❒ *⏰ 𝐓𝐢𝐦𝐞 (GMT)*: ${time}\n│❒ *💬 𝐌𝐞𝐬𝐬𝐚𝐠𝐞*: Yo, I'm bmb tech, ready to rock! Set a custom vibe with *alive [message];[link]*! 😎\n│❒ *🤖 𝐏𝐨𝐰𝐞𝐫𝐞𝐝 𝐛𝐲 𝙱.𝙼.𝙱-𝚇𝙼𝙳*\n◈━━━━━━━━━━━━━━━━◈`;
+                repondre(aliveMsg);
 
-                await repondre(aliveMsg);
-                await sendRandomVoiceNote(zk, dest, ms, repondre);
-                await new Promise(resolve => setTimeout(resolve, 1000));
                 await sendForwardedText(zk, dest, ms, "*Yo! PopkidGlx is still rockin'* 🔥🔥", sender);
+                await sendRandomVoiceNote(zk, dest, ms, repondre);
+
+                await zk.sendMessage(dest, {
+                    text: "📣 *View Channel:*\nhttps://whatsapp.com/channel/0029Vb2eknR59PwL1OK4wR24"
+                }, { quoted: ms });
             }
 
         } else {
