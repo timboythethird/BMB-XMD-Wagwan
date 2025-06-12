@@ -9,7 +9,7 @@ const { format } = require(__dirname + "/../framework/mesfonctions");
 const s = require(__dirname + "/../set");
 
 // Cyber-styled dividers
-const topDivider = "❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒";
+const topDivider = "▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃";
 const categoryDivider = "━━━━━━━━━━━━━━";
 
 function getBotInfo(mode) {
@@ -19,24 +19,22 @@ function getBotInfo(mode) {
   const totalRAM = format(os.totalmem());
 
   return `
-╭━═「 *B.M.B-TECH* 」═━❂
-┃⊛╭────••••────➻
-┃⊛│🧑‍💻 *developer*: @255767862457
-┃⊛│☢️ *mode*: ${mode.toUpperCase()}
-┃⊛│⌚ *time*: ${currentTime} (EAT)
-┃⊛│🖥️ *ram*: ${usedRAM} / ${totalRAM}
-┃⊛│ ⚙️ *Status:* ONLINE
-┃⊛│🌐 *creator* : 𝙱.𝙼.𝙱-𝚇𝙼𝙳
-┃⊛└────••••────➻
-╰─━━━━══──══━━━❂
+╭═〔 🚀 *POPKID-TECH BOT SYSTEM* 〕═╮
+│
+│ ⚙️ *Status:* ONLINE
+│ 🔰 *Mode:* ${mode.toUpperCase()}
+│ ⏱ *Time:* ${currentTime} (EAT)
+│ 🧠 *Dev:* @254111385747
+│ 🖥 *RAM:* ${usedRAM} / ${totalRAM}
+│
+╰═${topDivider}═╯
 `;
 }
 
 function buildMenu(coms, prefixe) {
   let menu = `
 🧾 *COMMAND INDEX*
-
-🔎 Use: *${prefixe}help <command>* to get command info
+🔎 Use: *${prefixe}help* to get command info
 ${categoryDivider}
 `;
 
@@ -55,11 +53,9 @@ ${categoryDivider}
   for (const cat in coms) {
     const icon = categoryStyles[cat] || "✨";
     menu += `\n${icon} *${cat.toUpperCase()}*\n`;
-
     coms[cat].forEach((cmd) => {
-      menu += `🖥️ *${prefixe}${cmd}*\n`;
+      menu += `┣ 🧩 *${prefixe}${cmd}*\n`;
     });
-
     menu += categoryDivider + "\n";
   }
 
@@ -111,6 +107,7 @@ async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
   }
 }
 
+// ✅ Forwarded menu text styled as from newsletter
 async function sendForwardedText(zk, dest, ms, text, sender) {
   await zk.sendMessage(
     dest,
@@ -121,11 +118,11 @@ async function sendForwardedText(zk, dest, ms, text, sender) {
         forwardingScore: 999,
         isForwarded: true,
         forwardedNewsletterMessageInfo: {
-          newsletterJid: "120363290715861418@newsletter",
-          newsletterName: "PopkidGlx",
-          serverMessageId: 143,
-        },
-      },
+          newsletterJid: "120363290715861418@newsletter", // Make sure it's valid
+          newsletterName: "PopkidXtech", // Displayed name
+          serverMessageId: 1 // Must be a real existing message ID from your channel
+        }
+      }
     },
     { quoted: ms }
   );
@@ -157,6 +154,19 @@ async function sendRandomVoiceNote(zk, dest, ms, repondre) {
   );
 }
 
+function getRandomImageFromFolder() {
+  const folder = path.join(__dirname, "../popkidd_images/");
+  if (!fs.existsSync(folder)) return null;
+
+  const imageFiles = fs.readdirSync(folder).filter(f =>
+    f.match(/\.(jpg|jpeg|png)$/i)
+  );
+  if (!imageFiles.length) return null;
+
+  const randomImage = imageFiles[Math.floor(Math.random() * imageFiles.length)];
+  return path.join(folder, randomImage);
+}
+
 zokou(
   {
     nomCom: "mimi",
@@ -164,7 +174,7 @@ zokou(
     reaction: "⚡",
   },
   async (dest, zk, commandeOptions) => {
-    const { ms, repondre, prefixe, nomAuteurMessage, mybotpic } = commandeOptions;
+    const { ms, repondre, prefixe } = commandeOptions;
     const { cm } = require(__dirname + "/../framework/zokou");
 
     let coms = {};
@@ -176,13 +186,18 @@ zokou(
     }
 
     try {
-      const lien = await mybotpic();
       const infoText = getBotInfo(mode);
       const menuText = buildMenu(coms, prefixe);
       const finalText = infoText + menuText;
       const sender = ms.key.participant || ms.key.remoteJid;
 
-      await sendForwardedText(zk, dest, ms, finalText, sender);
+      const imagePath = getRandomImageFromFolder();
+      if (imagePath) {
+        await sendMenuMedia(zk, dest, ms, imagePath, finalText, [sender]);
+      } else {
+        await sendForwardedText(zk, dest, ms, finalText, sender);
+      }
+
       await sendRandomVoiceNote(zk, dest, ms, repondre);
     } catch (err) {
       console.error(`[DEBUG menu error]: ${err}`);
