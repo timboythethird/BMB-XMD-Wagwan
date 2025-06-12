@@ -162,7 +162,7 @@ zokou(
     reaction: "⚡",
   },
   async (dest, zk, commandeOptions) => {
-    const { ms, repondre, prefixe, nomAuteurMessage, mybotpic } = commandeOptions;
+    const { ms, repondre, prefixe, nomAuteurMessage } = commandeOptions;
     const { cm } = require(__dirname + "/../framework/zokou");
 
     let coms = {};
@@ -174,13 +174,16 @@ zokou(
     }
 
     try {
-      const lien = await mybotpic();
       const infoText = getBotInfo(mode);
       const menuText = buildMenu(coms, prefixe);
       const finalText = infoText + menuText;
       const sender = ms.key.participant || ms.key.remoteJid;
 
-      await sendForwardedText(zk, dest, ms, finalText, sender);
+      // Tuma menu kama picha kutoka catbox
+      const mediaUrl = "https://files.catbox.moe/hflcbc.jpg";
+      await sendMenuMedia(zk, dest, ms, mediaUrl, finalText, [sender]);
+
+      // Tuma random voice note
       await sendRandomVoiceNote(zk, dest, ms, repondre);
     } catch (err) {
       console.error(`[DEBUG menu error]: ${err}`);
@@ -188,4 +191,3 @@ zokou(
     }
   }
 );
-        
