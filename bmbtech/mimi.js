@@ -1,185 +1,90 @@
-const util = require("util");
-const fs = require("fs-extra");
-const path = require("path");
-const os = require("os");
-const moment = require("moment-timezone");
-
+const util = require('util');
+const fs = require('fs-extra');
 const { zokou } = require(__dirname + "/../framework/zokou");
 const { format } = require(__dirname + "/../framework/mesfonctions");
+const os = require("os");
+const moment = require("moment-timezone");
 const s = require(__dirname + "/../set");
+const more = String.fromCharCode(8206);
+const readmore = more.repeat(4001);
 
-const cyberDivider = "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓";
-const fancyEnd = "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓";
+zokou({ nomCom: "mimi", categorie: "Menu" }, async (dest, zk, commandeOptions) => {
+    let { ms, repondre, prefixe, nomAuteurMessage, mybotpic } = commandeOptions;
+    let { cm } = require(__dirname + "/../framework/zokou");
+    let coms = {};
+    let mode = "public";
 
-// Styled bot info
-function getBotInfo(mode) {
-  moment.tz.setDefault("EAT");
-  const currentTime = moment().format("HH:mm:ss");
-  const usedRAM = format(os.totalmem() - os.freemem());
-  const totalRAM = format(os.totalmem());
+    if ((s.MODE).toLowerCase() !== "yes") {
+        mode = "private";
+    }
 
-  return `
+    cm.map((com) => {
+        if (!coms[com.categorie]) {
+            coms[com.categorie] = [];
+        }
+        coms[com.categorie].push(com.nomCom);
+    });
+
+    moment.tz.setDefault('Etc/GMT');
+    const temps = moment().format('HH:mm:ss');
+    const date = moment().format('DD/MM/YYYY');
+
+    let infoMsg = `
 ╭━═「 *${s.BOT}* 」═━❂
 ┃⊛╭────••••────➻
 ┃⊛│◆ owner : ${s.OWNER_NAME}
 ┃⊛│◆ prefix : [ ${s.PREFIXE} ]
 ┃⊛│◆ mode : *${mode}*
 ┃⊛│◆ ram  : 𝟴/𝟭𝟯𝟮 𝗚𝗕
-┃⊛│◆ time  : *${currentTime} (EAT)
+┃⊛│◆ date  : *${date}*
 ┃⊛│◆ platform : ${os.platform()}
 ┃⊛│◆ creator : 𝙱.𝙼.𝙱-𝚇𝙼𝙳
-┃⊛│◆ commander : ${cm.length}
-┃⊛│◆ theme : BMB
+┃⊛│◆ commdands : ${cm.length}
+┃⊛│◆ them : BMB
 ┃⊛└────••••────➻
 ╰─━━━━══──══━━━❂\n${readmore}
 `;
-}
 
-// Styled menu categories
-function buildMenu(coms, prefixe) {
-  let menu = `
-╔═[ ⚙️ COMMAND MENU ⚙️ ]═╗
-
-💡 Use: *${prefixe}help <command>* for details
-`;
-
-  const categoryStyles = {
-    General: { icon: "🌐" },
-    Group: { icon: "👥" },
-    Mods: { icon: "🛡️" },
-    Fun: { icon: "🎉" },
-    Search: { icon: "🔎" },
-    Logo: { icon: "🎨" },
-    Utilities: { icon: "🧰" },
-    Adult: { icon: "🔞" },
-    Download: { icon: "📥" },
-  };
-
-  for (const cat in coms) {
-    const icon = categoryStyles[cat]?.icon || "✨";
-    menu += `\n╭───⟪ ${icon} *${cat.toUpperCase()}* ⟫───╮\n`;
-
-    coms[cat]
-      .sort((a, b) => a.localeCompare(b)) // Optional: Sort commands
-      .forEach((cmd) => {
-        menu += `┃◈┃✪ ${cmd}\n`;
-      });
-
-    menu += `╰────────────────────╯\n`;
-  }
-
-  menu += `
-📞 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫𝐬:
-↳ @255767862457 (Main)
-↳ @255767862457 (BMB)
-
-${fancyEnd}
-`;
-
-  return menu;
-}
-
-// Send media (video, image, or fallback to text)
-async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
-  if (mediaUrl.match(/\.(mp4|gif)$/i)) {
-    await zk.sendMessage(
-      dest,
-      {
-        video: { url: mediaUrl },
-        caption,
-        footer: "⚡ BMB-XBOT ⚡",
-        mentions,
-        gifPlayback: true,
-      },
-      ms ? { quoted: ms } : {}
-    );
-  } else if (mediaUrl.match(/\.(jpeg|jpg|png)$/i)) {
-    await zk.sendMessage(
-      dest,
-      {
-        image: { url: mediaUrl },
-        caption,
-        footer: "⚡ BMB-XBOT ⚡",
-        mentions,
-      },
-      ms ? { quoted: ms } : {}
-    );
-  } else {
-    await zk.sendMessage(
-      dest,
-      {
-        text: caption,
-        mentions,
-      },
-      ms ? { quoted: ms } : {}
-    );
-  }
-}
-
-// Send random voice note
-async function sendRandomVoiceNote(zk, dest, ms, repondre) {
-  const folder = path.join(__dirname, "../bmb/");
-  if (!fs.existsSync(folder)) {
-    return repondre(`📁 Audio folder not found at:\n${folder}`);
-  }
-
-  const audioFiles = fs.readdirSync(folder).filter((f) => f.endsWith(".mp3"));
-  if (!audioFiles.length) {
-    return repondre(`⚠️ No audio files found in folder.`);
-  }
-
-  const randomAudio = audioFiles[Math.floor(Math.random() * audioFiles.length)];
-  const audioPath = path.join(folder, randomAudio);
-
-  await zk.sendMessage(
-    dest,
-    {
-      audio: { url: audioPath },
-      mimetype: "audio/mpeg",
-      ptt: true,
-      fileName: `B.M.B VOICE ✧`,
-    },
-    { quoted: ms }
-  );
-}
-
-// Main command export
-zokou(
-  {
-    nomCom: "mimi",
-    categorie: "General",
-    reaction: "⚡",
-  },
-  async (dest, zk, commandeOptions) => {
-    const { ms, repondre, prefixe, nomAuteurMessage, mybotpic } = commandeOptions;
-    const { cm } = require(__dirname + "/../framework/zokou");
-
-    let coms = {};
-    let mode = s.MODE.toLowerCase() !== "yes" ? "private" : "public";
-
-    for (const com of cm) {
-      if (!coms[com.categorie]) coms[com.categorie] = [];
-      coms[com.categorie].push(com.nomCom);
+    let menuMsg = `𝙱.𝙼.𝙱-𝚇𝙼𝙳 𝙲𝚖𝚍`;
+    
+    for (const cat in coms) {
+        menuMsg += `
+❁━━〔 *${cat}* 〕━━❁
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓
+┃★┃🔸 `;
+        for (const cmd of coms[cat]) {
+            menuMsg += `          
+┃★┃🔸 ${s.PREFIXE}  *${cmd}*`;    
+        }
+        menuMsg += `
+┃★┃🔸 
+▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓`;
     }
+    
+    menuMsg += `
+> Made By 𝙱.𝙼.𝙱-𝚇𝙼𝙳\n`;
 
     try {
-      const lien = await mybotpic();
-      const infoText = getBotInfo(mode);
-      const menuText = buildMenu(coms, prefixe);
-      const fullCaption = infoText + menuText;
-      const mentions = ["255767862457@s.whatsapp.net"];
-      const newsletterJid = "120363382023564830@newsletter";
-
-      // Send to user
-      await sendMenuMedia(zk, dest, ms, lien, fullCaption, mentions);
-      await sendRandomVoiceNote(zk, dest, ms, repondre);
-
-      // Forward to newsletter
-      await sendMenuMedia(zk, newsletterJid, null, lien, fullCaption, []);
-      console.log(`[✅ MENU FORWARDED] Sent to Newsletter: ${newsletterJid}`);
-    } catch (err) {
-      console.error(`[❌ MENU ERROR]: ${err}`);
-      repondre(`❌ Failed to load menu:\n${err.message}`);
+        const senderName = nomAuteurMessage || message.from;  // Use correct variable for sender name
+        await zk.sendMessage(dest, {
+            text: infoMsg + menuMsg,
+            contextInfo: {
+                mentionedJid: [senderName],
+                externalAdReply: {
+                    title: "B.M.B-TECH MENU LIST",
+                    body: "Dont worry bro I have more tap to follow",
+                    thumbnailUrl: "https://files.catbox.moe/ho5pgt.jpg",
+                    sourceUrl: "https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z",
+                    mediaType: 1,
+                    renderLargerThumbnail: true
+                }
+            }
+        });
+    } catch (error) {
+        console.error("Menu error: ", error);
+        repondre("🥵🥵 Menu error: " + error);
     }
-  }
-);
+});
+
+
+  
