@@ -9,7 +9,7 @@ const { format } = require(__dirname + "/../framework/mesfonctions");
 const s = require(__dirname + "/../set");
 
 // Cyber-styled dividers
-const topDivider = "▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃";
+const topDivider = "❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒";
 const categoryDivider = "━━━━━━━━━━━━━━";
 
 function getBotInfo(mode) {
@@ -19,18 +19,16 @@ function getBotInfo(mode) {
   const totalRAM = format(os.totalmem());
 
   return `
-╭━═━━══──══━═━❂
+╭━═「 *B.M.B-TECH* 」═━❂
 ┃⊛╭────••••────➻
-┃⊛│◆ owner : ${s.OWNER_NAME}
-┃⊛│◆ prefix : [ ${s.PREFIXE} ]
-┃⊛│◆ mode : *${mode}*
-┃⊛│◆ ram  : 𝟴/𝟭𝟯𝟮 𝗚𝗕
-┃⊛│◆ platform : ${os.platform()}
-┃⊛│◆ creator : 𝙱.𝙼.𝙱-𝚇𝙼𝙳
-┃⊛│◆ commander : ${cm.length}
-┃⊛│◆ theme : BMB
+┃⊛│🧑‍💻 *developer*: @255767862457
+┃⊛│☢️ *mode*: ${mode.toUpperCase()}
+┃⊛│⌚ *time*: ${currentTime} (EAT)
+┃⊛│🖥️ *ram*: ${usedRAM} / ${totalRAM}
+┃⊛│ ⚙️ *Status:* ONLINE
+┃⊛│🌐 *creator* : 𝙱.𝙼.𝙱-𝚇𝙼𝙳
 ┃⊛└────••••────➻
-╰─━━━━══──══━━━❂\n${readmore}
+╰─━━━━══──══━━━❂
 `;
 }
 
@@ -59,7 +57,7 @@ ${categoryDivider}
     menu += `\n${icon} *${cat.toUpperCase()}*\n`;
 
     coms[cat].forEach((cmd) => {
-      menu += `┃★┃ *${prefixe}${cmd}*\n`;
+      menu += `🖥️ *${prefixe}${cmd}*\n`;
     });
 
     menu += categoryDivider + "\n";
@@ -134,7 +132,7 @@ async function sendForwardedText(zk, dest, ms, text, sender) {
 }
 
 async function sendRandomVoiceNote(zk, dest, ms, repondre) {
-  const folder = path.join(__dirname, "../bmb/");
+  const folder = path.join(__dirname, "../popkidd/");
   if (!fs.existsSync(folder)) {
     return repondre(`📁 Audio folder not found at:\n${folder}`);
   }
@@ -192,4 +190,4 @@ zokou(
     }
   }
 );
-       
+      
