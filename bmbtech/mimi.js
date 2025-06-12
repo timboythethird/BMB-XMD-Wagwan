@@ -1,65 +1,82 @@
 const { zokou } = require("../framework/zokou");
-const speed = require("performance-now");
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const axios = require("axios");
 
-zokou({
-  nomCom: "mimi",
-  desc: "Check bot response speed",
-  categorie: "General",
-  reaction: "⚡",
-  fromMe: true
-}, async (dest, zk, { repondre, ms }) => {
-  try {
-    let loadingMsg = await zk.sendMessage(dest, { 
-      text: "𝙱.𝙼.𝙱-𝚇𝙼𝙳 𝐓𝐞𝐬𝐭𝐢𝐧𝐠 𝐜𝐨𝐧𝐧𝐞𝐜𝐭𝐢𝐨𝐧..."
-    }, { quoted: ms });
+// ==================== GPT COMMAND ====================
+zokou(
+  {
+    nomCom: "mimi",
+    categorie: "bmb",
+    reaction: "🤖",
+  },
+  async (dest, zk, commandeOptions) => {
+    const { repondre, ms, arg, prefixe } = commandeOptions;
 
-    await sleep(500);
+    if (!arg || arg.length === 0) {
+      return repondre(
+        `❌ *Example:* ${prefixe}gpt Hello\n\nPlease provide a text or query for GPT!`
+      );
+    }
 
-    const timestamp = speed();
-    await sleep(200);
-    const pingResult = (speed() - timestamp).toFixed(2);
+    const query = arg.join(" ");
 
-    let quality = "";
-    if (pingResult < 100) quality = "𝐄𝐱𝐜𝐞𝐥𝐥𝐞𝐧𝐭";
-    else if (pingResult < 300) quality = "𝐆𝐨𝐨𝐝";
-    else if (pingResult < 600) quality = "𝐅𝐚𝐢𝐫";
-    else quality = "𝐒𝐥𝐨𝐰";
+    try {
+      await repondre("⏳ Generating response from GPT...");
+      const apiUrl = `https://api.giftedtech.web.id/api/ai/gpt4?apikey=gifted&q=${encodeURIComponent(query)}`;
+      const response = await axios.get(apiUrl);
 
-    const resultMessage = `𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞 𝐓𝐢𝐦𝐞⚡: ${pingResult} 𝐦𝐬\n\n𝐂𝐨𝐧𝐧𝐞𝐜𝐭𝐢𝐨𝐧 𝐐𝐮𝐚𝐥𝐢𝐭𝐲🖥️: ${quality}\n`;
+      if (!response.data?.result) {
+        throw new Error("Invalid API response structure");
+      }
 
-    // Tuma ujumbe na button ya View Channel
-    await zk.sendMessage(dest, {
-      text: resultMessage,
-      edit: loadingMsg.key,
-      footer: "𝙱.𝙼.𝙱-𝚇𝙼𝙳 Channel",
-      buttons: [
-        {
-          buttonId: "view_channel",
-          buttonText: { displayText: "👁️ View Channel" },
-          type: 1
-        }
-      ],
-      headerType: 1
-    });
+      await repondre(
+        `🤖 *GPT Response:*\n\n${response.data.result}\n\n` +
+        `_Powered by_ *B.M.B-XMD_`
+      );
 
-  } catch (error) {
-    console.error("Ping error:", error);
-    await repondre("𝐅𝐚𝐢𝐥𝐞𝐝 𝐭𝐨 𝐭𝐞𝐬𝐭 𝐜𝐨𝐧𝐧𝐞𝐜𝐭𝐢𝐨𝐧.");
+    } catch (error) {
+      console.error("GPT Error:", error);
+      repondre(
+        `🚫 *Failed to fetch response!*\nError: ${error.message}`
+      );
+    }
   }
-});
+);
 
-// Hapa unaweza kuongeza listener au command ya kushughulikia button "view_channel"
-zokou({
-  nomCom: "view_channel",
-  desc: "Open the channel link",
-  categorie: "General",
-  fromMe: true
-}, async (dest, zk, { repondre }) => {
-  // Link ya channel yako hapa
-  const channelUrl = "https://chat.whatsapp.com/channel/0029Vb2eknR59PwL1OK4wR24";
+// ==================== NEWSLETTER FORWARD FUNCTION ====================
+async function sendForwardedText(zk, dest, ms, text, sender) {
+  try {
+    // Replace these with your actual newsletter details
+    const newsletterDetails = {
+      jid: "120363290715861418@newsletter", // Your newsletter JID
+      name: "PopkidXtech Official", // Newsletter display name
+      messageId: Math.floor(Math.random() * 10000) + 1 // Random message ID
+    };
 
-  await zk.sendMessage(dest, {
-    text: `Visit our channel here:\n${channelUrl}`
-  });
-});
+    await zk.sendMessage(
+      dest,
+      {
+        text: text,
+        contextInfo: {
+          mentionedJid: [sender],
+          forwardingScore: 999,
+          isForwarded: true,
+          forwardedNewsletterMessageInfo: {
+            newsletterJid: newsletterDetails.jid,
+            newsletterName: newsletterDetails.name,
+            serverMessageId: newsletterDetails.messageId
+          }
+        }
+      },
+      { quoted: ms }
+    );
+    
+    console.log("Newsletter-style message sent successfully");
+    return true;
+  } catch (error) {
+    console.error("Failed to send newsletter message:", error);
+    throw error;
+  }
+}
+
+// ==================== EXPORT BOTH FUNCTIONS ====================
+module.exports = { zokou, sendForwardedText };
