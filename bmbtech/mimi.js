@@ -8,7 +8,6 @@ const { zokou } = require(__dirname + "/../framework/zokou");
 const { format } = require(__dirname + "/../framework/mesfonctions");
 const s = require(__dirname + "/../set");
 
-// Cyber-styled dividers
 const topDivider = "❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒";
 const categoryDivider = "❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒";
 
@@ -33,10 +32,7 @@ function getBotInfo(mode) {
 }
 
 function buildMenu(coms, prefixe) {
-  let menu = `
-🧾 *COMMAND INDEX*
-
-`;
+  let menu = `\n🧾 *COMMAND INDEX*\n\n`;
 
   const categoryStyles = {
     General: "🌐",
@@ -74,6 +70,17 @@ ${topDivider}
 }
 
 async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
+  const contextInfo = {
+    forwardingScore: 999,
+    isForwarded: true,
+    mentionedJid: mentions,
+    forwardedNewsletterMessageInfo: {
+      newsletterJid: "120363382023564830@newsletter", // ID ya channel
+      newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
+      serverMessageId: 143,
+    },
+  };
+
   if (mediaUrl.match(/\.(mp4|gif)$/i)) {
     await zk.sendMessage(
       dest,
@@ -83,6 +90,7 @@ async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
         footer: "⚡ BMB-XBOT ⚡",
         mentions,
         gifPlayback: true,
+        contextInfo,
       },
       { quoted: ms }
     );
@@ -94,6 +102,7 @@ async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
         caption,
         footer: "⚡ BMB-XBOT ⚡",
         mentions,
+        contextInfo,
       },
       { quoted: ms }
     );
@@ -103,30 +112,11 @@ async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
       {
         text: caption,
         mentions,
+        contextInfo,
       },
       { quoted: ms }
     );
   }
-}
-
-async function sendForwardedText(zk, dest, ms, text, sender) {
-  await zk.sendMessage(
-    dest,
-    {
-      text,
-      contextInfo: {
-        mentionedJid: [sender],
-        forwardingScore: 999,
-        isForwarded: true,
-        forwardedNewsletterMessageInfo: {
-          newsletterJid: "120363382023564830@newsletter",
-          newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
-          serverMessageId: 143,
-        },
-      },
-    },
-    { quoted: ms }
-  );
 }
 
 async function sendRandomVoiceNote(zk, dest, ms, repondre) {
@@ -162,7 +152,7 @@ zokou(
     reaction: "⚡",
   },
   async (dest, zk, commandeOptions) => {
-    const { ms, repondre, prefixe, nomAuteurMessage } = commandeOptions;
+    const { ms, repondre, prefixe } = commandeOptions;
     const { cm } = require(__dirname + "/../framework/zokou");
 
     let coms = {};
@@ -178,12 +168,12 @@ zokou(
       const menuText = buildMenu(coms, prefixe);
       const finalText = infoText + menuText;
       const sender = ms.key.participant || ms.key.remoteJid;
-
-      // Tuma menu kama picha kutoka catbox
       const mediaUrl = "https://files.catbox.moe/hflcbc.jpg";
+
+      // Tuma picha + menu + view channel
       await sendMenuMedia(zk, dest, ms, mediaUrl, finalText, [sender]);
 
-      // Tuma random voice note
+      // Tuma voice ya random
       await sendRandomVoiceNote(zk, dest, ms, repondre);
     } catch (err) {
       console.error(`[DEBUG menu error]: ${err}`);
