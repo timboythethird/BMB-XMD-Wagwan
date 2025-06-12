@@ -4,7 +4,7 @@ const jid = "120363382023564830@newsletter"; // JID ya channel yako
 
 zokou(
   {
-    nomCom: "getpp",
+    nomCom: "getp",
     categorie: "General",
     reaction: "📷",
   },
