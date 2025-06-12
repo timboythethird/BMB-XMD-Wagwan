@@ -1,5 +1,4 @@
 const { zokou } = require("../framework/zokou");
-const moment = require("moment-timezone");
 const speed = require("performance-now");
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -29,23 +28,38 @@ zokou({
 
     const resultMessage = `𝐑𝐞𝐬𝐩𝐨𝐧𝐬𝐞 𝐓𝐢𝐦𝐞⚡: ${pingResult} 𝐦𝐬\n\n𝐂𝐨𝐧𝐧𝐞𝐜𝐭𝐢𝐨𝐧 𝐐𝐮𝐚𝐥𝐢𝐭𝐲🖥️: ${quality}\n`;
 
-    // Tuma ujumbe wa matokeo na view channel chini yake
+    // Tuma ujumbe na button ya View Channel
     await zk.sendMessage(dest, {
       text: resultMessage,
       edit: loadingMsg.key,
-      contextInfo: {
-        forwardingScore: 999,
-        isForwarded: true,
-        forwardedNewsletterMessageInfo: {
-          newsletterJid: "120363382023564830@newsletter",
-          newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
-          serverMessageId: 143
+      footer: "𝙱.𝙼.𝙱-𝚇𝙼𝙳 Channel",
+      buttons: [
+        {
+          buttonId: "view_channel",
+          buttonText: { displayText: "👁️ View Channel" },
+          type: 1
         }
-      }
+      ],
+      headerType: 1
     });
 
   } catch (error) {
     console.error("Ping error:", error);
     await repondre("𝐅𝐚𝐢𝐥𝐞𝐝 𝐭𝐨 𝐭𝐞𝐬𝐭 𝐜𝐨𝐧𝐧𝐞𝐜𝐭𝐢𝐨𝐧.");
   }
+});
+
+// Hapa unaweza kuongeza listener au command ya kushughulikia button "view_channel"
+zokou({
+  nomCom: "view_channel",
+  desc: "Open the channel link",
+  categorie: "General",
+  fromMe: true
+}, async (dest, zk, { repondre }) => {
+  // Link ya channel yako hapa
+  const channelUrl = "https://chat.whatsapp.com/channel/0029Vb2eknR59PwL1OK4wR24";
+
+  await zk.sendMessage(dest, {
+    text: `Visit our channel here:\n${channelUrl}`
+  });
 });
