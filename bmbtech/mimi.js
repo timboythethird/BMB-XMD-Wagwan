@@ -19,13 +19,12 @@ function getBotInfo(mode) {
   const totalRAM = format(os.totalmem());
 
   return `
-╭━═「 *${s.BOT}* 」═━❂
+╭━═━━══──══━═━❂
 ┃⊛╭────••••────➻
 ┃⊛│◆ owner : ${s.OWNER_NAME}
 ┃⊛│◆ prefix : [ ${s.PREFIXE} ]
 ┃⊛│◆ mode : *${mode}*
 ┃⊛│◆ ram  : 𝟴/𝟭𝟯𝟮 𝗚𝗕
-┃⊛│◆ date  : *${date}*
 ┃⊛│◆ platform : ${os.platform()}
 ┃⊛│◆ creator : 𝙱.𝙼.𝙱-𝚇𝙼𝙳
 ┃⊛│◆ commander : ${cm.length}
@@ -193,3 +192,4 @@ zokou(
     }
   }
 );
+       
