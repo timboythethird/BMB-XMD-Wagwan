@@ -39,7 +39,7 @@
 "ANTICALL":
     {
       "description":"Enter yes for your bot to auto reject calls",
-      "value":"yes",
+      "value":"no",
       "required":false
     },
 "AUTO_REACT_STATUS":
