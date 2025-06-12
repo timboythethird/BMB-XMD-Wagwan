@@ -9,8 +9,8 @@ const { format } = require(__dirname + "/../framework/mesfonctions");
 const s = require(__dirname + "/../set");
 
 // Cyber-styled dividers
-const topDivider = "▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃▃";
-const categoryDivider = "━━━━━━━━━━━━━━";
+const topDivider = "❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒";
+const categoryDivider = "❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒";
 
 function getBotInfo(mode) {
   moment.tz.setDefault("EAT");
@@ -19,22 +19,24 @@ function getBotInfo(mode) {
   const totalRAM = format(os.totalmem());
 
   return `
-╭═〔 🚀 *POPKID-TECH BOT SYSTEM* 〕═╮
-│
-│ ⚙️ *Status:* ONLINE
-│ 🔰 *Mode:* ${mode.toUpperCase()}
-│ ⏱ *Time:* ${currentTime} (EAT)
-│ 🧠 *Dev:* @254111385747
-│ 🖥 *RAM:* ${usedRAM} / ${totalRAM}
-│
-╰═${topDivider}═╯
+╭━═「 *B.M.B-TECH* 」═━❂
+┃⊛╭────••••────➻
+┃⊛│🧑‍💻 *developer*: @255767862457
+┃⊛│☢️ *mode*: ${mode.toUpperCase()}
+┃⊛│⌚ *time*: ${currentTime} (EAT)
+┃⊛│🖥️ *ram*: ${usedRAM} / ${totalRAM}
+┃⊛│ ⚙️ *Status:* ONLINE
+┃⊛│🌐 *creator* : 𝙱.𝙼.𝙱-𝚇𝙼𝙳
+┃⊛└────••••────➻
+╰─━━━━══──══━━━❂
 `;
 }
 
 function buildMenu(coms, prefixe) {
   let menu = `
 🧾 *COMMAND INDEX*
-🔎 Use: *${prefixe}help* to get command info
+
+🔎 Use: *${prefixe}help <command>* to get command info
 ${categoryDivider}
 `;
 
@@ -51,20 +53,22 @@ ${categoryDivider}
   };
 
   for (const cat in coms) {
-    const icon = categoryStyles[cat] || "✨";
+    const icon = categoryStyles[cat] || "🌐";
     menu += `\n${icon} *${cat.toUpperCase()}*\n`;
+
     coms[cat].forEach((cmd) => {
-      menu += `┣ 🧩 *${prefixe}${cmd}*\n`;
+      menu += `⚙️ *${prefixe}${cmd}*\n`;
     });
+
     menu += categoryDivider + "\n";
   }
 
   menu += `
 👨‍💻 *DEVELOPERS*
- ┗ @254111385747 (Main Dev)
- ┗ @25473229794 (Popkid Team)
+ ┗ @255767862457 (Main Dev)
+ ┗ @255767862457 (bmb Team)
 
-📡 Powered by *POPKID-GLX SYSTEM*
+📡 Powered by *B.M.B-TECH SYSTEM*
 ${topDivider}
 `;
 
@@ -78,7 +82,7 @@ async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
       {
         video: { url: mediaUrl },
         caption,
-        footer: "⚡ POPKID-XBOT ⚡",
+        footer: "⚡ BMB-XBOT ⚡",
         mentions,
         gifPlayback: true,
       },
@@ -90,7 +94,7 @@ async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
       {
         image: { url: mediaUrl },
         caption,
-        footer: "⚡ POPKID-XBOT ⚡",
+        footer: "⚡ BMB-XBOT ⚡",
         mentions,
       },
       { quoted: ms }
@@ -107,7 +111,6 @@ async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
   }
 }
 
-// ✅ Forwarded menu text styled as from newsletter
 async function sendForwardedText(zk, dest, ms, text, sender) {
   await zk.sendMessage(
     dest,
@@ -118,18 +121,18 @@ async function sendForwardedText(zk, dest, ms, text, sender) {
         forwardingScore: 999,
         isForwarded: true,
         forwardedNewsletterMessageInfo: {
-          newsletterJid: "120363290715861418@newsletter", // Make sure it's valid
-          newsletterName: "PopkidXtech", // Displayed name
-          serverMessageId: 1 // Must be a real existing message ID from your channel
-        }
-      }
+          newsletterJid: "120363382023564830@newsletter",
+          newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
+          serverMessageId: 143,
+        },
+      },
     },
     { quoted: ms }
   );
 }
 
 async function sendRandomVoiceNote(zk, dest, ms, repondre) {
-  const folder = path.join(__dirname, "../popkidd/");
+  const folder = path.join(__dirname, "../bmb/");
   if (!fs.existsSync(folder)) {
     return repondre(`📁 Audio folder not found at:\n${folder}`);
   }
@@ -148,23 +151,10 @@ async function sendRandomVoiceNote(zk, dest, ms, repondre) {
       audio: { url: audioPath },
       mimetype: "audio/mpeg",
       ptt: true,
-      fileName: `🗣 POPKID VOICE`,
+      fileName: `🗣 BMB VOICE`,
     },
     { quoted: ms }
   );
-}
-
-function getRandomImageFromFolder() {
-  const folder = path.join(__dirname, "../popkidd_images/");
-  if (!fs.existsSync(folder)) return null;
-
-  const imageFiles = fs.readdirSync(folder).filter(f =>
-    f.match(/\.(jpg|jpeg|png)$/i)
-  );
-  if (!imageFiles.length) return null;
-
-  const randomImage = imageFiles[Math.floor(Math.random() * imageFiles.length)];
-  return path.join(folder, randomImage);
 }
 
 zokou(
@@ -174,7 +164,7 @@ zokou(
     reaction: "⚡",
   },
   async (dest, zk, commandeOptions) => {
-    const { ms, repondre, prefixe } = commandeOptions;
+    const { ms, repondre, prefixe, nomAuteurMessage, mybotpic } = commandeOptions;
     const { cm } = require(__dirname + "/../framework/zokou");
 
     let coms = {};
@@ -186,18 +176,13 @@ zokou(
     }
 
     try {
+      const lien = await mybotpic();
       const infoText = getBotInfo(mode);
       const menuText = buildMenu(coms, prefixe);
       const finalText = infoText + menuText;
       const sender = ms.key.participant || ms.key.remoteJid;
 
-      const imagePath = getRandomImageFromFolder();
-      if (imagePath) {
-        await sendMenuMedia(zk, dest, ms, imagePath, finalText, [sender]);
-      } else {
-        await sendForwardedText(zk, dest, ms, finalText, sender);
-      }
-
+      await sendForwardedText(zk, dest, ms, finalText, sender);
       await sendRandomVoiceNote(zk, dest, ms, repondre);
     } catch (err) {
       console.error(`[DEBUG menu error]: ${err}`);
@@ -205,4 +190,4 @@ zokou(
     }
   }
 );
-      
+    
