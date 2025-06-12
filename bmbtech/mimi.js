@@ -25,7 +25,7 @@ function getBotInfo(mode) {
 ┃⊛│◆ prefix : [ ${s.PREFIXE} ]
 ┃⊛│◆ mode : *${mode}*
 ┃⊛│◆ ram  : 𝟴/𝟭𝟯𝟮 𝗚𝗕
-┃⊛│◆ date  : *${date}*
+┃⊛│◆ time  : *${currentTime} (EAT)
 ┃⊛│◆ platform : ${os.platform()}
 ┃⊛│◆ creator : 𝙱.𝙼.𝙱-𝚇𝙼𝙳
 ┃⊛│◆ commander : ${cm.length}
