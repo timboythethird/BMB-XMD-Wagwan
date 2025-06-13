@@ -133,7 +133,7 @@ zokou({
 
     let imdbInfo = "THANKS ALL FOR THE SUPPORT ITS ME PKDRILLER \n";
     imdbInfo += " ``` B.M.B-TECH FILMS```\n";
-    imdbInfo += "*Made by Ibrahim Adams*\n";
+    imdbInfo += "*Made by 𝙱.𝙼.𝙱-𝚇𝙼𝙳*\n";
     imdbInfo += "🎬Title    : " + imdbData.Title + "\n";
     imdbInfo += "📅year      : " + imdbData.Year + "\n";
     imdbInfo += "⭐Assessment : " + imdbData.Rated + "\n";
