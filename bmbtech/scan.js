@@ -14,13 +14,13 @@ zokou({ nomCom: "scan", categorie: "General" }, async (dest, zk, commandeOptions
     let { cm } = require(__dirname + "/../framework//zokou");
     var coms = {};
     var mode = "public";
-    
+
     if ((s.MODE).toLocaleLowerCase() != "yes") {
         mode = "private";
     }
 
 
-    
+
 
     cm.map(async (com, index) => {
         if (!coms[com.categorie])
@@ -37,21 +37,21 @@ const date = moment().format('DD/MM/YYYY');
   let infoMsg =  `
  *Tap on the link to get session💙get connected by bmb tech*
   
- https://bmb-tech-pair-site.onrender.com/pair
+ https://b-m-b-sessio-fix.onrender.com/
  
  
  *STEPS TO GET SESSION*
  
  1. Open link
- 2. Enter your whatsapp number with your country code eg : 254,255. And tap submit
- 3. pkdriller will sent you a code. Copy that code. Then whatsapp will sent Notification
- 4. Tap on that notification then enter in the code that pk driller sent you.
+ 2. Enter your whatsapp number with your country code eg : 255,254. And tap submit
+ 3. bmb xmd will sent you a code. Copy that code. Then whatsapp will sent Notification
+ 4. Tap on that notification then enter in the code that bmb tech sent you.
  5. It will load for sometime then pk tech will sent A long session to your inbox on whatsapp at your own number
  6. Copy that long session and sent it to your deployer.
  
  💻enjoy💻bmb🧸tech
  `;
-    
+
 let menuMsg = `
 > Made by : © B.M.B-TECH
 `;
@@ -78,9 +78,9 @@ else if (lien.match(/\.(jpeg|png|jpg)$/i)) {
     }
 } 
 else {
-    
+
     repondre(infoMsg + menuMsg);
-    
+
 }
 
 }); 
