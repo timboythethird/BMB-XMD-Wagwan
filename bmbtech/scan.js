@@ -125,7 +125,7 @@ const date = moment().format('DD/MM/YYYY');
    *bmb tech IMPORTANT INFO* 
 ❒───────────────────❒
 *GITHUB LINK*
-> https://github.com/bmbxmd/B.M.B-TECH-V1
+> https://github.com/bmbxmd/B.M.B-TECH
 
 *WHATSAPP CHANNEL*
 > https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z
@@ -134,7 +134,7 @@ const date = moment().format('DD/MM/YYYY');
 > https://github.com/bmbxmd/bmbxmd-INFO⁠
 ╭───────────────────❒
 │❒⁠⁠⁠⁠ *RAM* : ${format(os.totalmem() - os.freemem())}/${format(os.totalmem())}
-│❒⁠⁠⁠⁠ *DEV* : *Ibrahim Adams*
+│❒⁠⁠⁠⁠ *DEV* : *𝙱.𝙼.𝙱-𝚇𝙼𝙳*
 ⁠⁠⁠⁠╰───────────────────❒
   `;
     
