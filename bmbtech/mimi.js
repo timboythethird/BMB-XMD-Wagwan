@@ -1,53 +1,25 @@
-const {
-  zokou
-} = require(__dirname + '/../framework/zokou');
-const moment = require("moment-timezone");
-const set = require(__dirname + '/../set');
-moment.tz.setDefault('' + set.TZ);
-zokou({
-  'nomCom': "mimi",
-  'categorie': "General"
-}, async (_0x12a838, _0x2d8d4e, _0x1f0ba4) => {
-  let {
-    ms: _0x5d2f0c
-  } = _0x1f0ba4;
-  const {
-    time: _0xb5466b,
-    date: _0x4c687e
-  } = {
-    'time': moment().format("HH:mm:ss"),
-    'date': moment().format("DD/MM/YYYY")
-  };
-  const _0x4950ba = Math.floor(Math.random() * 0x64) + 0x1;
-  try {
-    await _0x2d8d4e.sendMessage(_0x12a838, {
-      'audio': {
-        'url': "https://files.catbox.moe/x706d8.mp3"
-      },
-      'mimetype': "audio/mp4",
-      'ptt': true,
-      'contextInfo': {
-        'isForwarded': true,
-        'forwardedNewsletterMessageInfo': {
-          'newsletterJid': "120363382023564830@newsletter",
-          'newsletterName': "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
-          'serverMessageId': 0x8f
-        },
-        'forwardingScore': 0x3e7,
-        'externalAdReply': {
-          'title': "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
-          'body': "⚪ Pong: " + _0x4950ba + "ms\n📅 *Date:* " + _0x4c687e + "\n⏰ *Time:* " + _0xb5466b,
-          'thumbnailUrl': "https://files.catbox.moe/7n8oyx.jpg",
-          'mediaType': 0x1,
-          'renderSmallThumbnail': true
+const { zokou } = require("../framework/zokou");
+const fancy = require("../framework/style");
+
+zokou({ nomCom: "fancy", categorie: "Fun", reaction: "☑️" }, async (dest, zk, commandeOptions) => {
+    const { arg, repondre, prefixe } = commandeOptions;
+    const id = arg[0]?.match(/\d+/)?.join('');
+    const text = arg.slice(1).join(" ");
+
+    try {
+        if (id === undefined || text === undefined) {
+            return await repondre(`\nExemple : ${prefixe}fancy 10 bmb tech\n` + String.fromCharCode(8206).repeat(4001) + fancy.list('bmb', fancy));
         }
-      }
-    }, {
-      'quoted': _0x5d2f0c
-    });
-  } catch (_0x1149fe) {
-    console.log("❌ Ping Command Error: " + _0x1149fe);
-    repondre("❌ Error: " + _0x1149fe);
-  }
+
+        const selectedStyle = fancy[parseInt(id) - 1];
+        if (selectedStyle) {
+            return await repondre(fancy.apply(selectedStyle, text));
+        } else {
+            return await repondre('_Style introuvable :(_');
+        }
+    } catch (error) {
+        console.error(error);
+        return await repondre('_Une erreur s\'est produite :(_');
+    }
 });
-  
+      
