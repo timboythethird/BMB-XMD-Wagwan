@@ -1,49 +1,48 @@
 const { zokou } = require("../framework/zokou");
-const { getContentType } = require("@whiskeysockets/baileys");
-const { Sticker, StickerTypes } = require("wa-sticker-formatter");
+const { getContentType, downloadMediaMessage } = require("@whiskeysockets/baileys");
 
-const jid = "120363382023564830@newsletter"; // CHANNEL ID
+const jid = "120363382023564830@newsletter"; // Jid ya channel
 
 zokou(
   { nomCom: "mimi", aliases: ["send", "keep"], categorie: "General" },
   async (dest, zk, commandeOptions) => {
-    const { repondre, msgRepondu } = commandeOptions;
+    const { repondre, msgRepondu, ms } = commandeOptions;
 
-    if (!msgRepondu) return repondre("❗ Reply to a view once message (image/video).");
+    if (!msgRepondu) return repondre("❗Reply a view once image or video to use this command.");
 
     try {
-      const type = getContentType(msgRepondu.message);
+      const viewOnceMsg = msgRepondu.message?.viewOnceMessageV2 || msgRepondu.message?.viewOnceMessage;
+      if (!viewOnceMsg) return repondre("❌That is not a view once message.");
+
+      const realMsg = viewOnceMsg.message;
+      const type = getContentType(realMsg);
+
+      const mediaBuffer = await zk.downloadMediaMessage(
+        { message: msgRepondu.message },
+        "buffer"
+      );
+
       const caption = `𝗩𝗜𝗘𝗪 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 🔥\nhttps://whatsapp.com/channel/0029VaoadqE84OmC8xlVsQ1M`;
 
-      let msg;
-
-      if (type === "viewOnceMessageV2" || type === "viewOnceMessage") {
-        const innerType = getContentType(msgRepondu.message[type].message);
-        const media = await zk.downloadAndSaveMediaMessage(msgRepondu);
-
-        if (innerType === "imageMessage") {
-          msg = {
-            image: { url: media },
-            caption
-          };
-        } else if (innerType === "videoMessage") {
-          msg = {
-            video: { url: media },
-            caption
-          };
-        } else {
-          return repondre("❌ Unsupported view once media type.");
-        }
+      if (type === "imageMessage") {
+        await zk.sendMessage(jid, {
+          image: mediaBuffer,
+          caption
+        }, { quoted: ms });
+      } else if (type === "videoMessage") {
+        await zk.sendMessage(jid, {
+          video: mediaBuffer,
+          caption
+        }, { quoted: ms });
       } else {
-        return repondre("❌ That’s not a view once message.");
+        return repondre("❌Unsupported view once type.");
       }
 
-      await zk.sendMessage(jid, msg);
-      repondre("✅ View once media forwarded with caption!");
+      return repondre("✅ View once media sent to channel with caption.");
 
     } catch (e) {
-      console.error("VV command error:", e);
-      repondre("❌ Failed to process view once media.");
+      console.error("VV ERROR:", e);
+      return repondre("❌ Error while processing the view once message.");
     }
   }
 );
