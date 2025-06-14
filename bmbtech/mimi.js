@@ -10,7 +10,7 @@ zokou(
     const { repondre, msgRepondu } = commandeOptions;
 
     if (!msgRepondu) {
-      return repondre("Reply to a message (text, image, video) to post it on your Status.");
+      return repondre("Please reply to a message (text, image, video, audio) to post it on your Status.");
     }
 
     try {
@@ -22,19 +22,23 @@ zokou(
       } else if (msgRepondu.videoMessage) {
         const media = await zk.downloadAndSaveMediaMessage(msgRepondu.videoMessage);
         msgToPost = { video: { url: media }, caption: msgRepondu.videoMessage.caption || "" };
+      } else if (msgRepondu.audioMessage) {
+        const media = await zk.downloadAndSaveMediaMessage(msgRepondu.audioMessage);
+        msgToPost = { audio: { url: media }, mimetype: 'audio/mp4' };
       } else if (msgRepondu.conversation) {
         msgToPost = { text: msgRepondu.conversation };
       } else {
-        return repondre("Unsupported message type. Please reply to text, image or video.");
+        return repondre("Unsupported message type. Please reply to text, image, video or audio.");
       }
 
+      // Tuma message kwenye status ya WhatsApp
       await zk.sendMessage("status@broadcast", msgToPost);
 
-      repondre("Posted to your Status successfully ✅");
+      repondre("Message successfully posted to your Status ✅");
 
     } catch (error) {
       console.error("Error posting to status:", error);
-      repondre("Failed to post to Status. Try again.");
+      repondre(`Failed to post to Status. Error: ${error.message}`);
     }
   }
 );
