@@ -46,7 +46,7 @@ const date = moment().format('DD/MM/YYYY');
  2. Enter your whatsapp number with your country code eg : 255,254. And tap submit
  3. bmb xmd will sent you a code. Copy that code. Then whatsapp will sent Notification
  4. Tap on that notification then enter in the code that bmb tech sent you.
- 5. It will load for sometime then pk tech will sent A long session to your inbox on whatsapp at your own number
+ 5. It will load for sometime then bmb tech will sent A long session to your inbox on whatsapp at your own number
  6. Copy that long session and sent it to your deployer.
  
  💻enjoy💻bmb🧸tech
