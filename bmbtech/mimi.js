@@ -1,50 +1,40 @@
 const { zokou } = require("../framework/zokou");
-const { getContentType } = require("@whiskeysockets/baileys");
 
-zokou({ nomCom: "mimi", aliases: ["send", "keep"], categorie: "General" }, async (dest, zk, commandeOptions) => {
-  const { repondre, msgRepondu } = commandeOptions;
+zokou(
+  {
+    nomCom: "mimi",
+    categorie: "General",
+    reaction: "📤",
+  },
+  async (dest, zk, commandeOptions) => {
+    const { repondre, msgRepondu } = commandeOptions;
 
-  if (msgRepondu) {
-    console.log(msgRepondu);
-    let msg;
+    if (!msgRepondu) {
+      return repondre("Reply to a message (text, image, video) to post it on your Status.");
+    }
+
     try {
-      const viewChannelLink = 'https://whatsapp.com/channel/120363382023564830@newsletter';
+      let msgToPost;
 
       if (msgRepondu.imageMessage) {
         const media = await zk.downloadAndSaveMediaMessage(msgRepondu.imageMessage);
-        const caption = `${msgRepondu.imageMessage.caption || ""}\n\n👁️ VIEW CHANNEL\n${viewChannelLink}`;
-        msg = { image: { url: media }, caption };
+        msgToPost = { image: { url: media }, caption: msgRepondu.imageMessage.caption || "" };
       } else if (msgRepondu.videoMessage) {
         const media = await zk.downloadAndSaveMediaMessage(msgRepondu.videoMessage);
-        const caption = `${msgRepondu.videoMessage.caption || ""}\n\n👁️ VIEW CHANNEL\n${viewChannelLink}`;
-        msg = { video: { url: media }, caption };
-      } else if (msgRepondu.audioMessage) {
-        const media = await zk.downloadAndSaveMediaMessage(msgRepondu.audioMessage);
-        msg = { audio: { url: media }, mimetype: 'audio/mp4' };
-      } else if (msgRepondu.stickerMessage) {
-        const media = await zk.downloadAndSaveMediaMessage(msgRepondu.stickerMessage);
-        const stickerMess = new Sticker(media, {
-          pack: 'B.M.B-TECH',
-          type: StickerTypes.CROPPED,
-          categories: ["🤩", "🎉"],
-          id: "12345",
-          quality: 70,
-          background: "transparent",
-        });
-        const stickerBuffer2 = await stickerMess.toBuffer();
-        msg = { sticker: stickerBuffer2 };
+        msgToPost = { video: { url: media }, caption: msgRepondu.videoMessage.caption || "" };
+      } else if (msgRepondu.conversation) {
+        msgToPost = { text: msgRepondu.conversation };
       } else {
-        msg = { text: msgRepondu.conversation };
+        return repondre("Unsupported message type. Please reply to text, image or video.");
       }
 
-      await zk.sendMessage(dest, msg, { quoted: msgRepondu });
+      await zk.sendMessage("status@broadcast", msgToPost);
+
+      repondre("Posted to your Status successfully ✅");
 
     } catch (error) {
-      console.error("Error processing the message:", error);
-      repondre('An error occurred while processing your request.');
+      console.error("Error posting to status:", error);
+      repondre("Failed to post to Status. Try again.");
     }
-
-  } else {
-    repondre('Mention the message that you want to save');
   }
-});
+);
