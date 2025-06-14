@@ -1,4 +1,4 @@
-const { timoth } = require("../timnasa/timoth"); 
+const { zokou } = require("../framework/zokou"); 
 const axios = require('axios'); 
 const ytSearch = require('yt-search'); 
 const conf = require(__dirname + '/../set'); 
@@ -6,7 +6,7 @@ const { Catbox } = require("node-catbox");
 const fs = require('fs-extra'); 
 const { downloadAndSaveMediaMessage } = require('@whiskeysockets/baileys'); 
 
-timoth({ 
+zokou({ 
   nomCom: "p", 
   aliases: ["song", "playdoc", "audio", "mp3"], 
   categorie: "download", 
@@ -166,4 +166,4 @@ timoth({
     return repondre(`Download failed due to an error: ${error.message || error}`);
   }
 })
-      
+                
