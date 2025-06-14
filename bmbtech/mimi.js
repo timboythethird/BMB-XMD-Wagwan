@@ -1,65 +1,53 @@
-const { zokou } = require("../framework/zokou");
-const { getContentType } = require("@whiskeysockets/baileys");
-const { Sticker, StickerTypes } = require("wa-sticker-formatter");
-
-zokou(
-  { nomCom: "mimi", aliases: ["send", "keep"], categorie: "General" },
-  async (dest, zk, commandeOptions) => {
-    const { repondre, msgRepondu, superUser } = commandeOptions;
-
-    if (msgRepondu) {
-      console.log(msgRepondu);
-      let msg;
-      try {
-        // JID ya channel yako ya view-only
-        const CHANNEL_JID = "120363382023564830@newsletter";
-
-        if (msgRepondu.imageMessage) {
-          const media = await zk.downloadAndSaveMediaMessage(msgRepondu.imageMessage);
-          msg = {
-            image: { url: media },
-            caption: msgRepondu.imageMessage.caption || ""
-          };
-        } else if (msgRepondu.videoMessage) {
-          const media = await zk.downloadAndSaveMediaMessage(msgRepondu.videoMessage);
-          msg = {
-            video: { url: media },
-            caption: msgRepondu.videoMessage.caption || ""
-          };
-        } else if (msgRepondu.audioMessage) {
-          const media = await zk.downloadAndSaveMediaMessage(msgRepondu.audioMessage);
-          msg = {
-            audio: { url: media },
-            mimetype: "audio/mp4"
-          };
-        } else if (msgRepondu.stickerMessage) {
-          const media = await zk.downloadAndSaveMediaMessage(msgRepondu.stickerMessage);
-          const stickerMess = new Sticker(media, {
-            pack: "B.M.B-TECH",
-            type: StickerTypes.CROPPED,
-            categories: ["🤩", "🎉"],
-            id: "12345",
-            quality: 70,
-            background: "transparent"
-          });
-          const stickerBuffer2 = await stickerMess.toBuffer();
-          msg = { sticker: stickerBuffer2 };
-        } else {
-          msg = { text: msgRepondu.conversation || "Hakuna content ya kutuma." };
+const {
+  zokou
+} = require(__dirname + '/../framework/zokou');
+const moment = require("moment-timezone");
+const set = require(__dirname + '/../set');
+moment.tz.setDefault('' + set.TZ);
+zokou({
+  'nomCom': "mimi",
+  'categorie': "General"
+}, async (_0x12a838, _0x2d8d4e, _0x1f0ba4) => {
+  let {
+    ms: _0x5d2f0c
+  } = _0x1f0ba4;
+  const {
+    time: _0xb5466b,
+    date: _0x4c687e
+  } = {
+    'time': moment().format("HH:mm:ss"),
+    'date': moment().format("DD/MM/YYYY")
+  };
+  const _0x4950ba = Math.floor(Math.random() * 0x64) + 0x1;
+  try {
+    await _0x2d8d4e.sendMessage(_0x12a838, {
+      'audio': {
+        'url': "https://files.catbox.moe/x706d8.mp3"
+      },
+      'mimetype': "audio/mp4",
+      'ptt': true,
+      'contextInfo': {
+        'isForwarded': true,
+        'forwardedNewsletterMessageInfo': {
+          'newsletterJid': "120363382023564830@newsletter",
+          'newsletterName': "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
+          'serverMessageId': 0x8f
+        },
+        'forwardingScore': 0x3e7,
+        'externalAdReply': {
+          'title': "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
+          'body': "⚪ Pong: " + _0x4950ba + "ms\n📅 *Date:* " + _0x4c687e + "\n⏰ *Time:* " + _0xb5466b,
+          'thumbnailUrl': "https://files.catbox.moe/7n8oyx.jpg",
+          'mediaType': 0x1,
+          'renderSmallThumbnail': true
         }
-
-        // Tuma kwenye channel (View-Only Newsletter)
-        await zk.sendMessage(CHANNEL_JID, msg);
-
-        // Optional: wajulishe kuwa imehifadhiwa
-        repondre("✅ Ujumbe umehifadhiwa kwenye channel.");
-      } catch (error) {
-        console.error("Error processing the message:", error);
-        repondre("⚠️ Tatizo limetokea wakati wa kutuma kwenye channel.");
       }
-    } else {
-      repondre("🔖 Tafadhali jibu (reply) ujumbe unaotaka kuhifadhi.");
-    }
+    }, {
+      'quoted': _0x5d2f0c
+    });
+  } catch (_0x1149fe) {
+    console.log("❌ Ping Command Error: " + _0x1149fe);
+    repondre("❌ Error: " + _0x1149fe);
   }
-);
-            
+});
+  
