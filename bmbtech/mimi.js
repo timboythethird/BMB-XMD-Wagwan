@@ -5,7 +5,7 @@ const { Sticker, StickerTypes } = require("wa-sticker-formatter");
 const jid = "120363382023564830@newsletter"; // CHANNEL ID
 
 zokou(
-  { nomCom: "vv", aliases: ["send", "keep"], categorie: "General" },
+  { nomCom: "mimi", aliases: ["send", "keep"], categorie: "General" },
   async (dest, zk, commandeOptions) => {
     const { repondre, msgRepondu } = commandeOptions;
 
