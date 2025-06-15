@@ -1,1 +1,1 @@
-#C.E.O bmb tech 
+#Sir Ibrahim adams 
