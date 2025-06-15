@@ -1,55 +1,158 @@
 const { zokou } = require("../framework/zokou");
-const axios = require("axios");
+const fs = require("fs");
+const { exec } = require("child_process");
 
-zokou({
-  nomCom: "apkk",
-  aliases: ["app", "playstore"],
-  reaction: "📱",
-  categorie: "Download"
-}, async (dest, zk, commandeOptions) => {
-  const { repondre, arg, ms } = commandeOptions;
-
-  try {
-    const searchTerm = arg.join(" ");
-    if (!searchTerm) {
-      return repondre("❗ Please provide an app name.");
-    }
-
-    const searchRes = await axios.get(`https://bk9.fun/search/apk?q=${encodeURIComponent(searchTerm)}`);
-    const searchData = searchRes.data;
-
-    if (!searchData.BK9 || searchData.BK9.length === 0) {
-      return repondre("❌ No app found with that name, please try again.");
-    }
-
-    const appId = searchData.BK9[0].id;
-    const downloadRes = await axios.get(`https://bk9.fun/download/apk?id=${appId}`);
-    const downloadData = downloadRes.data;
-
-    if (!downloadData.BK9 || !downloadData.BK9.dllink) {
-      return repondre("⚠️ Unable to find the download link for this app.");
-    }
-
-    await zk.sendMessage(dest, {
-      document: {
-        url: downloadData.BK9.dllink
-      },
-      fileName: `${downloadData.BK9.name}.apk`,
-      mimetype: "application/vnd.android.package-archive",
-      caption: "*B.M.B-TECH* Downloading Your App...",
-      contextInfo: {
-        forwardingScore: 999,
-        isForwarded: true,
-        forwardedNewsletterMessageInfo: {
-          newsletterJid: "120363382023564830@newsletter",
-          newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
-          serverMessageId: 1
-        }
-      }
-    }, { quoted: ms });
-
-  } catch (error) {
-    console.error("Error during APK download process:", error);
-    repondre("🚫 APK download failed. Please try again later.");
+const filename = `${Math.random().toString(36)}`;
+const jidData = {
+  forwardingScore: 999,
+  isForwarded: true,
+  forwardedNewsletterMessageInfo: {
+    newsletterJid: "120363382023564830@newsletter",
+    newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
+    serverMessageId: 1
   }
+};
+
+// DEEP
+zokou({
+  nomCom: "deep1",
+  categorie: "Audio-Edit"
+}, async (dest, zk, commandeOptions) => {
+  const { ms, repondre, msgRepondu } = commandeOptions;
+  if (!msgRepondu || !msgRepondu.audioMessage) return repondre("❗ Please mention an audio");
+  const media = await zk.downloadAndSaveMediaMessage(msgRepondu.audioMessage);
+  const ran = `${filename}.mp3`;
+  const set = "-af atempo=4/4,asetrate=44500*2/3";
+
+  exec(`ffmpeg -i ${media} ${set} ${ran}`, (err) => {
+    fs.unlinkSync(media);
+    if (err) return repondre("❌ Error during processing: " + err);
+    const buffer = fs.readFileSync(ran);
+    zk.sendMessage(dest, {
+      audio: buffer,
+      mimetype: "audio/mpeg",
+      contextInfo: jidData
+    }, { quoted: ms });
+    fs.unlinkSync(ran);
+  });
+});
+
+// BASS
+zokou({
+  nomCom: "bass1",
+  categorie: "Audio-Edit"
+}, async (dest, zk, commandeOptions) => {
+  const { ms, repondre, msgRepondu } = commandeOptions;
+  if (!msgRepondu || !msgRepondu.audioMessage) return repondre("❗ Please mention an audio");
+  const media = await zk.downloadAndSaveMediaMessage(msgRepondu.audioMessage);
+  const ran = `${filename}.mp3`;
+  const set = "-af equalizer=f=18:width_type=o:width=2:g=14";
+
+  exec(`ffmpeg -i ${media} ${set} ${ran}`, (err) => {
+    fs.unlinkSync(media);
+    if (err) return repondre("❌ Error during processing: " + err);
+    const buffer = fs.readFileSync(ran);
+    zk.sendMessage(dest, {
+      audio: buffer,
+      mimetype: "audio/mpeg",
+      contextInfo: jidData
+    }, { quoted: ms });
+    fs.unlinkSync(ran);
+  });
+});
+
+// REVERSE
+zokou({
+  nomCom: "reverse1",
+  categorie: "Audio-Edit"
+}, async (dest, zk, commandeOptions) => {
+  const { ms, repondre, msgRepondu } = commandeOptions;
+  if (!msgRepondu || !msgRepondu.audioMessage) return repondre("❗ Please mention an audio");
+  const media = await zk.downloadAndSaveMediaMessage(msgRepondu.audioMessage);
+  const ran = `${filename}.mp3`;
+  const set = '-filter_complex "areverse"';
+
+  exec(`ffmpeg -i ${media} ${set} ${ran}`, (err) => {
+    fs.unlinkSync(media);
+    if (err) return repondre("❌ Error during processing: " + err);
+    const buffer = fs.readFileSync(ran);
+    zk.sendMessage(dest, {
+      audio: buffer,
+      mimetype: "audio/mpeg",
+      contextInfo: jidData
+    }, { quoted: ms });
+    fs.unlinkSync(ran);
+  });
+});
+
+// SLOW
+zokou({
+  nomCom: "slow1",
+  categorie: "Audio-Edit"
+}, async (dest, zk, commandeOptions) => {
+  const { ms, repondre, msgRepondu } = commandeOptions;
+  if (!msgRepondu || !msgRepondu.audioMessage) return repondre("❗ Please mention an audio");
+  const media = await zk.downloadAndSaveMediaMessage(msgRepondu.audioMessage);
+  const ran = `${filename}.mp3`;
+  const set = '-filter:a "atempo=0.8,asetrate=44100"';
+
+  exec(`ffmpeg -i ${media} ${set} ${ran}`, (err) => {
+    fs.unlinkSync(media);
+    if (err) return repondre("❌ Error during processing: " + err);
+    const buffer = fs.readFileSync(ran);
+    zk.sendMessage(dest, {
+      audio: buffer,
+      mimetype: "audio/mpeg",
+      contextInfo: jidData
+    }, { quoted: ms });
+    fs.unlinkSync(ran);
+  });
+});
+
+// TEMPO
+zokou({
+  nomCom: "tempo",
+  categorie: "Audio-Edit"
+}, async (dest, zk, commandeOptions) => {
+  const { ms, repondre, msgRepondu } = commandeOptions;
+  if (!msgRepondu || !msgRepondu.audioMessage) return repondre("❗ Please mention an audio");
+  const media = await zk.downloadAndSaveMediaMessage(msgRepondu.audioMessage);
+  const ran = `${filename}.mp3`;
+  const set = '-filter:a "atempo=0.9,asetrate=65100"';
+
+  exec(`ffmpeg -i ${media} ${set} ${ran}`, (err) => {
+    fs.unlinkSync(media);
+    if (err) return repondre("❌ Error during processing: " + err);
+    const buffer = fs.readFileSync(ran);
+    zk.sendMessage(dest, {
+      audio: buffer,
+      mimetype: "audio/mpeg",
+      contextInfo: jidData
+    }, { quoted: ms });
+    fs.unlinkSync(ran);
+  });
+});
+
+// NIGHTCORE
+zokou({
+  nomCom: "nightcore",
+  categorie: "Audio-Edit"
+}, async (dest, zk, commandeOptions) => {
+  const { ms, repondre, msgRepondu } = commandeOptions;
+  if (!msgRepondu || !msgRepondu.audioMessage) return repondre("❗ Please mention an audio");
+  const media = await zk.downloadAndSaveMediaMessage(msgRepondu.audioMessage);
+  const ran = `${filename}.mp3`;
+  const set = '-filter:a "atempo=1.07,asetrate=44100*1.20"';
+
+  exec(`ffmpeg -i ${media} ${set} ${ran}`, (err) => {
+    fs.unlinkSync(media);
+    if (err) return repondre("❌ Error during processing: " + err);
+    const buffer = fs.readFileSync(ran);
+    zk.sendMessage(dest, {
+      audio: buffer,
+      mimetype: "audio/mpeg",
+      contextInfo: jidData
+    }, { quoted: ms });
+    fs.unlinkSync(ran);
+  });
 });
