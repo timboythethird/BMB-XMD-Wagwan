@@ -1,8 +1,16 @@
 const { zokou } = require(__dirname + "/../framework/zokou");
-const { format, styletext } = require(__dirname + "/../framework/mesfonctions");
+const { styletext } = require(__dirname + "/../framework/mesfonctions");
 const os = require('os');
 const moment = require("moment-timezone");
 const s = require(__dirname + '/../set');
+
+// ✅ Function mpya ya format ikiwa ndani hapa hapa
+function format(bytes) {
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+  if (bytes === 0 || !bytes) return '0 B';
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+}
 
 zokou({
   nomCom: "menu7",
@@ -65,6 +73,6 @@ zokou({
     }, { quoted: ms });
   } catch (err) {
     console.error("🥵🥵 Menu erreur", err);
-    repondre("🥵🥵 Menu erreur " + err);
+    repondre("🥵🥵 Menu erreur " + err.message);
   }
 });
