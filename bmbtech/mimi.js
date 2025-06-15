@@ -2,7 +2,7 @@ const { zokou } = require("../framework/zokou");
 const axios = require("axios");
 
 zokou({
-  nomCom: "apk",
+  nomCom: "apkk",
   aliases: ["app", "playstore"],
   reaction: "📱",
   categorie: "Download"
