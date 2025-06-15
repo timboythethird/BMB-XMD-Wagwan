@@ -1,48 +1,50 @@
-const { zokou } = require("../framework/zokou");
-const { getContentType, downloadMediaMessage } = require("@whiskeysockets/baileys");
+const { zokou } = require("../framework/zokou") 
+const { getContentType } = require("@whiskeysockets/baileys")
 
-const jid = "120363382023564830@newsletter"; // Jid ya channel
+const jid = "120363382023564830@newsletter"; // JID ya channel yako
 
-zokou(
-  { nomCom: "mimi", aliases: ["send", "keep"], categorie: "General" },
-  async (dest, zk, commandeOptions) => {
-    const { repondre, msgRepondu, ms } = commandeOptions;
+zokou({ nomCom: "mimi", aliases: ["send", "keep"], categorie: "General" }, async (dest, zk, commandeOptions) => {
+  const { repondre, msgRepondu, superUser } = commandeOptions;
 
-    if (!msgRepondu) return repondre("❗Reply a view once image or video to use this command.");
-
+  if (msgRepondu) {
+    console.log(msgRepondu);
+    let msg;
     try {
-      const viewOnceMsg = msgRepondu.message?.viewOnceMessageV2 || msgRepondu.message?.viewOnceMessage;
-      if (!viewOnceMsg) return repondre("❌That is not a view once message.");
-
-      const realMsg = viewOnceMsg.message;
-      const type = getContentType(realMsg);
-
-      const mediaBuffer = await zk.downloadMediaMessage(
-        { message: msgRepondu.message },
-        "buffer"
-      );
-
-      const caption = `𝗩𝗜𝗘𝗪 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 🔥\nhttps://whatsapp.com/channel/0029VaoadqE84OmC8xlVsQ1M`;
-
-      if (type === "imageMessage") {
-        await zk.sendMessage(jid, {
-          image: mediaBuffer,
-          caption
-        }, { quoted: ms });
-      } else if (type === "videoMessage") {
-        await zk.sendMessage(jid, {
-          video: mediaBuffer,
-          caption
-        }, { quoted: ms });
+      // Check for different message types and handle accordingly
+      if (msgRepondu.imageMessage) {
+        const media = await zk.downloadAndSaveMediaMessage(msgRepondu.imageMessage);
+        msg = { image: { url: media }, caption: msgRepondu.imageMessage.caption };
+      } else if (msgRepondu.videoMessage) {
+        const media = await zk.downloadAndSaveMediaMessage(msgRepondu.videoMessage);
+        msg = { video: { url: media }, caption: msgRepondu.videoMessage.caption };
+      } else if (msgRepondu.audioMessage) {
+        const media = await zk.downloadAndSaveMediaMessage(msgRepondu.audioMessage);
+        msg = { audio: { url: media }, mimetype: 'audio/mp4' };
+      } else if (msgRepondu.stickerMessage) {
+        const media = await zk.downloadAndSaveMediaMessage(msgRepondu.stickerMessage);
+        const stickerMess = new Sticker(media, {
+          pack: 'B.M.B-TECH',
+          type: StickerTypes.CROPPED,
+          categories: ["🤩", "🎉"],
+          id: "12345",
+          quality: 70,
+          background: "transparent",
+        });
+        const stickerBuffer2 = await stickerMess.toBuffer();
+        msg = { sticker: stickerBuffer2 };
       } else {
-        return repondre("❌Unsupported view once type.");
+        msg = { text: msgRepondu.conversation };
       }
 
-      return repondre("✅ View once media sent to channel with caption.");
+      // Send the message
+      await zk.sendMessage(jid, msg); // Hapa nimeweka jid badala ya dest
 
-    } catch (e) {
-      console.error("VV ERROR:", e);
-      return repondre("❌ Error while processing the view once message.");
+    } catch (error) {
+      console.error("Error processing the message:", error);
+      repondre('An error occurred while processing your request.');
     }
+
+  } else {
+    repondre('Mention the message that you want to save');
   }
-);
+});
