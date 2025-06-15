@@ -1,97 +1,74 @@
-const { zokou } = require("../framework/zokou");
-const conf = require(__dirname + "/../set");
-
-const newsletterContext = {
-  contextInfo: {
-    forwardingScore: 999,
-    isForwarded: true,
-    forwardedNewsletterMessageInfo: {
-      newsletterJid: "120363382023564830@newsletter",
-      newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
-      serverMessageId: 1
+const {
+  zokou
+} = require(__dirname + "/../framework/zokou");
+const {
+  format,
+  styletext
+} = require(__dirname + "/../framework/mesfonctions");
+const os = require('os');
+const moment = require("moment-timezone");
+const s = require(__dirname + '/../set');
+zokou({
+  'nomCom': "menu7",
+  'categorie': "General"
+}, async (_0x37f915, _0x3cbee8, _0x32e2b0) => {
+  let {
+    ms: _0x47ca75,
+    repondre: _0x3ebe83
+  } = _0x32e2b0;
+  let {
+    cm: _0x198829
+  } = require(__dirname + "/../framework//zokou");
+  var _0x5a4d67 = {};
+  var _0x4b070e = "public";
+  if (s.MODE.toLocaleLowerCase() != 'oui') {
+    _0x4b070e = 'privé';
+  }
+  var _0x22cf3a = {
+    'General': '🌐',
+    'Logo': '🎨',
+    'Hentai': '🔥',
+    'Weeb': '🌸',
+    'Recherche': '🔍',
+    'Conversion': '🌟',
+    'Groupe': '♻️',
+    'Autre': '🪖'
+  };
+  _0x198829.map(async (_0x36dc5a, _0x5c2a43) => {
+    if (!_0x5a4d67[_0x36dc5a.categorie]) {
+      _0x5a4d67[_0x36dc5a.categorie] = [];
+    }
+    _0x5a4d67[_0x36dc5a.categorie].push(_0x36dc5a.nomCom);
+  });
+  const _0x1f93ac = moment(moment()).format("HH:MM:SS");
+  moment.tz.setDefault("asia/karachi ").locale('id');
+  const _0x33c592 = moment.tz('asia/karachi').format("DD/MM/YYYY");
+  console.log("date" + _0x33c592);
+  console.log("temps " + _0x1f93ac);
+  let _0x6acea8 = "  ╩═══ * Ƶ𝓞ｋØ𝓊 * ╩═══\n\n";
+  _0x6acea8 += "\n\n╔════---------\n\n║    Préfixe : " + s.PREFIXE + "\n\n║    Owner : " + s.OWNER_NAME + "    \n\n║    Mode : " + _0x4b070e + "\n\n║    Commandes:" + _0x198829.length + "\n\n║    Date : " + _0x33c592 + "\n\n║    Heure : " + _0x1f93ac + "\n\n║    Mémoire : " + format(os.totalmem() - os.freemem()) + '/' + format(os.totalmem()) + "\n\n║    Plateforme : " + os.platform() + "\n\n║    Développeurs : Djalega++||Luffy\n\n╚════--------------- \n\n";
+  for (const _0x12d9c4 in _0x5a4d67) {
+    if (!_0x22cf3a[_0x12d9c4]) {
+      _0x22cf3a[_0x12d9c4] = '💞';
+    }
+    _0x6acea8 += _0x22cf3a[_0x12d9c4] + " ══ *" + _0x12d9c4 + " * ══ " + _0x22cf3a[_0x12d9c4] + "\n";
+    for (const _0x19eae6 of _0x5a4d67[_0x12d9c4]) {
+      _0x6acea8 += "\t  ║ " + _0x19eae6 + '' + " \n";
     }
   }
-};
-
-// PROFILE COMMAND
-zokou({
-  nomCom: "profile4",
-  aliases: ["pp", "whois"],
-  desc: "to generate profile picture",
-  categorie: "Fun"
-}, async (dest, zk, commandeOptions) => {
-  const { ms, repondre, auteurMessage, nomAuteurMessage, msgRepondu, auteurMsgRepondu } = commandeOptions;
-  let jid = msgRepondu ? auteurMsgRepondu : auteurMessage;
-  let nom = msgRepondu ? "@" + auteurMsgRepondu.split("@")[0] : nomAuteurMessage;
-
+  var _0x2f54f3 = s.IMAGE_MENU;
   try {
-    let ppUrl;
-    try {
-      ppUrl = await zk.profilePictureUrl(jid, 'image');
-    } catch (error) {
-      ppUrl = conf.URL;
-    }
-
-    let status;
-    try {
-      status = await zk.fetchStatus(jid);
-    } catch {
-      status = { status: "About not accessible due to user privacy" };
-    }
-
-    await zk.sendMessage(dest, {
-      image: { url: ppUrl },
-      caption: `Name: ${nom}\nAbout:\n${status.status}`,
-      mentions: msgRepondu ? [auteurMsgRepondu] : [],
-      ...newsletterContext
-    }, { quoted: ms });
-
-  } catch (error) {
-    console.error('Unexpected error in profile command:', error);
-  }
-});
-
-// PROFILE2 COMMAND
-zokou({
-  nomCom: "profile5",
-  aliases: ["pp2", "whois2"],
-  desc: "to generate business profile picture",
-  categorie: "Fun"
-}, async (dest, zk, commandeOptions) => {
-  const { ms, repondre, auteurMessage, nomAuteurMessage, msgRepondu, auteurMsgRepondu } = commandeOptions;
-  let jid = msgRepondu ? auteurMsgRepondu : auteurMessage;
-  let nom = msgRepondu ? "@" + auteurMsgRepondu.split("@")[0] : nomAuteurMessage;
-
-  try {
-    let ppUrl;
-    try {
-      ppUrl = await zk.profilePictureUrl(jid, 'image');
-    } catch {
-      ppUrl = conf.URL;
-    }
-
-    let status;
-    try {
-      status = await zk.fetchStatus(jid);
-    } catch {
-      status = { status: "About not accessible due to user privacy" };
-    }
-
-    let businessProfile;
-    try {
-      businessProfile = await zk.getBusinessProfile(jid);
-    } catch {
-      businessProfile = { description: "No business profile available", category: "Unknown" };
-    }
-
-    await zk.sendMessage(dest, {
-      image: { url: ppUrl },
-      caption: `Name: ${nom}\nAbout:\n${status.status}\nBusiness Description: ${businessProfile.description}\nBusiness Category: ${businessProfile.category}`,
-      mentions: msgRepondu ? [auteurMsgRepondu] : [],
-      ...newsletterContext
-    }, { quoted: ms });
-
-  } catch (error) {
-    console.error('Unexpected error in profile2 command:', error);
+    _0x3cbee8.sendMessage(_0x37f915, {
+      'image': {
+        'url': _0x2f54f3
+      },
+      'caption': _0x6acea8,
+      'footer': "by Djalega++"
+    }, {
+      'quoted': _0x47ca75
+    });
+  } catch (_0x129ae9) {
+    console.log("🥵🥵 Menu erreur " + _0x129ae9);
+    _0x3ebe83("🥵🥵 Menu erreur " + _0x129ae9);
   }
 });
