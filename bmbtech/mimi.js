@@ -1,86 +1,95 @@
-const { zokou } = require(__dirname + "/../framework/zokou");
-const { styletext } = require(__dirname + "/../framework/mesfonctions");
-const os = require('os');
+const { zokou } = require('../framework/zokou');
+const {addOrUpdateDataInAlive , getDataFromAlive} = require('../bdd/alive')
 const moment = require("moment-timezone");
-const s = require(__dirname + '/../set');
+const s = require(__dirname + "/../set");
 
-function format(bytes) {
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-  if (!bytes) return '0 B';
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return (bytes / Math.pow(1024, i)).toFixed(2) + ' ' + sizes[i];
+zokou(
+    {
+        nomCom : 'alive8',
+        categorie : 'General'
+        
+    },async (dest,zk,commandeOptions) => {
+
+ const {ms , arg, repondre,superUser} = commandeOptions;
+
+ const data = await getDataFromAlive();
+
+ if (!arg || !arg[0] || arg.join('') === '') {
+
+    if(data) {
+       
+        const {message , lien} = data;
+
+
+        var mode = "public";
+        if ((s.MODE).toLocaleLowerCase() != "yes") {
+            mode = "private";
+        }
+      
+    
+     
+    moment.tz.setDefault('Etc/GMT');
+
+// Créer une date et une heure en GMT
+const temps = moment().format('HH:mm:ss');
+const date = moment().format('DD/MM/YYYY');
+
+    const alivemsg = `
+*Owner* : ${s.OWNER_NAME}
+*Mode* : ${mode}
+*Date* : ${date}
+*Hours(GMT)* : ${temps}
+
+ ${message}
+ 
+ 
+ *BMW-MD-WABOT*`
+
+ if (lien.match(/\.(mp4|gif)$/i)) {
+    try {
+        zk.sendMessage(dest, { video: { url: lien }, caption: alivemsg }, { quoted: ms });
+    }
+    catch (e) {
+        console.log("🥵🥵 Menu erreur " + e);
+        repondre("🥵🥵 Menu erreur " + e);
+    }
+} 
+// Checking for .jpeg or .png
+else if (lien.match(/\.(jpeg|png|jpg)$/i)) {
+    try {
+        zk.sendMessage(dest, { image: { url: lien }, caption: alivemsg }, { quoted: ms });
+    }
+    catch (e) {
+        console.log("🥵🥵 Menu erreur " + e);
+        repondre("🥵🥵 Menu erreur " + e);
+    }
+} 
+else {
+    
+    repondre(alivemsg);
+    
 }
 
-zokou({
-  nomCom: "menu7",
-  categorie: "General"
-}, async (dest, zk, commandeOptions) => {
-  const { ms, repondre } = commandeOptions;
+    } else {
+        if(!superUser) { repondre("there is no alive for this bot") ; return};
 
-  // Hakikisha cm ipo na si undefined
-  let { cm } = require(__dirname + "/../framework/zokou");
-  if (!cm || !Array.isArray(cm)) {
-    repondre("❌ Error: command list (cm) not found or invalid!");
-    return;
-  }
+      await   repondre("You have not yet saved your alive, to do this;  enter after alive your message and your image or video link in this context: .alive message;lien");
+         repondre("don't do fake thinks :)")
+     }
+ } else {
 
-  // Hakikisha s.MODE ni string kabla ya kutumia toLowerCase
-  let mode = (typeof s.MODE === 'string' && s.MODE.toLowerCase() === 'oui') ? 'public' : 'privé';
+    if(!superUser) { repondre ("Only the owner can  modify the alive") ; return};
 
-  const emojis = {
-    'General': '🌐',
-    'Logo': '🎨',
-    'Hentai': '🔥',
-    'Weeb': '🌸',
-    'Recherche': '🔍',
-    'Conversion': '🌟',
-    'Groupe': '♻️',
-    'Autre': '🪖'
-  };
+  
+    const texte = arg.join(' ').split(';')[0];
+    const tlien = arg.join(' ').split(';')[1]; 
 
-  let commandCategories = {};
-  cm.forEach(cmd => {
-    const cat = cmd.categorie || 'Autre';
-    const nom = cmd.nomCom || 'unknown';
-    if (!commandCategories[cat]) {
-      commandCategories[cat] = [];
-    }
-    commandCategories[cat].push(nom);
-  });
 
-  moment.tz.setDefault("Asia/Karachi").locale('fr');
-  const currentTime = moment().format("HH:mm:ss");
-  const currentDate = moment().format("DD/MM/YYYY");
+    
+await addOrUpdateDataInAlive(texte , tlien)
 
-  let menuText = "╩═══ * Ƶ𝓞ｋØ𝓊 * ╩═══\n\n";
-  menuText += `╔════---------\n
-║    Préfixe : ${s.PREFIXE || 'N/A'}
-║    Owner : ${s.OWNER_NAME || 'N/A'}
-║    Mode : ${mode}
-║    Commandes: ${cm.length}
-║    Date : ${currentDate}
-║    Heure : ${currentTime}
-║    Mémoire : ${format(os.totalmem() - os.freemem())}/${format(os.totalmem())}
-║    Plateforme : ${os.platform()}
-║    Développeurs : Djalega++ || Luffy
-╚════---------------\n\n`;
+repondre(' Holla🥴, *TOXIC-LOVER-MD* is alive just like you gee. ')
 
-  for (const categorie in commandCategories) {
-    const icon = emojis[categorie] || '💞';
-    menuText += `${icon} ══ *${categorie}* ══ ${icon}\n`;
-    commandCategories[categorie].forEach(cmd => {
-      menuText += `\t  ║ ${cmd}\n`;
+}
     });
-  }
-
-  try {
-    await zk.sendMessage(dest, {
-      image: { url: s.IMAGE_MENU || '' },
-      caption: menuText,
-      footer: "by Djalega++"
-    }, { quoted: ms });
-  } catch (err) {
-    console.error("🥵🥵 Menu erreur", err);
-    repondre("🥵🥵 Menu erreur " + (err.message || err));
-  }
-});
+  
