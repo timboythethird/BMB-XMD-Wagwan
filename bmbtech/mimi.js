@@ -1,7 +1,6 @@
-const { zokou } = require('../framework/zokou');
-const fs = require('fs');
-const getFBInfo = require("@xaviabot/fb-downloader");
-const { default: axios } = require('axios');
+const { zokou } = require("../framework/zokou");
+const { getAllSudoNumbers, isSudoTableNotEmpty } = require("../bdd/sudo");
+const conf = require("../set");
 
 const newsletterContext = {
   contextInfo: {
@@ -15,116 +14,60 @@ const newsletterContext = {
   }
 };
 
-// IG DOWNLOAD
-zokou({ nomCom: "igdl", categorie: "Download" }, async (dest, zk, commandeOptions) => {
-  const { ms, repondre, arg } = commandeOptions;
-  let link = arg.join(' ');
+zokou({
+  nomCom: "🤙",
+  categorie: "General",
+  reaction: "🤙"
+}, async (_0x1b06c5, _0x54bb8b, _0x2358bf) => {
+  const { ms: _0x2aecc0, mybotpic: _0x43a6e2, repondre } = _0x2358bf;
 
-  if (!arg[0]) return repondre('Veillez insérer un lien video instagramme');
+  const _0x21b56d = [
+    { nom: "B.M.B-TECH OWNER", numero: "255767862457" },
+    { nom: "DEPLOMENT SERVICES", numero: "254736761160" },
+    { nom: "hacker", numero: "254799056874" },
+    { nom: "codding teacher", numero: "254794146821" },
+    { nom: "tech champ", numero: "254702221671" },
+    { nom: "dev marisel", numero: "254740007567" },
+    { nom: "pk", numero: "254785392165" },
+    { nom: "", numero: "" },
+    { nom: "", numero: "" },
+    { nom: "", numero: "" },
+    { nom: "", numero: "" },
+    { nom: "🤕", numero: "Load...." },
+    { nom: "", numero: "" },
+    { nom: "🤕", numero: "load...." }
+  ];
+
+  let _0x2d5c7e = "Hello👋  *I'm B.M.B-TECH Wa Bot* \nThe Following Numbers Are For   *B.M.B-TECH* Agents, \nYou Can Ask Them Anything Regarding B.M.B-TECH\nFollow Our Channel For More Tech :https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z \n*KEEP USING B.M.B-TECH*:\n\n";
+
+  for (const _0x14eeec of _0x21b56d) {
+    _0x2d5c7e += "----------------\n(●) " + _0x14eeec.nom + " : https://wa.me/" + _0x14eeec.numero + "\n";
+  }
 
   try {
-    let igvid = await axios('https://api.vihangayt.com/downloader/ig?url=' + link);
-    let media = igvid.data.data.data[0];
-    
-    if (media.type === 'video') {
-      zk.sendMessage(dest, {
-        video: { url: media.url },
-        caption: "ig video downloader powered by *B.M.B-TECH*",
-        gifPlayback: false,
+    const _0x11d31d = await _0x43a6e2();
+
+    if (_0x11d31d.match(/\.(mp4|gif)$/i)) {
+      await _0x54bb8b.sendMessage(_0x1b06c5, {
+        video: { url: _0x11d31d },
+        caption: _0x2d5c7e,
         ...newsletterContext
-      }, { quoted: ms });
+      }, { quoted: _0x2aecc0 });
+
+    } else if (_0x11d31d.match(/\.(jpeg|png|jpg)$/i)) {
+      await _0x54bb8b.sendMessage(_0x1b06c5, {
+        image: { url: _0x11d31d },
+        caption: _0x2d5c7e,
+        ...newsletterContext
+      }, { quoted: _0x2aecc0 });
+
     } else {
-      zk.sendMessage(dest, {
-        image: { url: media.url },
-        caption: "ig image downloader powered by *B.M.B-TECH*",
-        ...newsletterContext
-      });
+      await repondre(_0x11d31d);
+      await repondre("link error");
     }
 
-  } catch (e) {
-    repondre("erreur survenue lors du téléchargement \n " + e);
-  }
-});
-
-// FACEBOOK DOWNLOAD
-zokou({ nomCom: "fb11", categorie: "Download", reaction: "📽️" }, async (dest, zk, commandeOptions) => {
-  const { repondre, ms, arg } = commandeOptions;
-  if (!arg[0]) return repondre('Insert a public facebook video link!');
-
-  try {
-    getFBInfo(arg.join(" ")).then(result => {
-      let caption = `titre: ${result.title}\nLien: ${result.url}`;
-      zk.sendMessage(dest, {
-        image: { url: result.thumbnail },
-        caption: caption,
-        ...newsletterContext
-      }, { quoted: ms });
-
-      zk.sendMessage(dest, {
-        video: { url: result.hd },
-        caption: 'facebook video downloader powered by bmb tech',
-        ...newsletterContext
-      }, { quoted: ms });
-
-    }).catch(error => {
-      console.log("Error:", error);
-      repondre('try fb2 on this link');
-    });
-
-  } catch (error) {
-    console.error('Erreur lors du téléchargement de la vidéo :', error);
-    repondre('Erreur lors du téléchargement de la vidéo.');
-  }
-});
-
-// TIKTOK DOWNLOAD
-zokou({ nomCom: "tiktok", categorie: "Download", reaction: "🎵" }, async (dest, zk, commandeOptions) => {
-  const { arg, ms, prefixe, repondre } = commandeOptions;
-  if (!arg[0]) return repondre(`how to use this command:\n ${prefixe}tiktok tiktok_video_link`);
-
-  try {
-    let data = await axios.get('https://api.onesytex.my.id/api/tiktok-dl=' + arg.join(" "));
-    let tik = data.data.data;
-    let caption = `Author: ${tik.author}\nDescription: ${tik.desc}`;
-
-    zk.sendMessage(dest, {
-      video: { url: tik.links[0].a },
-      caption: caption,
-      ...newsletterContext
-    }, { quoted: ms });
-
-  } catch (error) {
-    repondre("TikTok download error:\n" + error);
-  }
-});
-
-// FACEBOOK DOWNLOAD SD (FB2)
-zokou({ nomCom: "fb21", categorie: "Download", reaction: "📽️" }, async (dest, zk, commandeOptions) => {
-  const { repondre, ms, arg } = commandeOptions;
-  if (!arg[0]) return repondre('Insert a public facebook video link!');
-
-  try {
-    getFBInfo(arg.join(" ")).then(result => {
-      let caption = `titre: ${result.title}\nLien: ${result.url}`;
-      zk.sendMessage(dest, {
-        image: { url: result.thumbnail },
-        caption: caption,
-        ...newsletterContext
-      }, { quoted: ms });
-
-      zk.sendMessage(dest, {
-        video: { url: result.sd },
-        caption: 'facebook video downloader powered by bmb tech',
-        ...newsletterContext
-      }, { quoted: ms });
-
-    }).catch(error => {
-      console.log("Error:", error);
-      repondre(error);
-    });
-
-  } catch (error) {
-    console.error('Erreur lors du téléchargement de la vidéo :', error);
-    repondre('Erreur lors du téléchargement de la vidéo.');
+  } catch (err) {
+    console.log("🥵🥵 Menu erreur " + err);
+    await repondre("🥵🥵 Menu erreur " + err);
   }
 });
