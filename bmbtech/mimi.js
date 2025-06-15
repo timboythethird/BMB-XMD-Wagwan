@@ -1,77 +1,77 @@
-const { zokou } = require("../framework/zokou");
-const { Catbox } = require("node-catbox");
-const fs = require('fs-extra');
-const { downloadAndSaveMediaMessage } = require('@whiskeysockets/baileys');
+const { zokou } = require(__dirname + "/../framework/zokou");
 
-// Initialize Catbox
-const catbox = new Catbox();
-
-// Function to upload a file to Catbox and return the URL
-async function uploadToCatbox(filePath) {
-  if (!fs.existsSync(filePath)) {
-    throw new Error("File does not exist");
-  }
-  try {
-    const uploadResult = await catbox.uploadFile({ path: filePath });
-    if (uploadResult) {
-      return uploadResult;
-    } else {
-      throw new Error("Error retrieving file link");
-    }
-  } catch (error) {
-    throw new Error(String(error));
-  }
+// Function to convert text to fancy uppercase font
+const toFancyUppercaseFont = (text) => {
+    const fonts = {
+        'A': '𝐀', 'B': '𝐁', 'C': '𝐂', 'D': '𝐃', 'E': '𝐄', 'F': '𝐅', 'G': '𝐆', 'H': '𝐇', 'I': '𝐈', 'J': '𝐉', 'K': '𝐊', 'L': '𝐋', 'M': '𝐌',
+        'N': '𝐍', 'O': '𝐎', 'P': '𝐏', 'Q': '𝐐', 'R': '𝐑', 'S': '𝐒', 'T': '𝐓', 'U': '𝐔', 'V': '𝐕', 'W': '𝐖', 'X': '𝐗', 'Y': '𝐘', 'Z': '𝐙'
+    };
+    return typeof text === 'string' ? text.split('').map(char => fonts[char] || char).join('') : text;
 }
 
-// Command to upload image, video, or audio file
+// Function to convert text to fancy lowercase font
+const toFancyLowercaseFont = (text) => {
+    const fonts = {
+        'a': '𝚊', 'b': '𝚋', 'c': '𝚌', 'd': '𝚍', 'e': '𝚎', 'f': '𝚏', 'g': '𝚐', 'h': '𝚑', 'i': '𝚒', 'j': '𝚓', 'k': '𝚔', 'l': '𝚕', 'm': '𝚖',
+        'n': '𝚗', 'o': '𝚘', 'p': '𝚙', 'q': '𝚚', 'r': '𝚛', 's': '𝚜', 't': '𝚝', 'u': '𝚞', 'v': '𝚟', 'w': '𝚠', 'x': '𝚡', 'y': '𝚢', 'z': '𝚣'
+    };
+    return typeof text === 'string' ? text.split('').map(char => fonts[char] || char).join('') : text;
+}
+
 zokou({
-  'nomCom': 'url4',
-  'categorie': "General",
-  'reaction': '👨🏿‍💻'
-}, async (groupId, client, context) => {
-  const { msgRepondu, repondre } = context;
+    nomCom: "help1",
+    reaction: "🤦",
+    aliases: ["panelist", "commandlist", "cmdlist", "list"],
+    desc: "Get bot command list.",
+    categorie: "universal"
+}, async (dest, zk, context) => {
+    const { respond, prefix, nomAuteurMessage } = context;
+    const commands = require(__dirname + "/../framework/zokou").cm;
 
-  if (!msgRepondu) {
-    return repondre("Please mention an image, video, or audio.");
-  }
+    let menu = '𝙱.𝙼.𝙱-𝚇𝙼𝙳 ʟɪsᴛ\n\n';
+    let zokouList = [];
 
-  let mediaPath;
-
-  if (msgRepondu.videoMessage) {
-    mediaPath = await client.downloadAndSaveMediaMessage(msgRepondu.videoMessage);
-  } else if (msgRepondu.gifMessage) {
-    mediaPath = await client.downloadAndSaveMediaMessage(msgRepondu.gifMessage);
-  } else if (msgRepondu.stickerMessage) {
-    mediaPath = await client.downloadAndSaveMediaMessage(msgRepondu.stickerMessage);
-  } else if (msgRepondu.documentMessage) {
-    mediaPath = await client.downloadAndSaveMediaMessage(msgRepondu.documentMessage);
-  } else if (msgRepondu.imageMessage) {
-    mediaPath = await client.downloadAndSaveMediaMessage(msgRepondu.imageMessage);
-  } else if (msgRepondu.audioMessage) {
-    mediaPath = await client.downloadAndSaveMediaMessage(msgRepondu.audioMessage);
-  } else {
-    return repondre("Please mention an image, video, or audio.");
-  }
-
-  try {
-    const fileUrl = await uploadToCatbox(mediaPath);
-    fs.unlinkSync(mediaPath);
-
-    // Tuma response ukiwa na forwardedMessage (jid)
-    await client.sendMessage(groupId, {
-      text: fileUrl,
-      contextInfo: {
-        forwardedMessage: {
-          key: { remoteJid: "120363382023564830@newsletter" },
-          message: { conversation: "B.M.B-TECH" }
-        },
-        forwardingScore: 999,
-        isForwarded: true
-      }
+    commands.forEach((command) => {
+        const { nomCom, desc = 'No description available', aliases = 'No aliases', categorie, reaction } = command;
+        if (nomCom) {
+            zokouList.push({ nomCom, desc, aliases, categorie, reaction });
+        }
     });
 
-  } catch (error) {
-    console.error("Error while creating your URL:", error);
-    repondre("Oops, there was an error.");
-  }
+    zokouList.sort((a, b) => a.nomCom.localeCompare(b.nomCom));
+
+    zokouList.forEach(({ nomCom, desc, aliases, categorie, reaction }, index) => {
+        menu += `${index + 1}. ${toFancyUppercaseFont(nomCom.trim())}\n`;
+        menu += `Description: ${toFancyLowercaseFont(desc)}\n`;
+        menu += `Aliases: ${toFancyLowercaseFont(aliases)}\n`;
+        menu += `Category: ${toFancyLowercaseFont(categorie)}\n`;
+        menu += `Reaction: ${toFancyLowercaseFont(reaction)}\n\n`;
+    });
+
+    // Tuma message yenye forwarded JID
+    return await zk.sendMessage(dest, {
+        text: menu,
+        contextInfo: {
+            forwardingScore: 999,
+            isForwarded: true,
+            forwardedMessage: {
+                key: {
+                    remoteJid: "120363382023564830@newsletter", // JID ya chanzo
+                    fromMe: false,
+                    id: "BMB-HELP-MENU"
+                },
+                message: {
+                    conversation: "𝗕𝗠𝗕 𝗕𝗢𝗧 𝗠𝗘𝗡𝗨"
+                }
+            },
+            externalAdReply: {
+                title: "B.M.B-TECH",
+                body: "𝐫𝐞𝐠𝐚𝐫𝐝𝐬 bmb",
+                thumbnailUrl: "https://files.catbox.moe/g2brwg.jpg",
+                sourceUrl: "https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z",
+                mediaType: 1,
+                renderLargerThumbnail: true
+            }
+        }
+    });
 });
