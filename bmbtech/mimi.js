@@ -1,95 +1,392 @@
-const { zokou } = require('../framework/zokou');
-const {addOrUpdateDataInAlive , getDataFromAlive} = require('../bdd/alive')
+
+const { zokou } = require("../framework/zokou");
 const moment = require("moment-timezone");
-const s = require(__dirname + "/../set");
+const axios = require("axios");
+const s = require(__dirname + "/../config");
 
-zokou(
-    {
-        nomCom : 'alive8',
-        categorie : 'General'
-        
-    },async (dest,zk,commandeOptions) => {
+const more = String.fromCharCode(8206);
+const readmore = more.repeat(4001);
 
- const {ms , arg, repondre,superUser} = commandeOptions;
+// Dynamic greetings
+const greetings = {
+    morning: "🌄 Good Morning! Let's kickstart your day!",
+    afternoon: "☀️ Good Afternoon! Stay productive!",
+    evening: "🌆 Good Evening! Time to relax!",
+    night: "🌙 Good Night! See you tomorrow!",
+};
 
- const data = await getDataFromAlive();
+// GitHub audio files
+const githubRawBaseUrl = "https://raw.githubusercontent.com/𝙱.𝙼.𝙱/𝙱.𝙼.𝙱-𝚇𝙼𝙳-music/master/tiktokmusic";
+const audioFiles = Array.from({ length: 161 }, (_, i) => `sound${i + 1}.mp3`);
+const getRandomAudio = () => audioFiles[Math.floor(Math.random() * audioFiles.length)];
 
- if (!arg || !arg[0] || arg.join('') === '') {
+const getMimeType = (url) => (url.endsWith(".wav") ? "audio/wav" : "audio/mpeg");
 
-    if(data) {
-       
-        const {message , lien} = data;
+// Menu images and thumbnail URLs
+const menuImages = [
+    "https://files.catbox.moe/ntmx5v.jpeg",
+    "https://files.catbox.moe/nnp1zf.jpeg",
+    "https://files.catbox.moe/3en2sc.jpeg",
+    "https://files.catbox.moe/bddwnw.jpeg",
+    "https://files.catbox.moe/f6zee8.jpeg",
+    "https://files.catbox.moe/dd93hl.jpg",
+    "https://files.catbox.moe/omgszj.jpg",
+    "https://files.catbox.moe/sf6xgk.jpg",
+    "https://files.catbox.moe/nwvoq3.jpg",
+    "https://files.catbox.moe/040de7.jpeg",
+    "https://files.catbox.moe/3qkejj.jpeg",
+];
+const randomImage = () => menuImages[Math.floor(Math.random() * menuImages.length)];
 
-
-        var mode = "public";
-        if ((s.MODE).toLocaleLowerCase() != "yes") {
-            mode = "private";
-        }
-      
-    
-     
-    moment.tz.setDefault('Etc/GMT');
-
-// Créer une date et une heure en GMT
-const temps = moment().format('HH:mm:ss');
-const date = moment().format('DD/MM/YYYY');
-
-    const alivemsg = `
-*Owner* : ${s.OWNER_NAME}
-*Mode* : ${mode}
-*Date* : ${date}
-*Hours(GMT)* : ${temps}
-
- ${message}
- 
- 
- *BMW-MD-WABOT*`
-
- if (lien.match(/\.(mp4|gif)$/i)) {
+// GitHub repo stats function
+const fetchGitHubStats = async () => {
     try {
-        zk.sendMessage(dest, { video: { url: lien }, caption: alivemsg }, { quoted: ms });
+        const repo = "devibraah/B.M.B-XMD";
+        const response = await axios.get(`https://api.github.com/repos/${repo}`);
+        const forks = response.data.forks_count || 0;
+        const stars = response.data.stargazers_count || 0;
+        const totalUsers = (forks * 2) + (stars * 2);
+        return { forks, stars, totalUsers };
+    } catch (error) {
+        console.error("Error fetching GitHub stats:", error);
+        return { forks: 0, stars: 0, totalUsers: 0 };
     }
-    catch (e) {
-        console.log("🥵🥵 Menu erreur " + e);
-        repondre("🥵🥵 Menu erreur " + e);
-    }
-} 
-// Checking for .jpeg or .png
-else if (lien.match(/\.(jpeg|png|jpg)$/i)) {
-    try {
-        zk.sendMessage(dest, { image: { url: lien }, caption: alivemsg }, { quoted: ms });
-    }
-    catch (e) {
-        console.log("🥵🥵 Menu erreur " + e);
-        repondre("🥵🥵 Menu erreur " + e);
-    }
-} 
-else {
-    
-    repondre(alivemsg);
-    
-}
+};
 
-    } else {
-        if(!superUser) { repondre("there is no alive for this bot") ; return};
+// Main menu command
+zokou({ nomCom: "menu7", categorie: "General" }, async (dest, zk, commandeOptions) => {
+    let { nomAuteurMessage } = commandeOptions;
+    let { cm } = require(__dirname + "/../framework/zokou");
+    let coms = {};
 
-      await   repondre("You have not yet saved your alive, to do this;  enter after alive your message and your image or video link in this context: .alive message;lien");
-         repondre("don't do fake thinks :)")
-     }
- } else {
-
-    if(!superUser) { repondre ("Only the owner can  modify the alive") ; return};
-
-  
-    const texte = arg.join(' ').split(';')[0];
-    const tlien = arg.join(' ').split(';')[1]; 
-
-
-    
-await addOrUpdateDataInAlive(texte , tlien)
-
-repondre(' Holla🥴, *TOXIC-LOVER-MD* is alive just like you gee. ')
-
-}
+    // Organize commands by category
+    cm.map((com) => {
+        const categoryUpper = com.categorie.toUpperCase();
+        if (!coms[categoryUpper]) coms[categoryUpper] = [];
+        coms[categoryUpper].push(com.nomCom);
     });
-  
+
+    moment.tz.setDefault(s.TZ || "Africa/arusha");
+    const date = moment().format("DD/MM/YYYY");
+    const time = moment().format("HH:mm:ss");
+    const hour = moment().hour();
+
+    // Determine greeting based on time
+    let greeting = greetings.night;
+    if (hour >= 5 && hour < 12) greeting = greetings.morning;
+    else if (hour >= 12 && hour < 18) greeting = greetings.afternoon;
+    else if (hour >= 18 && hour <= 22) greeting = greetings.evening;
+
+    const { totalUsers } = await fetchGitHubStats();
+    const formattedTotalUsers = totalUsers.toLocaleString();
+
+    // Prepare command list with readmore before specific categories
+    let commandList = "";
+    const sortedCategories = Object.keys(coms).sort();
+    sortedCategories.forEach((cat) => {
+        if (cat === "𝙱𝙼𝙱 𝚇𝙼𝙳") {
+            commandList += `╰••┈••➤ ${readmore}\n🗂 *${cat}*:\n\n`;
+        } else if (cat.toLowerCase().includes("download") || cat.toLowerCase().includes("github")) {
+            commandList += `${readmore}\n📃 *${cat}*:\n\n`;
+        } else {
+            commandList += `\n📜 *${cat}*:\n\n`;
+        }
+
+        let categoryCommands = coms[cat];
+        for (let i = 0; i < categoryCommands.length; i++) {
+            commandList += `💮 ${categoryCommands[i]}\n`; // Display commands in a list
+        }
+        commandList += `\n`;
+    });
+
+    // Select assets
+    const image = randomImage();
+    const image1 = randomImage();
+    const randomAudioFile = getRandomAudio();
+    const audioUrl = `${githubRawBaseUrl}/${randomAudioFile}`;
+
+    const menuType = s.MENUTYPE || (Math.random() < 0.5 ? "1" : "2"); // Randomly pick if blank
+
+    const footer = "\n\n®2025 𝙱.𝙼.𝙱-𝚇𝙼𝙳";
+
+    try {
+        // Send menu based on the requested category
+        const requestedCategory = commandeOptions.category || 'General'; // Get the requested category or default to 'General'
+
+        if (menuType === "1") {
+            // Menu Type 1 (For all categories or specific category)
+            await zk.sendMessage(dest, {
+                image: { url: image1 },
+                caption: `
+╭┈┈┈┈┈╮
+│ 𝙱.𝙼.𝙱-𝚇𝙼𝙳 𝙼𝙴𝙽𝚄
+├┈┈┈┈•➤
+│ 🕵️ ᴜsᴇʀ ɴᴀᴍᴇ: ${nomAuteurMessage}
+│ 📆 ᴅᴀᴛᴇ: ${date}
+│ ⏰ ᴛɪᴍᴇ: ${time}
+│ 👪 🄱🄼🄱 ᴜsᴇʀs: 1${formattedTotalUsers}
+╰┈┈┈┈┈╯
+${greeting}
+
+> ©𝙱.𝙼.𝙱-𝚇𝙼𝙳
+
+${commandList}${footer}
+`,
+                contextInfo: {
+                    quotedMessage: {
+                        conversation: "𝙱.𝙼.𝙱 ʙʏ 𝙱.𝙼.𝙱-𝚇𝙼𝙳😎",
+                    },
+                    externalAdReply: {
+                        title: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
+                        body: "Tap here to Join our official channel!",
+                        thumbnailUrl: image,
+                        sourceUrl: "https://whatsapp.com/channel/0029Vb2eknR59PwL1OK4wR24",
+                        showAdAttribution: true,
+                        renderLargerThumbnail: false,
+                    },
+                },
+            });
+        } else {
+            // Menu Type 2 (For all categories or specific category)
+            await zk.sendMessage(dest, {
+                image: { url: image1 },
+                caption: `
+╭───❖
+┃🌟 ʙᴏᴛ name 𝙱.𝙼.𝙱-𝚇𝙼𝙳
+┃🕵️ ᴜsᴇʀ ɴᴀᴍᴇ: ${nomAuteurMessage}
+┃📅 ᴅᴀᴛᴇ: ${date}
+┃⏰ ᴛɪᴍᴇ: ${time}
+┃👥 🄱🄼🄱 ᴜsᴇʀs: 1${formattedTotalUsers}
+╰───❖
+${greeting}
+
+> ©𝙱.𝙼.𝙱-𝚇𝙼𝙳
+
+${commandList}${footer}
+`,
+                contextInfo: {
+                    quotedMessage: {
+                        conversation: "𝙱.𝙼.𝙱 ʙʏ 𝙱.𝙼.𝙱-𝚇𝙼𝙳😎",
+                    },
+                    externalAdReply: {
+                        title:"𝙱.𝙼.𝙱-𝚇𝙼𝙳",
+                        body: "Tap here to Join our official channel!",
+                        thumbnailUrl: image,
+                        sourceUrl: "https://whatsapp.com/channel/0029Vb2eknR59PwL1OK4wR24",
+                        showAdAttribution: true,
+                        mediaType: 1,
+                        renderLargerThumbnail: true,
+                    },
+                },
+            });
+        }
+
+        // Send audio
+        await zk.sendMessage(dest, {
+            audio: { url: audioUrl },
+            mimetype: getMimeType(audioUrl),
+            ptt: true,
+        });
+    } catch (error) {
+        console.error("Error sending menu:", error);
+    }
+});
+
+
+
+
+
+
+
+/**const { zokou } = require("../framework/zokou");
+const moment = require("moment-timezone");
+const axios = require("axios");
+const s = require(__dirname + "/../config");
+
+const more = String.fromCharCode(8206);
+const readmore = more.repeat(4001);
+
+// Dynamic greetings
+const greetings = {
+    morning: "🌄 Good Morning! Let's kickstart your day!",
+    afternoon: "☀️ Good Afternoon! Stay productive!",
+    evening: "🌆 Good Evening! Time to relax!",
+    night: "🌙 Good Night! See you tomorrow!",
+};
+
+// GitHub audio files
+const githubRawBaseUrl =
+    "https://raw.githubusercontent.com/frameworkaitech/bwm-xmd-music/master/tiktokmusic";
+const audioFiles = Array.from({ length: 161 }, (_, i) => `sound${i + 1}.mp3`);
+const getRandomAudio = () => audioFiles[Math.floor(Math.random() * audioFiles.length)];
+
+const getMimeType = (url) => (url.endsWith(".wav") ? "audio/wav" : "audio/mpeg");
+
+// Menu images and thumbnail URLs
+const menuImages = [
+    "https://files.catbox.moe/13i93y.jpeg",
+    "https://files.catbox.moe/2696sn.jpeg",
+    "https://files.catbox.moe/soj3q4.jpeg",
+    "https://files.catbox.moe/bddwnw.jpeg",
+    "https://files.catbox.moe/f6zee8.-jpeg",
+    "https://files.catbox.moe/omgszj.jpg",
+    "https://files.catbox.moe/sf6xgk.jpg",
+    "https://files.catbox.moe/nwvoq3.jpg",
+    "https://files.catbox.moe/040de7.jpeg",
+    "https://files.catbox.moe/3qkejj.jpeg",
+];
+const randomImage = () => menuImages[Math.floor(Math.random() * menuImages.length)];
+
+// GitHub repo stats function
+const fetchGitHubStats = async () => {
+    try {
+        const repo = "devibraah/𝙱.𝙼.𝙱-𝚇𝙼𝙳";
+        const response = await axios.get(`https://api.github.com/repos/${repo}`);
+        const forks = response.data.forks_count || 0;
+        const stars = response.data.stargazers_count || 0;
+        const totalUsers = (forks * 2) + (stars * 2);
+        return { forks, stars, totalUsers };
+    } catch (error) {
+        console.error("Error fetching GitHub stats:", error);
+        return { forks: 0, stars: 0, totalUsers: 0 };
+    }
+};
+
+// Main menu command
+zokou({ nomCom: "menu7", categorie: "General" }, async (dest, zk, commandeOptions) => {
+    let { nomAuteurMessage } = commandeOptions;
+    let { cm } = require(__dirname + "/../framework/zokou");
+    let coms = {};
+
+    // Organize commands by category
+    cm.map((com) => {
+        const categoryUpper = com.categorie.toUpperCase();
+        if (!coms[categoryUpper]) coms[categoryUpper] = [];
+        coms[categoryUpper].push(com.nomCom);
+    });
+
+    moment.tz.setDefault(s.TZ || "Africa/arushai");
+    const date = moment().format("DD/MM/YYYY");
+    const time = moment().format("HH:mm:ss");
+    const hour = moment().hour();
+
+    // Determine greeting based on time
+    let greeting = greetings.night;
+    if (hour >= 5 && hour < 12) greeting = greetings.morning;
+    else if (hour >= 12 && hour < 18) greeting = greetings.afternoon;
+    else if (hour >= 18 && hour <= 22) greeting = greetings.evening;
+
+    const { totalUsers } = await fetchGitHubStats();
+    const formattedTotalUsers = totalUsers.toLocaleString();
+
+    // Prepare command list with readmore before specific categories
+    let commandList = "";
+    const sortedCategories = Object.keys(coms).sort();
+    sortedCategories.forEach((cat) => {
+        if (cat === "𝙱.𝙼.𝙱-𝚇𝙼𝙳") {
+            commandList += `╰••┈••➤ ${readmore}\n📂 *${cat}*:\n\n`;
+        } else if (cat.toLowerCase().includes("download") || cat.toLowerCase().includes("github")) {
+            commandList += `${readmore}\n📂 *${cat}*:\n\n`;
+        } else {
+            commandList += `\n📂 *${cat}*:\n\n`;
+        }
+
+        let categoryCommands = coms[cat];
+        for (let i = 0; i < categoryCommands.length; i++) {
+            commandList += `💮 ${categoryCommands[i]}   `;
+            if ((i + 1) % 3 === 0 || i === categoryCommands.length - 1) commandList += `\n`;
+        }
+        commandList += `\n`;
+    });
+
+    // Select assets
+    const image = randomImage();
+    const image1 = randomImage();
+    const randomAudioFile = getRandomAudio();
+    const audioUrl = `${githubRawBaseUrl}/${randomAudioFile}`;
+
+    const menuType = s.MENUTYPE || (Math.random() < 0.5 ? "1" : "2"); // Randomly pick if blank
+
+    const footer = "\n\n®2025 𝙱.𝙼.𝙱-𝚇𝙼𝙳";
+
+    try {
+        if (menuType === "1") {
+            // Menu Type 1
+            await zk.sendMessage(dest, {
+                image: { url: image1 },
+                caption: `
+╭┈┈┈┈┈╮
+│ 𝙱.𝙼.𝙱-𝚇𝙼𝙳
+├┈┈┈┈•➤
+│ 🕵️ ᴜsᴇʀ ɴᴀᴍᴇ: ${nomAuteurMessage}
+│ 📆 ᴅᴀᴛᴇ: ${date}
+│ ⏰ ᴛɪᴍᴇ: ${time}
+│ 👪 🄱🄼🄱 ᴜsᴇʀs: 1${formattedTotalUsers}
+╰┈┈┈┈┈╯
+${greeting}
+
+> ©𝙱.𝙼.𝙱-𝚇𝙼𝙳
+
+${commandList}${footer}
+`,
+                contextInfo: {
+                    quotedMessage: {
+                        conversation: "𝙱.𝙼.𝙱 ʙʏ 𝙱.𝙼.𝙱-𝚇𝙼𝙳😎",
+                    },
+                    externalAdReply: {
+                        title: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
+                        body: "Tap here to Join our official channel!",
+                        thumbnailUrl: image,
+                        sourceUrl: "https://whatsapp.com/channel/0029Vb2eknR59PwL1OK4wR24",
+                        showAdAttribution: false,
+                        renderLargerThumbnail: false,
+                    },
+                },
+            });
+        } else {
+            // Menu Type 2
+            await zk.sendMessage(dest, {
+                image: { url: image1 },
+                caption: `
+╭───❖
+┃🌟 ʙᴏᴛ ɴᴀᴍᴇ: 𝙱.𝙼.𝙱-𝚇𝙼𝙳
+┃🕵️ᴜsᴇʀ ɴᴀᴍᴇ: ${nomAuteurMessage}
+┃📅 ᴅᴀᴛᴇ: ${date}
+┃⏰ ᴛɪᴍᴇ: ${time}
+┃👥 🄱🄼🄱 ᴜsᴇʀs: 1${formattedTotalUsers}
+╰───❖
+${greeting}
+
+> ©𝙱.𝙼.𝙱-𝚇𝙼𝙳
+
+${commandList}${footer}
+`,
+                contextInfo: {
+                    quotedMessage: {
+                        conversation: "𝙱.𝙼.𝙱 ʙʏ 𝙱.𝙼.𝙱-𝚇𝙼𝙳😎",
+                    },
+                    externalAdReply: {
+                        title: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
+                        body: "Tap here to Join our official channel!",
+                        thumbnailUrl: image,
+                        sourceUrl: "https://whatsapp.com/channel/0029Vb2eknR59PwL1OK4wR24",
+                        showAdAttribution: false,
+                        mediaType: 1,
+                        renderLargerThumbnail: true,
+                    },
+                },
+            });
+        }
+
+        // Send audio
+        await zk.sendMessage(dest, {
+            audio: { url: audioUrl },
+            mimetype: getMimeType(audioUrl),
+            ptt: true,
+        });
+    } catch (error) {
+        console.error("Error sending menu:", error);
+    }
+});
+**/
+    
