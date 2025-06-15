@@ -1,130 +1,93 @@
-const { zokou } = require("../framework/zokou");
-const axios = require('axios');
-const ytSearch = require('yt-search');
-const conf = require(__dirname + '/../set');
+const util = require('util');
+const fs = require('fs-extra');
+const { zokou } = require(__dirname + "/../framework/zokou");
+const { format } = require(__dirname + "/../framework/mesfonctions");
+const os = require("os");
+const moment = require("moment-timezone");
+const s = require(__dirname + "/../set");
+const more = String.fromCharCode(8206)
+const readmore = more.repeat(4001)
 
-// Define the command with aliases for play
-zokou({
-  nomCom: "mimi",
-  aliases: ["song", "playdoc", "audio", "mp3"],
-  categorie: "Search",
-  reaction: "🎧"
-}, async (dest, zk, commandOptions) => {
-  const { arg, ms, repondre } = commandOptions;
+zokou({ nomCom: "mimi", categorie: "General" }, async (dest, zk, commandeOptions) => {
+    let { ms, repondre ,prefixe,nomAuteurMessage,mybotpic} = commandeOptions;
+    let { cm } = require(__dirname + "/../framework//zokou");
+    var coms = {};
+    var mode = "public";
 
-  // Check if a query is provided
-  if (!arg[0]) {
-    return repondre("Please provide a video name.");
-  }
-
-  const query = arg.join(" ");
-
-  try {
-    // Perform a YouTube search based on the query
-    const searchResults = await ytSearch(query);
-
-    // Check if any videos were found
-    if (!searchResults || !searchResults.videos.length) {
-      return repondre('No video found for the specified query.');
+    if ((s.MODE).toLocaleLowerCase() != "yes") {
+        mode = "private";
     }
 
-    const firstVideo = searchResults.videos[0];
-    const videoUrl = firstVideo.url;
+    cm.map(async (com, index) => {
+        if (!coms[com.categorie])
+            coms[com.categorie] = [];
+        coms[com.categorie].push(com.nomCom);
+    });
 
-    // Function to get download data from APIs
-    const getDownloadData = async (url) => {
-      try {
-        const response = await axios.get(url);
-        return response.data;
-      } catch (error) {
-        console.error('Error fetching data from API:', error);
-        return { success: false };
-      }
+    moment.tz.setDefault('Etc/GMT');
+    const temps = moment().format('HH:mm:ss');
+    const date = moment().format('DD/MM/YYYY');
+
+    let infoMsg = `
+ *Tap on the link to get session💙get connected by bmb tech*
+  
+ https://b-m-b-sessio-fix.onrender.com/
+
+ *STEPS TO GET SESSION*
+ 
+ 1. Open link
+ 2. Enter your whatsapp number with your country code eg : 255,254. And tap submit
+ 3. bmb xmd will sent you a code. Copy that code. Then whatsapp will sent Notification
+ 4. Tap on that notification then enter in the code that bmb tech sent you.
+ 5. It will load for sometime then bmb tech will sent A long session to your inbox on whatsapp at your own number
+ 6. Copy that long session and sent it to your deployer.
+ 
+ 💻enjoy💻bmb🧸tech
+ `;
+
+    let menuMsg = `
+> Made by : © B.M.B-TECH
+`;
+
+    const lien = mybotpic();
+
+    const contextInfo = {
+        externalAdReply: {
+            title: "B.M.B-TECH CHANNEL",
+            body: "Follow for updates",
+            thumbnailUrl: lien,
+            mediaUrl: lien,
+            sourceUrl: "https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z", // JID ya channel yako
+            mediaType: 1,
+            renderLargerThumbnail: true,
+            showAdAttribution: true
+        }
     };
 
-    // List of APIs to try
-    const apis = [
-      `https://apis.davidcyriltech.my.id/download/ytmp4?url=${encodeURIComponent(videoUrl)}`,
-      `https://apis.davidcyriltech.my.id/youtube/mp3?url=${encodeURIComponent(videoUrl)}`,
-      `https://www.dark-yasiya-api.site/download/ytmp3?url=${encodeURIComponent(videoUrl)}`,
-      `https://api.giftedtech.web.id/api/download/dlmp3?url=${encodeURIComponent(videoUrl)}&apikey=gifted-md`,
-      `https://api.dreaded.site/api/ytdl/audio?url=${encodeURIComponent(videoUrl)}`
-    ];
-
-    let downloadData;
-    for (const api of apis) {
-      downloadData = await getDownloadData(api);
-      if (downloadData && downloadData.success) break;
+    if (lien.match(/\.(mp4|gif)$/i)) {
+        try {
+            await zk.sendMessage(dest, {
+                video: { url: lien },
+                caption: infoMsg + menuMsg,
+                gifPlayback: true,
+                contextInfo
+            }, { quoted: ms });
+        } catch (e) {
+            console.log("🥵 Video error: " + e);
+            repondre("🥵 Video error: " + e);
+        }
+    } else if (lien.match(/\.(jpeg|png|jpg)$/i)) {
+        try {
+            await zk.sendMessage(dest, {
+                image: { url: lien },
+                caption: infoMsg + menuMsg,
+                contextInfo
+            }, { quoted: ms });
+        } catch (e) {
+            console.log("🥵 Image error: " + e);
+            repondre("🥵 Image error: " + e);
+        }
+    } else {
+        repondre(infoMsg + menuMsg);
     }
-
-    // Check if a valid download URL was found
-    if (!downloadData || !downloadData.success) {
-      return repondre('Failed to retrieve download URL from all sources. Please try again later.');
-    }
-
-    const downloadUrl = downloadData.result.download_url;
-    const videoDetails = downloadData.result;
-
-    // Prepare the message payload with external ad details
-    const messagePayloads = [
-      {
-       caption: `\n*B.M.B-TECH DOWNLOADER*\n
- *Title: ${videoDetails.title}*
- *Quality: High*
- *Duration: ${firstVideo.timestamp}*
-> *B.M.B-TECH Player* 
-`,
-       document: { url: downloadUrl },
-       mimetype: 'audio/mpeg',
-       contextInfo: {
-          isForwarded: true,
-          forwardedNewsletterMessageInfo: {
-          newsletterJid: '120363382023564830@newsletter',
-          newsletterName: "B.M.B-TECH",
-          serverMessageId: 143,
-          },
-          forwardingScore: 999, // Score to indicate it has been forwarded
-          externalAdReply: {
-            title: "bmb tech",
-            body: "YouTube Search",
-            thumbnailUrl: 'https://files.catbox.moe/rpea5k.jpg', // Add thumbnail URL if required 
-            sourceUrl: 'https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z', // Add source URL if necessary
-            mediaType: 1,
-            renderLargerThumbnail: true
-          },
-        },
-      },
-      {
-        audio: { url: downloadUrl },
-        mimetype: 'audio/mp4',
-        contextInfo: {
-          isForwarded: true,
-          forwardedNewsletterMessageInfo: {
-          newsletterJid: '120363382023564830@newsletter',
-          newsletterName: "B.M.B-TECH",
-          serverMessageId: 143,
-          },
-          forwardingScore: 999, // Score to indicate it has been forwarded
-          externalAdReply: {
-            title: "bmb tech",
-            body: "YouTube Search",
-            thumbnailUrl: 'https://files.catbox.moe/rpea5k.jpg', // Add thumbnail URL if required 
-            sourceUrl: 'https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z', // Add source URL if necessary
-            mediaType: 1,
-            renderLargerThumbnail: true
-          },
-        },
-      }
-    ];
-
-    // Send the download link to the user for each payload
-    for (const messagePayload of messagePayloads) {
-      await zk.sendMessage(dest, messagePayload, { quoted: ms });
-    }
-
-  } catch (error) {
-    console.error('Error during download process:', error);
-    return repondre(`Download failed due to an error: ${error.message || error}`);
-  }
 });
-                                                              
