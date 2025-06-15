@@ -1,112 +1,106 @@
-// this is my shit 💀 lemme not find it in your project 
-// Thanks chatgpt 😍😍
-// reach me before copy pasting it 255716945971
-
 const { zokou } = require("../framework/zokou");
-const axios = require("axios");
+const axios = require('axios');
+const ytSearch = require('yt-search');
+const conf = require(__dirname + '/../set');
 
-const newsletterContext = {
-  contextInfo: {
-    forwardingScore: 999,
-    isForwarded: true,
-    forwardedNewsletterMessageInfo: {
-      newsletterJid: "120363382023564830@newsletter",
-      newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
-      serverMessageId: 1
-    }
+// Define the command with aliases for play
+zokou({
+  nomCom: "play4",
+  aliases: ["song", "playdoc", "audio", "mp3"],
+  categorie: "Search",
+  reaction: "🔥"
+}, async (dest, zk, commandOptions) => {
+  const { arg, ms, repondre } = commandOptions;
+
+  // Check if a query is provided
+  if (!arg[0]) {
+    return repondre("Please provide a video name.");
   }
-};
 
-zokou({ nomCom: "videologo1", categorie: "modern-logo", reaction: "✋" }, async (dest, zk, commandeOptions) => {
-  const { ms, repondre, arg } = commandeOptions;
-  const text = arg.join(" ");
-
-  if (!text) {
-    repondre("Please provide a search query.");
-    return;
-  }
+  const query = arg.join(" ");
 
   try {
-    // Message content
-    const messageText = `Reply with below numbers to generate *${text}* logo
+    // Perform a YouTube search based on the query
+    const searchResults = await ytSearch(query);
 
-1 ➠ sweet love 💕😘
-2 ➠ lightning pubg
-3 ➠ intro video 📷
-4 ➠ tiger 🐯 video logo
+    // Check if any videos were found
+    if (!searchResults || !searchResults.videos.length) {
+      return repondre('No video found for the specified query.');
+    }
 
-*Enjoy 😂*`;
+    const firstVideo = searchResults.videos[0];
+    const videoUrl = firstVideo.url;
 
-    const contextInfo = {
-      mentionedJid: [ms.sender],
-      externalAdReply: {
-        title: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
-        body: "Regards, 𝙱.𝙼.𝙱-𝚇𝙼𝙳",
-        thumbnailUrl: "https://files.catbox.moe/g2brwg.jpg",
-        sourceUrl: "https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z",
-        mediaType: 1,
-        renderLargerThumbnail: true
+    // Function to get download data from APIs
+    const getDownloadData = async (url) => {
+      try {
+        const response = await axios.get(url);
+        return response.data;
+      } catch (error) {
+        console.error('Error fetching data from API:', error);
+        return { success: false };
       }
     };
 
-    const messageToSend = {
-      text: messageText,
-      contextInfo
-    };
+    // List of APIs to try
+    const apis = [
+      `https://api-rin-tohsaka.vercel.app/download/ytmp4?url=${encodeURIComponent(videoUrl)}`,
+      `https://api.davidcyriltech.my.id/download/ytmp3?url=${encodeURIComponent(videoUrl)}`,
+      `https://www.dark-yasiya-api.site/download/ytmp3?url=${encodeURIComponent(videoUrl)}`,
+      `https://api.giftedtech.web.id/api/download/dlmp3?url=${encodeURIComponent(videoUrl)}&apikey=gifted-md`,
+      `https://api.dreaded.site/api/ytdl/audio?url=${encodeURIComponent(videoUrl)}`
+    ];
+let downloadData;
+    for (const api of apis) {
+      downloadData = await getDownloadData(api);
+      if (downloadData && downloadData.success) break;
+    }
 
-    const sentMessage = await zk.sendMessage(dest, messageToSend, { quoted: ms });
+    // Check if a valid download URL was found
+    if (!downloadData || !downloadData.success) {
+      return repondre('Failed to retrieve download URL from all sources. Please try again later.');
+    }
 
-    zk.ev.on('messages.upsert', async (update) => {
-      const message = update.messages[0];
-      if (!message.message || !message.message.extendedTextMessage) return;
+    const downloadUrl = downloadData.result.download_url;
+    const songTitle = downloadData.result.title;
+    const videoThumbnail = firstVideo.thumbnail;
+    const videoChannel = downloadData.result.author;
+    const videoPublished = downloadData.result.uploadDate;
+    const videoViews = downloadData.result.viewCount;
 
-      const responseText = message.message.extendedTextMessage.text.trim();
-      if (
-        message.message.extendedTextMessage.contextInfo &&
-        message.message.extendedTextMessage.contextInfo.stanzaId === sentMessage.key.id
-      ) {
-        let logoUrl;
-        switch (responseText) {
-          case '1':
-            logoUrl = await fetchLogoUrl("https://en.ephoto360.com/create-sweet-love-video-cards-online-734.html", text);
-            break;
-          case '2':
-            logoUrl = await fetchLogoUrl("https://en.ephoto360.com/lightning-pubg-video-logo-maker-online-615.html", text);
-            break;
-          case '3':
-            logoUrl = await fetchLogoUrl("https://en.ephoto360.com/free-logo-intro-video-maker-online-558.html", text);
-            break;
-          case '4':
-            logoUrl = await fetchLogoUrl("https://en.ephoto360.com/create-digital-tiger-logo-video-effect-723.html", text);
-            break;
-          default:
-            return repondre("*_Invalid number. Please reply with a valid number._*");
-        }
+    // Prepare the message with song details
+    const messagePayload = {
+      caption: `\n*B.M.B-TECH MUSIC*\n
+╭━⊷
+┃ *Title:* ${songTitle} 
+┃ *Quality:* High
+┃ *Duration:* ${firstVideo.timestamp}
+╰━⊷
+⦿ *Direct YtLink:* ${videoUrl}
 
-        if (logoUrl) {
-          await zk.sendMessage(dest, {
-            video: { url: logoUrl },
-            mimetype: "video/mp4",
-            caption: `*Downloaded by 𝙱.𝙼.𝙱-𝚇𝙼𝙳*`,
-            ...newsletterContext
-          }, { quoted: ms });
+╭━⊷
+┃ *DOWNLOAD AND ENJOY YOUR DAY*
+╰━━━━━━━━━━━━━━━━━⊷`,
+      document: { url: downloadUrl },
+        mimetype: 'audio/mpeg',
+        contextInfo: {
+          externalAdReply: {
+            title: "soB.M.B-TECH" ,
+            body: "Tap her to follow our channel",
+            mediaType: 1,
+            sourceUrl:"https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z",
+            thumbnailUrl: firstVideo.thumbnail,
+            renderLargerThumbnail: false,
+            showAdAttribution: true,
         }
       }
-    });
+    };
+
+    await zk.sendMessage(dest, messagePayload, { quoted: ms });
+
   } catch (error) {
-    console.log(error);
-    repondre(`Error: ${error}`);
+    console.error('Error during download process:', error);
+    return repondre(`Download failed due to an error: ${error.message || error}`);
   }
 });
-
-const fetchLogoUrl = async (url, name) => {
-  try {
-    const response = await axios.get(`https://api-pink-venom.vercel.app/api/logo`, {
-      params: { url, name }
-    });
-    return response.data.result.download_url;
-  } catch (error) {
-    console.error("Error fetching logo:", error);
-    return null;
-  }
-};
+      
