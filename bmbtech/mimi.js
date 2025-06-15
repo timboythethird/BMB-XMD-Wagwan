@@ -3,7 +3,7 @@ const moment = require("moment-timezone");
 const s = require("../set");
 
 zokou({ 
-  nomCom: "deployer", 
+  nomCom: "deployer2", 
   categorie: "General",
   reaction: "💙",
   desc: "Show bot deployer information"
