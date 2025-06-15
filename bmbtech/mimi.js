@@ -1,73 +1,104 @@
+const { Sticker, createSticker, StickerTypes } = require('wa-sticker-formatter');
 const { zokou } = require("../framework/zokou");
-const { getContentType } = require("@whiskeysockets/baileys");
-const { Sticker, StickerTypes } = require("wa-sticker-formatter");
+const { downloadMediaMessage } = require('@whiskeysockets/baileys');
+const fs = require("fs-extra");
+const ffmpeg = require("fluent-ffmpeg");
+const { Catbox } = require('node-catbox');
 
-zokou({ nomCom: "vv4", aliases: ["send", "keep"], categorie: "General" }, async (dest, zk, commandeOptions) => {
-  const { repondre, msgRepondu, superUser } = commandeOptions;
+const catbox = new Catbox();
 
-  if (msgRepondu) {
-    console.log(msgRepondu);
-    let msg;
-    try {
-      const contextInfo = {
-        forwardingScore: 999,
-        isForwarded: true,
-        forwardedNewsletterMessageInfo: {
-          newsletterJid: "120363382023564830@newsletter",
-          newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
-          serverMessageId: 1
-        }
-      };
-
-      if (msgRepondu.imageMessage) {
-        const media = await zk.downloadAndSaveMediaMessage(msgRepondu.imageMessage);
-        msg = {
-          image: { url: media },
-          caption: msgRepondu.imageMessage.caption || "",
-          contextInfo
-        };
-      } else if (msgRepondu.videoMessage) {
-        const media = await zk.downloadAndSaveMediaMessage(msgRepondu.videoMessage);
-        msg = {
-          video: { url: media },
-          caption: msgRepondu.videoMessage.caption || "",
-          gifPlayback: true,
-          contextInfo
-        };
-      } else if (msgRepondu.audioMessage) {
-        const media = await zk.downloadAndSaveMediaMessage(msgRepondu.audioMessage);
-        msg = {
-          audio: { url: media },
-          mimetype: 'audio/mp4',
-          contextInfo
-        };
-      } else if (msgRepondu.stickerMessage) {
-        const media = await zk.downloadAndSaveMediaMessage(msgRepondu.stickerMessage);
-        const stickerMess = new Sticker(media, {
-          pack: 'B.M.B-TECH',
-          type: StickerTypes.CROPPED,
-          categories: ["🤩", "🎉"],
-          id: "12345",
-          quality: 70,
-          background: "transparent",
-        });
-        const stickerBuffer2 = await stickerMess.toBuffer();
-        msg = { sticker: stickerBuffer2 };
-      } else {
-        msg = {
-          text: msgRepondu.conversation,
-          contextInfo
-        };
-      }
-
-      await zk.sendMessage(dest, msg);
-
-    } catch (error) {
-      console.error("Error processing the message:", error);
-      repondre('An error occurred while processing your request.');
+async function uploadToCatbox(Path) {
+    if (!fs.existsSync(Path)) {
+        throw new Error("File does not exist");
     }
 
-  } else {
-    repondre('Mention the message that you want to save');
-  }
+    try {
+        const response = await catbox.uploadFile({
+            path: Path
+        });
+
+        if (response) {
+            return response;
+        } else {
+            throw new Error("Error retrieving the file link");
+        }
+    } catch (err) {
+        throw new Error(String(err));
+    }
+}
+
+async function convertToMp3(inputPath, outputPath) {
+    return new Promise((resolve, reject) => {
+        ffmpeg(inputPath)
+            .toFormat("mp3")
+            .on("error", (err) => reject(err))
+            .on("end", () => resolve(outputPath))
+            .save(outputPath);
+    });
+}
+
+zokou({ nomCom: "url", categorie: "General", reaction: "💗" }, async (origineMessage, zk, commandeOptions) => {
+    const { msgRepondu, repondre, ms } = commandeOptions;
+
+    if (!msgRepondu) {
+        repondre('Please reply to an image, video, or audio file.');
+        return;
+    }
+
+    let mediaPath, mediaType;
+
+    if (msgRepondu.videoMessage) {
+        const videoSize = msgRepondu.videoMessage.fileLength;
+
+        if (videoSize > 50 * 1024 * 1024) {
+            repondre('The video is too long. Please send a smaller video.');
+            return;
+        }
+
+        mediaPath = await zk.downloadAndSaveMediaMessage(msgRepondu.videoMessage);
+        mediaType = 'video';
+    } else if (msgRepondu.imageMessage) {
+        mediaPath = await zk.downloadAndSaveMediaMessage(msgRepondu.imageMessage);
+        mediaType = 'image';
+    } else if (msgRepondu.audioMessage) {
+        mediaPath = await zk.downloadAndSaveMediaMessage(msgRepondu.audioMessage);
+        mediaType = 'audio';
+
+        const outputPath = `${mediaPath}.mp3`;
+
+        try {
+            await convertToMp3(mediaPath, outputPath);
+            fs.unlinkSync(mediaPath);
+            mediaPath = outputPath;
+        } catch (error) {
+            console.error("Error converting audio to MP3:", error);
+            repondre('Failed to process the audio file.');
+            return;
+        }
+    } else {
+        repondre('Unsupported media type. Reply with an image, video, or audio file.');
+        return;
+    }
+
+    try {
+        const catboxUrl = await uploadToCatbox(mediaPath);
+        fs.unlinkSync(mediaPath);
+
+        await zk.sendMessage(origineMessage, {
+            text: `bmb tech url: ${catboxUrl}`,
+            contextInfo: {
+                forwardingScore: 999,
+                isForwarded: true,
+                forwardedNewsletterMessageInfo: {
+                    newsletterJid: "120363382023564830@newsletter",
+                    newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
+                    serverMessageId: 1
+                }
+            }
+        }, { quoted: ms });
+
+    } catch (error) {
+        console.error('Error while creating your URL:', error);
+        repondre('Oops, an error occurred.');
+    }
 });
