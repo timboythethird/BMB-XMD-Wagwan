@@ -1,64 +1,44 @@
 const { zokou } = require("../framework/zokou");
+const { downloadMediaMessage, downloadContentFromMessage } = require("@whiskeysockets/baileys");
+const { exec } = require('child_process');
+const { writeFile } = require("fs/promises");
+const fs = require('fs-extra');
+const moment = require("moment-timezone");
 
 zokou({
-  nomCom: "bmblist",
-  aliases: ["listblock", "blacklist"],
-  reaction: '☘️',
-  categorie: "search"
-}, async (dest, zk, commandeOptions) => {
-  const { repondre, ms } = commandeOptions;
+  nomCom: 'ripoti',
+  aliases: 'spread',
+  desc: 'report anything to the bot developer',
+  categorie: "new",
+  reaction: '🍂'
+}, async (bot, zk, context) => {
+  const { arg, repondre, superUser, nomAuteurMessage, ms } = context;
 
-  try {
-    // Fetch the blocklist of contacts
-    let blocklist = await zk.fetchBlocklist();
+  if (!arg[0]) {
+    return repondre("After the command *broadcast*, type your message to be sent to the specified contacts.");
+  }
 
-    // If the blocklist has users, proceed
-    if (blocklist.length > 0) {
-      // Start the message for blocked contacts
-      let jackhuh = `*Blocked Contacts*\n`;
+  if (!superUser) {
+    return repondre("Only for the owner.");
+  }
 
-      await repondre(`You have blocked ${blocklist.length} contact(s), fetching and sending their details!`);
+  // Specified contacts
+  const contacts = [
+    '255767862457@s.whatsapp.net',
+    '255767862457@s.whatsapp.net',
+    '255741752020@s.whatsapp.net'
+  ];
 
-      // Map through the blocklist to fetch each blocked user's details
-      const promises = blocklist.map(async (blockedUser) => {
-        // Extract the phone number from the JID (remove '@s.whatsapp.net')
-        const phoneNumber = blockedUser.split('@')[0];
-        jackhuh += `🥴+${phoneNumber}\n`;  // List the phone number
-      });
+  await repondre("*B.M.B-TECH-BOT is sending your message to Developer contacts 🤦🤷*...");
 
-      await Promise.all(promises);
+  const broadcastMessage = `*𝗥𝗲𝗽𝗼𝗿𝘁 𝗠𝗲𝘀𝘀𝗮𝗴𝗲*\n
+𝗠𝗲𝘀𝘀𝗮𝗴𝗲: ${arg.join(" ")}\n
+𝗦𝗲𝗻𝗱𝗲𝗿 𝗡𝗮𝗺𝗲 : ${nomAuteurMessage}`;
 
-      // Send the final formatted message with the blocked contacts and newsletterJid info
-      await zk.sendMessage(dest, {
-        text: jackhuh,
-        contextInfo: {
-          forwardingScore: 999,
-          isForwarded: true,
-          forwardedNewsletterMessageInfo: {
-            newsletterJid: "120363382023564830@newsletter",
-            newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
-            serverMessageId: 1
-          }
-        }
-      }, { quoted: ms });
-
-    } else {
-      await zk.sendMessage(dest, {
-        text: "There are no blocked contacts.",
-        contextInfo: {
-          forwardingScore: 999,
-          isForwarded: true,
-          forwardedNewsletterMessageInfo: {
-            newsletterJid: "120363382023564830@newsletter",
-            newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
-            serverMessageId: 1
-          }
-        }
-      }, { quoted: ms });
-    }
-  } catch (e) {
-    await zk.sendMessage(dest, {
-      text: "An error occurred while accessing blocked users.\n\n" + e,
+  for (let contact of contacts) {
+    await zk.sendMessage(contact, {
+      image: { url: 'https://files.catbox.moe/rpea5k.jpg' },
+      caption: broadcastMessage,
       contextInfo: {
         forwardingScore: 999,
         isForwarded: true,
