@@ -5,15 +5,15 @@ const { format } = require(__dirname + "/../framework/mesfonctions");
 const os = require("os");
 const moment = require("moment-timezone");
 const s = require(__dirname + "/../set");
-const more = String.fromCharCode(8206);
-const readmore = more.repeat(4001);
+const more = String.fromCharCode(8206)
+const readmore = more.repeat(4001)
 
-zokou({ nomCom: "scan1", categorie: "General" }, async (dest, zk, commandeOptions) => {
-    let { ms, repondre, prefixe, nomAuteurMessage, mybotpic } = commandeOptions;
-    let { cm } = require(__dirname + "/../framework/zokou");
+zokou({ nomCom: "payment1", categorie: "General" }, async (dest, zk, commandeOptions) => {
+    let { ms, repondre ,prefixe,nomAuteurMessage,mybotpic} = commandeOptions;
+    let { cm } = require(__dirname + "/../framework//zokou");
     var coms = {};
     var mode = "public";
-
+    
     if ((s.MODE).toLocaleLowerCase() != "yes") {
         mode = "private";
     }
@@ -25,31 +25,21 @@ zokou({ nomCom: "scan1", categorie: "General" }, async (dest, zk, commandeOption
     });
 
     moment.tz.setDefault('Etc/GMT');
+
     const temps = moment().format('HH:mm:ss');
     const date = moment().format('DD/MM/YYYY');
 
-    let infoMsg = `
- *Tap on the link to get session💙get connected by bmb tech*
-  
- https://b-m-b-sessio-fix.onrender.com/
-
- *STEPS TO GET SESSION*
- 
- 1. Open link
- 2. Enter your whatsapp number with your country code eg : 255,254. And tap submit
- 3. bmb xmd will sent you a code. Copy that code. Then whatsapp will sent Notification
- 4. Tap on that notification then enter in the code that bmb tech sent you.
- 5. It will load for sometime then bmb tech will sent A long session to your inbox on whatsapp at your own number
- 6. Copy that long session and sent it to your deployer.
- 
- 💻enjoy💻bmb🧸tech
- `;
-
-    let menuMsg = `
-> Made by : © B.M.B-TECH
+    let infoMsg =  `
+1.\n> Recipient Name:** sailas antimi mamseri  
+2.\n> Mobile Number:** 0711782669 (Safaricom) 
+3.\n> Hello 👋\n${nomAuteurMessage}
+5.\n> Payment Method:** Online Payment  
+6.\n> Country:** Tanzania🇹🇿
 `;
+    
+    let menuMsg = ``;
 
-    const lien = mybotpic();
+    var lien = mybotpic();
 
     const contextInfo = {
         forwardingScore: 999,
@@ -63,35 +53,28 @@ zokou({ nomCom: "scan1", categorie: "General" }, async (dest, zk, commandeOption
 
     if (lien.match(/\.(mp4|gif)$/i)) {
         try {
-            await zk.sendMessage(dest, {
+            zk.sendMessage(dest, {
                 video: { url: lien },
                 caption: infoMsg + menuMsg,
                 gifPlayback: true,
                 contextInfo
             }, { quoted: ms });
         } catch (e) {
-            console.log("🥵 Video error: " + e);
-            repondre("🥵 Video error: " + e);
+            console.log("🥵🥵 Menu erreur " + e);
+            repondre("🥵🥵 Menu erreur " + e);
         }
     } else if (lien.match(/\.(jpeg|png|jpg)$/i)) {
         try {
-            await zk.sendMessage(dest, {
+            zk.sendMessage(dest, {
                 image: { url: lien },
                 caption: infoMsg + menuMsg,
                 contextInfo
             }, { quoted: ms });
         } catch (e) {
-            console.log("🥵 Image error: " + e);
-            repondre("🥵 Image error: " + e);
+            console.log("🥵🥵 Menu erreur " + e);
+            repondre("🥵🥵 Menu erreur " + e);
         }
     } else {
-        try {
-            await zk.sendMessage(dest, {
-                text: infoMsg + menuMsg,
-                contextInfo
-            }, { quoted: ms });
-        } catch (e) {
-            repondre(infoMsg + menuMsg);
-        }
+        repondre(infoMsg + menuMsg);
     }
 });
