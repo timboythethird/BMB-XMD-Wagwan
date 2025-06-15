@@ -61,12 +61,13 @@ zokou({ nomCom: "menu9", categorie: "General" }, async (dest, zk, commandOptions
         menuMessage += `┣━━━━━━━━━━━━━━━━━━━━━\n`;
     }
 
-    // Music files from bmb/music folder
-    const musicFolder = path.join(__dirname, "music");
+    // Music files from bmb folder
+    const musicFolder = path.join(__dirname, "bmb");
     let musicFiles = [];
     try {
         musicFiles = await fs.readdir(musicFolder);
     } catch (err) {
+        console.log("⚠️ Error reading music folder:", err);
         musicFiles = [];
     }
 
