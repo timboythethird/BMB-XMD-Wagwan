@@ -1,54 +1,47 @@
 const { zokou } = require("../framework/zokou");
-const axios = require("axios");
 
-// Function to calculate uptime in days, hours, minutes, and seconds
-const runtime = (seconds) => { 
-    seconds = Number(seconds); 
-    const d = Math.floor(seconds / (3600 * 24)); 
-    const h = Math.floor((seconds % (3600 * 24)) / 3600); 
-    const m = Math.floor((seconds % 3600) / 60); 
-    const s = Math.floor(seconds % 60); 
-    return `${d > 0 ? d + "d, " : ""}${h > 0 ? h + "h, " : ""}${m > 0 ? m + "m, " : ""}${s > 0 ? s + "s" : ""}`;
-}; 
+zokou(
+  {
+    nomCom: "mimi",
+    categorie: "General",
+    reaction: "🚀",
+  },
+  async (dest, zk, commandeOptions) => {
+    const { ms, repondre, msgRepondu, auteurMsgRepondu, mybotpic, nomAuteurMessage } = commandeOptions;
 
-zokou({
-    nomCom: "uptime8",
-    desc: "To check runtime",
-    Categorie: "General",
-    reaction: "⚙️", 
-    fromMe: true, 
-}, async (dest, zk, commandeOptions) => {
-    const { repondre } = commandeOptions;
-    const imageUrl = "https://files.catbox.moe/533oqh.jpg";
-    const audioUrl = "https://files.catbox.moe/04vank.mp3";
+    // Check if the message is a reply
+    if (!msgRepondu) {
+      return repondre(`BMB-TECH Yo ${nomAuteurMessage}, reply to someone’s message to snag their profile pic! 😡 Don’t make 𝔗𝔬𝔵𝔦𝔠 𝔐𝔇 do extra work! 🤔`);
+    }
 
     try {
-        // Download image and audio simultaneously
-        const [imageResponse, audioResponse] = await Promise.all([
-            axios.get(imageUrl, { responseType: "arraybuffer" }),
-            axios.get(audioUrl, { responseType: "arraybuffer" })
-        ]);
+      // Notify the user that the profile picture is being fetched
+      await repondre(`B.M.B-TECH Yo ${nomAuteurMessage}, 𝔗𝔬𝔵𝔦𝔠 𝔐𝔇’s hunting for @${auteurMsgRepondu.split("@")[0]}’s profile pic! 📸 Hold tight! 🔍`, { mentions: [auteurMsgRepondu] });
 
-        const imageBuffer = Buffer.from(imageResponse.data);
-        const audioBuffer = Buffer.from(audioResponse.data);
+      // Fetch the profile picture of the replied person
+      let ppuser;
+      try {
+        ppuser = await zk.profilePictureUrl(auteurMsgRepondu, 'image');
+      } catch {
+        ppuser = mybotpic();
+        await repondre(`B.M.B Yo ${nomAuteurMessage}, @${auteurMsgRepondu.split("@")[0]}’s profile pic is locked tight! 😣 bmb tech’s got you my pic instead! 😎`, { mentions: [auteurMsgRepondu] });
+      }
 
-        console.log("Audio buffer length:", audioBuffer.length); // Kucheki kama buffer inakuwa created
-
-        // Send image with caption
-        const message = await zk.sendMessage(dest, { 
-            image: imageBuffer, 
-            caption: `*_UPTIME OF DULLAH XMD 🤖 IS: ${runtime(process.uptime())}_*`
-        });
-
-        // Send audio as a reply to the image caption
-        await zk.sendMessage(dest, { 
-            audio: audioBuffer, 
-            mimetype: "audio/mpeg" // Badala ya audio/mp3
-        }, { quoted: message });
+      // Send the profile picture
+      await zk.sendMessage(
+        dest,
+        {
+          image: { url: ppuser },
+          caption: `BMB BOOM, ${nomAuteurMessage}! Snagged @${auteurMsgRepondu.split("@")[0]}’s profile pic! 🔥\n│❒ Powered by 𝙱.𝙼.𝙱-𝚇𝙼𝙳`,
+          footer: `Hey ${nomAuteurMessage}! I'm Bmb tech, created by 𝙱.𝙼.𝙱-𝚇𝙼𝙳`,
+          mentions: [auteurMsgRepondu],
+        },
+        { quoted: ms }
+      );
 
     } catch (error) {
-        console.error("Error:", error.message);
-        await repondre("❌ Failed to load the image or audio. Here is the uptime info:\n" + 
-                       `*_UPTIME OF DULLAH XMD 🤖 IS: ${runtime(process.uptime())}_*`);
+      console.error("Error in .getpp command:", error);
+      await repondre(`BMB TOTAL BUST, ${nomAuteurMessage}! 𝔗𝔬𝔵𝔦𝔠 𝔐𝔇 crashed while grabbing the pic: ${error.message} 😡 Try again or flop! 😣`);
     }
-});
+  }
+);
