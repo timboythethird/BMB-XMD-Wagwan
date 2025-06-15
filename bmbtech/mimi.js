@@ -17,15 +17,14 @@ zokou({
 }, async (dest, zk, commandeOptions) => {
   const { ms, repondre } = commandeOptions;
 
-  // Hakikisha cm ipo na ni array
-  const { cm } = require(__dirname + "/../framework/zokou");
+  // Hakikisha cm ipo na si undefined
+  let { cm } = require(__dirname + "/../framework/zokou");
   if (!cm || !Array.isArray(cm)) {
     repondre("❌ Error: command list (cm) not found or invalid!");
     return;
   }
 
-  let commandCategories = {};
-  // Angalia s.MODE iwe string na ifanye lowercase kabla ya kulinganisha
+  // Hakikisha s.MODE ni string kabla ya kutumia toLowerCase
   let mode = (typeof s.MODE === 'string' && s.MODE.toLowerCase() === 'oui') ? 'public' : 'privé';
 
   const emojis = {
@@ -39,6 +38,7 @@ zokou({
     'Autre': '🪖'
   };
 
+  let commandCategories = {};
   cm.forEach(cmd => {
     const cat = cmd.categorie || 'Autre';
     const nom = cmd.nomCom || 'unknown';
@@ -48,7 +48,6 @@ zokou({
     commandCategories[cat].push(nom);
   });
 
-  // Set timezone na locale kwa moment
   moment.tz.setDefault("Asia/Karachi").locale('fr');
   const currentTime = moment().format("HH:mm:ss");
   const currentDate = moment().format("DD/MM/YYYY");
