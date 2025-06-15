@@ -18,14 +18,34 @@ const toFancyLowercaseFont = (text) => {
     return typeof text === 'string' ? text.split('').map(char => fonts[char] || char).join('') : text;
 }
 
+const newsletterContext = {
+    contextInfo: {
+        forwardingScore: 999,
+        isForwarded: true,
+        forwardedNewsletterMessageInfo: {
+            newsletterJid: "120363382023564830@newsletter", // Replace with your actual newsletter JID
+            newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
+            serverMessageId: 1
+        },
+        externalAdReply: {
+            title: "B.M.B-TECH",
+            body: "𝐫𝐞𝐠𝐚𝐫𝐝𝐬 bmb",
+            thumbnailUrl: "https://files.catbox.moe/g2brwg.jpg",
+            sourceUrl: "https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z",
+            mediaType: 1,
+            renderLargerThumbnail: true
+        }
+    }
+};
+
 zokou({
     nomCom: "help1",
     reaction: "🤦",
     aliases: ["panelist", "commandlist", "cmdlist", "list"],
     desc: "Get bot command list.",
     categorie: "universal"
-}, async (dest, zk, context) => {
-    const { respond, prefix, nomAuteurMessage } = context;
+}, async (jid, zk, context) => {
+    const { ms, mybotpic, prefix } = context;
     const commands = require(__dirname + "/../framework/zokou").cm;
 
     let menu = '𝙱.𝙼.𝙱-𝚇𝙼𝙳 ʟɪsᴛ\n\n';
@@ -48,30 +68,25 @@ zokou({
         menu += `Reaction: ${toFancyLowercaseFont(reaction)}\n\n`;
     });
 
-    // Tuma message yenye forwarded JID
-    return await zk.sendMessage(dest, {
-        text: menu,
-        contextInfo: {
-            forwardingScore: 999,
-            isForwarded: true,
-            forwardedMessage: {
-                key: {
-                    remoteJid: "120363382023564830@newsletter", // JID ya chanzo
-                    fromMe: false,
-                    id: "BMB-HELP-MENU"
-                },
-                message: {
-                    conversation: "𝗕𝗠𝗕 𝗕𝗢𝗧 𝗠𝗘𝗡𝗨"
-                }
-            },
-            externalAdReply: {
-                title: "B.M.B-TECH",
-                body: "𝐫𝐞𝐠𝐚𝐫𝐝𝐬 bmb",
-                thumbnailUrl: "https://files.catbox.moe/g2brwg.jpg",
-                sourceUrl: "https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z",
-                mediaType: 1,
-                renderLargerThumbnail: true
-            }
+    try {
+        const media = await mybotpic();
+        if (media.match(/\.(mp4|gif)$/i)) {
+            await zk.sendMessage(jid, {
+                video: { url: media },
+                caption: menu,
+                ...newsletterContext
+            }, { quoted: ms });
+        } else if (media.match(/\.(jpeg|jpg|png)$/i)) {
+            await zk.sendMessage(jid, {
+                image: { url: media },
+                caption: menu,
+                ...newsletterContext
+            }, { quoted: ms });
+        } else {
+            await zk.sendMessage(jid, { text: menu, ...newsletterContext }, { quoted: ms });
         }
-    });
+    } catch (err) {
+        console.log("Error sending help menu:", err);
+        await zk.sendMessage(jid, { text: "🥵🥵 Menu error: " + err });
+    }
 });
