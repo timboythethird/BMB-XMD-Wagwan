@@ -1,104 +1,49 @@
-const { Sticker, createSticker, StickerTypes } = require('wa-sticker-formatter');
+const googleTTS = require('google-tts-api');
 const { zokou } = require("../framework/zokou");
-const { downloadMediaMessage } = require('@whiskeysockets/baileys');
-const fs = require("fs-extra");
-const ffmpeg = require("fluent-ffmpeg");
-const { Catbox } = require('node-catbox');
 
-const catbox = new Catbox();
+const makeVoiceCommand = (nomCom, lang, emoji) => {
+  zokou({
+    nomCom,
+    categorie: "User",
+    reaction: emoji
+  }, async (dest, zk, commandeOptions) => {
 
-async function uploadToCatbox(Path) {
-    if (!fs.existsSync(Path)) {
-        throw new Error("File does not exist");
+    const { ms, arg, repondre } = commandeOptions;
+    if (!arg[0]) {
+      repondre("Insert a word");
+      return;
     }
 
-    try {
-        const response = await catbox.uploadFile({
-            path: Path
-        });
-
-        if (response) {
-            return response;
-        } else {
-            throw new Error("Error retrieving the file link");
-        }
-    } catch (err) {
-        throw new Error(String(err));
-    }
-}
-
-async function convertToMp3(inputPath, outputPath) {
-    return new Promise((resolve, reject) => {
-        ffmpeg(inputPath)
-            .toFormat("mp3")
-            .on("error", (err) => reject(err))
-            .on("end", () => resolve(outputPath))
-            .save(outputPath);
+    const mots = arg.join(" ");
+    const url = googleTTS.getAudioUrl(mots, {
+      lang,
+      slow: false,
+      host: 'https://translate.google.com',
     });
-}
-
-zokou({ nomCom: "ur11", categorie: "General", reaction: "💗" }, async (origineMessage, zk, commandeOptions) => {
-    const { msgRepondu, repondre, ms } = commandeOptions;
-
-    if (!msgRepondu) {
-        repondre('Please reply to an image, video, or audio file.');
-        return;
-    }
-
-    let mediaPath, mediaType;
-
-    if (msgRepondu.videoMessage) {
-        const videoSize = msgRepondu.videoMessage.fileLength;
-
-        if (videoSize > 50 * 1024 * 1024) {
-            repondre('The video is too long. Please send a smaller video.');
-            return;
-        }
-
-        mediaPath = await zk.downloadAndSaveMediaMessage(msgRepondu.videoMessage);
-        mediaType = 'video';
-    } else if (msgRepondu.imageMessage) {
-        mediaPath = await zk.downloadAndSaveMediaMessage(msgRepondu.imageMessage);
-        mediaType = 'image';
-    } else if (msgRepondu.audioMessage) {
-        mediaPath = await zk.downloadAndSaveMediaMessage(msgRepondu.audioMessage);
-        mediaType = 'audio';
-
-        const outputPath = `${mediaPath}.mp3`;
-
-        try {
-            await convertToMp3(mediaPath, outputPath);
-            fs.unlinkSync(mediaPath);
-            mediaPath = outputPath;
-        } catch (error) {
-            console.error("Error converting audio to MP3:", error);
-            repondre('Failed to process the audio file.');
-            return;
-        }
-    } else {
-        repondre('Unsupported media type. Reply with an image, video, or audio file.');
-        return;
-    }
 
     try {
-        const catboxUrl = await uploadToCatbox(mediaPath);
-        fs.unlinkSync(mediaPath);
-
-        await zk.sendMessage(origineMessage, {
-            text: `bmb tech url: ${catboxUrl}`,
-            contextInfo: {
-                forwardingScore: 999,
-                isForwarded: true,
-                forwardedNewsletterMessageInfo: {
-                    newsletterJid: "120363382023564830@newsletter",
-                    newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
-                    serverMessageId: 1
-                }
-            }
-        }, { quoted: ms });
-
-    } catch (error) {
-        console.error('Error while creating your URL:', error);
-        repondre('Oops, an error occurred.');
+      await zk.sendMessage(dest, {
+        audio: { url },
+        mimetype: 'audio/mp4',
+        ptt: true,
+        contextInfo: {
+          forwardingScore: 999,
+          isForwarded: true,
+          forwardedNewsletterMessageInfo: {
+            newsletterJid: "120363382023564830@newsletter",
+            newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
+            serverMessageId: 1
+          }
+        }
+      }, { quoted: ms });
+    } catch (e) {
+      console.error(e);
+      repondre("Failed to send audio");
     }
-});
+  });
+};
+
+// TTS commands with JID channel context
+makeVoiceCommand("dit1", "fr", "👄");     // French
+makeVoiceCommand("itta1", "ja", "👄");    // Japanese
+makeVoiceCommand("say1", "en", "👄");     // English
