@@ -23,7 +23,7 @@ zokou({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("thís cσmmαnd ís rєstríctєd tσ thє вσt σwnєr. σr hαppínєss хmd σwnєr");
+    return repondre("thís cσmmαnd ís rєstríctєd tσ thє вσt σwnєr. σr bmb tech σwnєr");
   }
 
   // Validate user input and respond accordingly
