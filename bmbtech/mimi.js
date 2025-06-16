@@ -147,7 +147,7 @@ async function sendRandomVoiceNote(zk, dest, ms, repondre) {
 
 zokou(
   {
-    nomCom: "menu",
+    nomCom: "menu9",
     categorie: "General",
     reaction: "⚡",
   },
