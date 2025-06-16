@@ -59,7 +59,7 @@ zokou(
 
             if (data) {
                 const { message, lien } = data;
-                aliveMsg = `B.M.B-TECH\n\n◈━━━━━━━━━━━━━━━━◈\n│❒ *🔥 bmb tech is ALIVE!* 🔥\n│❒ *👑 Owner*: ${s.OWNER_NAME}\n│❒ *🌐 Mode*: ${mode}\n│❒ *📅 Date*: ${date}\n│❒ *⏰ Time (GMT)*: ${time}\n│❒ *💬 Message*: ${message}\n│❒ *🤖 Powered by B.M.B-XMD*\n│❒ *📡 Channel*: 120363382023564830@newsletter\n◈━━━━━━━━━━━━━━━━◈`;
+                aliveMsg = `B.M.B-TECH\n\n◈━━━━━━━━━━━━━━━━◈\n🌲 *🔥 bmb tech is ALIVE!* 🔥\n🌲 *👑 Owner*: ${s.OWNER_NAME}\n🌲 *🌐 Mode*: ${mode}\n🌲 *📅 Date*: ${date}\n🌲 *⏰ Time (GMT)*: ${time}\n🌲 *💬 Message*: ${message}\n🌲 *🤖 Powered by B.M.B-XMD*\n🌲 *📡bot*: 🤖\n◈━━━━━━━━━━━━━━━━◈`;
 
                 try {
                     if (lien) {
@@ -88,7 +88,7 @@ zokou(
 
                 await sendAliveMusic(zk, dest, ms, repondre);
             } else {
-                aliveMsg = `B.M.B-TECH\n\n◈━━━━━━━━━━━━━━━━◈\n│❒ *🔥 bmb tech is ALIVE!* 🔥\n│❒ *👑 Owner*: ${s.OWNER_NAME}\n│❒ *🌐 Mode*: ${mode}\n│❒ *📅 Date*: ${date}\n│❒ *⏰ Time (GMT)*: ${time}\n│❒ *💬 Message*: Yo, I'm bmb tech, ready to rock! Set a custom vibe with *alive [message];[link]*! 😎\n│❒ *🤖 Powered by B.M.B-XMD*\n│❒ *📡 Channel*: 120363382023564830@newsletter\n◈━━━━━━━━━━━━━━━━◈`;
+                aliveMsg = `B.M.B-TECH\n\n◈━━━━━━━━━━━━━━━━◈\n🌲 *🔥 bmb tech is ALIVE!* 🔥\n🌲 *👑 Owner*: ${s.OWNER_NAME}\n🌲 *🌐 Mode*: ${mode}\n🌲 *📅 Date*: ${date}\n🌲*⏰ Time (GMT)*: ${time}\n🌲 *💬 Message*: Yo, I'm bmb tech, ready to rock! Set a custom vibe with *alive [message];[link]*! 😎\n🌲 *🤖 Powered by B.M.B-XMD*\n🌲*📡 bot*: 🤖\n◈━━━━━━━━━━━━━━━━◈`;
                 await sendAliveImage(zk, dest, ms, aliveMsg, repondre);
                 await sendAliveMusic(zk, dest, ms, repondre);
             }
