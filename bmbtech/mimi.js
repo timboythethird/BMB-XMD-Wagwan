@@ -12,7 +12,7 @@ const topDivider = "❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒";
 const categoryDivider = "■■■■■■■■■■■■■■■";
 
 function getBotInfo(mode) {
-  moment.tz.setDefault("EAT");
+  moment.tz.setDefault("Africa/Nairobi");
   const currentTime = moment().format("HH:mm:ss");
   const usedRAM = format(os.totalmem() - os.freemem());
   const totalRAM = format(os.totalmem());
@@ -20,12 +20,12 @@ function getBotInfo(mode) {
   return `
 ╭━═「 *B.M.B-TECH* 」═━❂
 ┃⊛╭────••••────➻
-┃⊛│🧑‍💻 *developer*: @255767862457
+┃⊛│🧑‍💻 *developer*: BMB TEAM
 ┃⊛│☢️ *mode*: ${mode.toUpperCase()}
 ┃⊛│⌚ *time*: ${currentTime} (EAT)
 ┃⊛│🖥️ *ram*: ${usedRAM} / ${totalRAM}
 ┃⊛│ ⚙️ *Status:* ONLINE
-┃⊛│🌐 *creator* : 𝙱.𝙼.𝙱-𝚇𝙼𝙳
+┃⊛│🌐 *creator*: B.M.B-XMD
 ┃⊛└────••••────➻
 ╰─━━━━══──══━━━❂
 `;
@@ -47,7 +47,7 @@ function buildMenu(coms, prefixe) {
   };
 
   for (const cat in coms) {
-    const icon = categoryStyles[cat] || "🌐";
+    const icon = categoryStyles[cat] || "🚀";
     menu += `\n${icon} *${cat.toUpperCase()}*\n`;
 
     coms[cat].forEach((cmd) => {
@@ -59,8 +59,8 @@ function buildMenu(coms, prefixe) {
 
   menu += `
 👨‍💻 *DEVELOPERS*
- ┗ @255767862457 (Main Dev)
- ┗ @255767862457 (bmb Team)
+ ┗ BMB TEAM
+ ┗ B.M.B-XMD
 
 📡 Powered by *B.M.B-TECH SYSTEM*
 ${topDivider}
@@ -69,69 +69,43 @@ ${topDivider}
   return menu;
 }
 
-async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
+async function sendMenuMedia(zk, dest, ms, caption, mentions) {
+  const mediaPath = path.join(__dirname, "../bmb/menu.jpg");
+
+  if (!fs.existsSync(mediaPath)) {
+    return zk.sendMessage(dest, { text: "❌ Menu image not found." }, { quoted: ms });
+  }
+
   const contextInfo = {
     forwardingScore: 999,
     isForwarded: true,
     mentionedJid: mentions,
     forwardedNewsletterMessageInfo: {
-      newsletterJid: "120363382023564830@newsletter", // ID ya channel
-      newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
+      newsletterJid: "120363382023564830@newsletter",
+      newsletterName: "B.M.B-XMD",
       serverMessageId: 143,
     },
   };
 
-  if (mediaUrl.match(/\.(mp4|gif)$/i)) {
-    await zk.sendMessage(
-      dest,
-      {
-        video: { url: mediaUrl },
-        caption,
-        footer: "⚡ BMB-XBOT ⚡",
-        mentions,
-        gifPlayback: true,
-        contextInfo,
-      },
-      { quoted: ms }
-    );
-  } else if (mediaUrl.match(/\.(jpeg|jpg|png)$/i)) {
-    await zk.sendMessage(
-      dest,
-      {
-        image: { url: mediaUrl },
-        caption,
-        footer: "⚡ BMB-XBOT ⚡",
-        mentions,
-        contextInfo,
-      },
-      { quoted: ms }
-    );
-  } else {
-    await zk.sendMessage(
-      dest,
-      {
-        text: caption,
-        mentions,
-        contextInfo,
-      },
-      { quoted: ms }
-    );
-  }
+  await zk.sendMessage(
+    dest,
+    {
+      image: { url: mediaPath },
+      caption,
+      footer: "⚡ BMB-XBOT ⚡",
+      mentions,
+      contextInfo,
+    },
+    { quoted: ms }
+  );
 }
 
-async function sendRandomVoiceNote(zk, dest, ms, repondre) {
-  const folder = path.join(__dirname, "../bmb/");
-  if (!fs.existsSync(folder)) {
-    return repondre(`📁 Audio folder not found at:\n${folder}`);
-  }
+async function sendMenuAudio(zk, dest, ms, repondre) {
+  const audioPath = path.join(__dirname, "../bmb/menu1.mp3");
 
-  const audioFiles = fs.readdirSync(folder).filter((f) => f.endsWith(".mp3"));
-  if (!audioFiles.length) {
-    return repondre(`⚠️ No audio files found in folder.`);
+  if (!fs.existsSync(audioPath)) {
+    return repondre(`⚠️ Audio file not found: menu1.mp3`);
   }
-
-  const randomAudio = audioFiles[Math.floor(Math.random() * audioFiles.length)];
-  const audioPath = path.join(folder, randomAudio);
 
   await zk.sendMessage(
     dest,
@@ -139,7 +113,7 @@ async function sendRandomVoiceNote(zk, dest, ms, repondre) {
       audio: { url: audioPath },
       mimetype: "audio/mpeg",
       ptt: true,
-      fileName: `🗣 BMB VOICE`,
+      fileName: `🎵 Menu Sound`,
     },
     { quoted: ms }
   );
@@ -147,7 +121,7 @@ async function sendRandomVoiceNote(zk, dest, ms, repondre) {
 
 zokou(
   {
-    nomCom: "menu9",
+    nomCom: "menu",
     categorie: "General",
     reaction: "⚡",
   },
@@ -168,15 +142,11 @@ zokou(
       const menuText = buildMenu(coms, prefixe);
       const finalText = infoText + menuText;
       const sender = ms.key.participant || ms.key.remoteJid;
-      const mediaUrl = "https://files.catbox.moe/hflcbc.jpg";
 
-      // Tuma picha + menu + view channel
-      await sendMenuMedia(zk, dest, ms, mediaUrl, finalText, [sender]);
-
-      // Tuma voice ya random
-      await sendRandomVoiceNote(zk, dest, ms, repondre);
+      await sendMenuMedia(zk, dest, ms, finalText, [sender]);
+      await sendMenuAudio(zk, dest, ms, repondre);
     } catch (err) {
-      console.error(`[DEBUG menu error]: ${err}`);
+      console.error(`[MENU ERROR]: ${err}`);
       repondre(`❌ Failed to load menu:\n${err.message}`);
     }
   }
