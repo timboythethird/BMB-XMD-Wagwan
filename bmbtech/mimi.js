@@ -1,162 +1,124 @@
-const util = require('util');
-const fs = require('fs-extra');
-const { zokou } = require(__dirname + "/../framework/zokou");
-const { format } = require(__dirname + "/../framework/mesfonctions");
-const os = require("os");
-const conf = require(__dirname + "/../set");
+const { zokou } = require('../framework/zokou');
+const { addOrUpdateDataInAlive, getDataFromAlive } = require('../bdd/alive');
 const moment = require("moment-timezone");
 const s = require(__dirname + "/../set");
-const more = String.fromCharCode(8206)
-const readmore = more.repeat(4001)
+const path = require("path");
+const fs = require("fs");
 
-zokou({ nomCom: "ma", categorie: "General" }, async (dest, zk, commandeOptions) => {
-    let { ms, repondre ,prefixe,nomAuteurMessage,mybotpic} = commandeOptions;
-    let { cm } = require(__dirname + "/../framework//zokou");
-    var coms = {};
-    var mode = "public";
-    
-    if ((s.MODE).toLocaleLowerCase() != "yes") {
-        mode = "private";
-    }
-
-
-    
-
-    cm.map(async (com, index) => {
-        if (!coms[com.categorie])
-            coms[com.categorie] = [];
-        coms[com.categorie].push(com.nomCom);
-    });
-
-    moment.tz.setDefault ("Africa/nairobi");
-
-// Créer une date et une heure en GMT
-const temps = moment().format('HH:mm:ss');
-const date = moment().format('DD/MM/YYYY');
-
-  let infoMsg =  `
-  ╭━━━ 〔 •ＡＬＯＮＥ ~ ＭＤ• 〕━━━┈⊷♦ 
-┃♦╭──♦───♦────♦─────♥
-┃♦│ ❑ ▸  *𝙳𝚊𝚝𝚎*:┈⊷ ${date}
-┃♦│ ❑ ▸  *𝚃𝚒𝚖𝚎 𝚗𝚘𝚠*: ┈⊷ ${temps}
-┃♦│ ❑ ▸  *𝙿𝚛𝚎𝚏𝚒𝚡* :┈⊷ [  ${s.PREFIXE}  ]
-┃♦│ ❑ ▸  *𝙼𝚘𝚍𝚎* : ┈⊷ ${mode} mode
-┃♦│ ❑ ▸  *𝙿𝚕𝚞𝚐𝚒𝚗𝚜* :┈⊷ ${cm.length}
-┃♦│ ❑ ▸  *𝚁𝚊𝚖* :┈⊷ ${format(os.totalmem() - os.freemem())}/${format(os.totalmem())}
-┃♦│ ❑ ▸  *𝚁𝚞𝚗𝚗𝚒𝚗𝚐 𝚘𝚗* : ┈⊷ ${os.platform()}
-┃♦│ ❑ ▸  *𝙾𝚠𝚗𝚎𝚛* : ┈⊷ ${s.OWNER_NAME}
-┃♦│ ❑ ▸  *ᴅᴇᴠᴇʟᴏᴘᴇʀ* : ┈⊷ Topu tech
-┃♦│ ❑ ▸  *ᴛɪᴍᴇᴢᴏɴᴇ* :┈⊷ ${s.TZ}
-┃♦╰───────────────♦
-╰━━━━━━━━━━━━━━━┈⊷♦
-
-> ALONE MD Cant be broken💔\n${readmore}`;
-    
-    
-let menuMsg = `
-
- *ALONE MD CURIOUS COMMADS*`;
-
-    for (const cat in coms) {
-        menuMsg += ` ╭──────✣ *${cat}* ✣─────☹︎`;
-        for (const cmd of coms[cat]) {
-            menuMsg += `
-│♥│ ${cmd}`;
-        }
-        menuMsg += `
-╰────────────···▸▸ \n`
-    }
-
-    menuMsg += `> powered by TOPU TECH
-`;
-
-   var lien = mybotpic();
-
-   if (lien.match(/\.(mp4|gif)$/i)) {
-    try {
-        zk.sendMessage(dest, {
-      text: infoMsg + menuMsg,
-      contextInfo: {
-          forwardingScore: 999,
-            isForwarded: true,
-            forwardedNewsletterMessageInfo: {
-              newsletterJid: '120363295141350550@newsletter',
-              newsletterName: 'ALONE Queen MD V²',
-              serverMessageId: 143},
-        vcard: `BEGIN:VCARD\nVERSION:3.0\nN:;a,;;;\nFN:${author}\nitem1.TEL;waid=${m.sender.split('@')[0]}:${m.sender.split('@')[0]}\nitem1.X-ABLabel:Ponsel\nEND:VCARD`,
+// Function to send forwarded channel message
+async function sendForwardedText(zk, dest, ms, text, sender) {
+    await zk.sendMessage(
+        dest,
+        {
+            text,
+            contextInfo: {
+                mentionedJid: [sender],
+                forwardingScore: 999,
+                isForwarded: true,
+                forwardedNewsletterMessageInfo: {
+                    newsletterJid: "120363382023564830@newsletter",
+                    newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
+                    serverMessageId: 143,
+                },
+            },
         },
-        externalAdReply: {
-          title: "Enjoy...",
-          body: "❣️ALONE-MD SWEET MENU❣️",
-          thumbnailUrl: "https://files.catbox.moe/eoc0y3.jpg",
-          sourceUrl: conf.GURL,
-          mediaType: 1,
-            renderLargerThumbnail: true,
-
-          showAdAttribution: false
-        }
-      }
-    }, { quoted: ms });
-    }
-    catch (e) {
-        console.log("🥵🥵 Menu erreur " + e);
-        repondre("🥵🥵 Menu erreur " + e);
-    }
-} 
-// Vérification pour .jpeg ou .png
-else if (lien.match(/\.(jpeg|png|jpg)$/i)) {
-    try {
-        zk.sendMessage(dest, {
-      text: infoMsg + menuMsg,
-      contextInfo: {
-          forwardingScore: 999,
-            isForwarded: true,
-            forwardedNewsletterMessageInfo: {
-              newsletterJid: '120363295141350550@newsletter',
-              newsletterName: 'ALONE Queen MD V²',
-              serverMessageId: 143},
-        externalAdReply: {
-          title: "Enjoy...",
-          body: "❣️ALONE-MD SWEET MENU❣️",
-          thumbnailUrl: "https://files.catbox.moe/eoc0y3.jpg",
-          sourceUrl: conf.GURL,
-          mediaType: 1,
-            renderLargerThumbnail: true,
-
-          showAdAttribution: false
-        }
-      }
-    }, { quoted: ms });
-      }
-    catch (e) {
-        console.log("🥵🥵 Menu erreur " + e);
-        repondre("🥵🥵 Menu erreur " + e);
-    }
-} 
-else {
-    zk.sendMessage(dest, {
-      text: infoMsg + menuMsg,
-      contextInfo: {
-          forwardingScore: 999,
-            isForwarded: true,
-            forwardedNewsletterMessageInfo: {
-              newsletterJid: '120363295141350550@newsletter',
-              newsletterName: 'ALONE Queen MD V²',
-              serverMessageId: 143},
-        externalAdReply: {
-          title: "Enjoy...",
-          body: "❣️ALONE-MD SWEET MENU❣️",
-          thumbnailUrl: "https://files.catbox.moe/eoc0y3.jpg",
-          sourceUrl: conf.GURL,
-          mediaType: 1,
-            renderLargerThumbnail: true
-
-
-        }
-      }
-    }, { quoted: ms });
-    
+        { quoted: ms }
+    );
 }
 
-})
-       
+// Function to send alive.mp3 from /bot/
+async function sendAliveMusic(zk, dest, ms, repondre) {
+    const audioPath = path.join(__dirname, "../bmb/alive.mp3");
+
+    if (!fs.existsSync(audioPath)) {
+        return repondre(`📁 File not found: ${audioPath}`);
+    }
+
+    await zk.sendMessage(
+        dest,
+        {
+            audio: { url: audioPath },
+            mimetype: "audio/mpeg",
+            ptt: true,
+            fileName: "🎵 BMB Alive",
+        },
+        { quoted: ms }
+    );
+}
+
+// Function to send alive.jpg from /bmb/
+async function sendAliveImage(zk, dest, ms, caption, repondre) {
+    const imagePath = path.join(__dirname, "../bot/alive.jpg");
+
+    if (!fs.existsSync(imagePath)) {
+        return repondre(`📁 Image not found: ${imagePath}`);
+    }
+
+    await zk.sendMessage(dest, {
+        image: { url: imagePath },
+        caption: caption
+    }, { quoted: ms });
+}
+
+zokou(
+    {
+        nomCom: 'alive11',
+        categorie: 'General',
+        reaction: "⚡"
+    },
+    async (dest, zk, { ms, arg, repondre, superUser, sender }) => {
+        const data = await getDataFromAlive();
+        const time = moment().tz('Etc/GMT').format('HH:mm:ss');
+        const date = moment().format('DD/MM/YYYY');
+        const mode = (s.MODE.toLowerCase() === "yes") ? "public" : "private";
+
+        if (!arg || !arg[0]) {
+            let aliveMsg;
+
+            if (data) {
+                const { message, lien } = data;
+                aliveMsg = `B.M.B-TECH\n\n◈━━━━━━━━━━━━━━━━◈\n│❒ *🔥 bmb tech is ALIVE!* 🔥\n│❒ *👑 Owner*: ${s.OWNER_NAME}\n│❒ *🌐 Mode*: ${mode}\n│❒ *📅 Date*: ${date}\n│❒ *⏰ Time (GMT)*: ${time}\n│❒ *💬 Message*: ${message}\n│❒ *🤖 Powered by B.M.B-XMD*\n◈━━━━━━━━━━━━━━━━◈`;
+
+                try {
+                    if (lien) {
+                        if (lien.match(/\.(mp4|gif)$/i)) {
+                            await zk.sendMessage(dest, {
+                                video: { url: lien },
+                                caption: aliveMsg
+                            }, { quoted: ms });
+                        } else if (lien.match(/\.(jpeg|png|jpg)$/i)) {
+                            await zk.sendMessage(dest, {
+                                image: { url: lien },
+                                caption: aliveMsg
+                            }, { quoted: ms });
+                        } else {
+                            await sendAliveImage(zk, dest, ms, aliveMsg, repondre);
+                        }
+                    } else {
+                        await sendAliveImage(zk, dest, ms, aliveMsg, repondre);
+                    }
+                } catch (e) {
+                    console.error("Error:", e);
+                    repondre(`❌ Failed to show Alive Message: ${e.message}`);
+                }
+
+                await sendForwardedText(zk, dest, ms, `*👀 View Channel:*\n\n🔗 https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z`, sender);
+                await sendAliveMusic(zk, dest, ms, repondre);
+            } else {
+                aliveMsg = `B.M.B-TECH\n\n◈━━━━━━━━━━━━━━━━◈\n│❒ *🔥 bmb tech is ALIVE!* 🔥\n│❒ *👑 Owner*: ${s.OWNER_NAME}\n│❒ *🌐 Mode*: ${mode}\n│❒ *📅 Date*: ${date}\n│❒ *⏰ Time (GMT)*: ${time}\n│❒ *💬 Message*: Yo, I'm bmb tech, ready to rock! Set a custom vibe with *alive [message];[link]*! 😎\n│❒ *🤖 Powered by B.M.B-XMD*\n◈━━━━━━━━━━━━━━━━◈`;
+                await sendAliveImage(zk, dest, ms, aliveMsg, repondre);
+                await sendForwardedText(zk, dest, ms, `*👀 View Channel:*\n\n🔗 https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z`, sender);
+                await sendAliveMusic(zk, dest, ms, repondre);
+            }
+        } else {
+            if (!superUser) {
+                repondre("❌ Only the owner can update Alive message.");
+                return;
+            }
+
+            const [texte, tlien] = arg.join(' ').split(';');
+            await addOrUpdateDataInAlive(texte, tlien);
+            repondre(`✅ Alive message updated successfully!`);
+        }
+    }
+);
