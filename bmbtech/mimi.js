@@ -42,8 +42,7 @@ zokou(
         const releaseDate = new Date(data.created_at).toLocaleDateString('en-GB');
         const lastUpdateDate = new Date(data.updated_at).toLocaleDateString('en-GB');
 
-        const gitdata = `*hellow whatsaap user
-this is* *leonard_md.*\n support our channel *by*,  https://whatsapp.com/channel/0029Vad7YNyJuyA77CtIPX0x
+        const gitdata = `*𝐍𝐄𝐗𝐔𝐒-𝐀𝐈*
 
 _________● *ʟᴇᴏɴᴀʀᴅ* ●____________
 |💥 *ʀᴇᴘᴏsɪᴛᴏʀʏ:* ${data.html_url}
