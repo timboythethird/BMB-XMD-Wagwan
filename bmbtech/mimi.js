@@ -40,7 +40,7 @@ function buildNewMenu(coms, prefixe) {
 
 zokou(
   {
-    nomCom: "menu",
+    nomCom: "menuu",
     categorie: "General",
     reaction: "🧭",
   },
