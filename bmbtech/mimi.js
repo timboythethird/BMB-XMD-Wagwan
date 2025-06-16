@@ -8,7 +8,8 @@ const { zokou } = require(__dirname + "/../framework/zokou");
 const { format } = require(__dirname + "/../framework/mesfonctions");
 const s = require(__dirname + "/../set");
 
-const topDivider = "❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒";
+const topDivider = "■■■■■■■■■■■■■■■■";
+const categoryDivider = "■■■■■■■■■■■■■";
 
 function getBotInfo(mode, totalCommands) {
   moment.tz.setDefault("Africa/Nairobi");
@@ -49,14 +50,16 @@ function buildMenu(coms, prefixe) {
 
   for (const cat in coms) {
     const icon = categoryStyles[cat] || "🌐";
-    menu += `╭━━━━━━━━━━━━━━━━━━\n`;
-    menu += `│ ${icon} *${cat.toUpperCase()}*\n`;
+
+    menu += `┃  \n┃  \n`;
+    menu += `┃ ${icon} *${cat.toUpperCase()}*\n`;
 
     coms[cat].forEach((cmd) => {
-      menu += `│ ${prefixe}${cmd}\n`;
+      menu += `┃ ${prefixe}${cmd}\n`;
     });
 
-    menu += `╰━━━━━━━━━━━━━━━━━━\n\n`;
+    menu += `┃  \n┃  \n`;
+    menu += categoryDivider + "\n";
   }
 
   menu += `
