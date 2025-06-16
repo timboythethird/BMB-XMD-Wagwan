@@ -1,6 +1,6 @@
 const fs = require('fs-extra'); const path = require('path'); const { zokou } = require(__dirname + "/../framework/zokou"); const os = require("os"); const moment = require("moment-timezone"); const s = require(__dirname + "/../set");
 
-zokou({ nomCom: "menu", categorie: "General", reaction: "🌟", desc: "Display full command list." }, async (dest, zk, commandeOptions) => { const { ms, arg, repondre, verifCom, prefixe, nomAuteurMessage, depuis, nomBot, auteurMessage } = commandeOptions;
+zokou({ nomCom: "menu9", categorie: "General", reaction: "🌟", desc: "Display full command list." }, async (dest, zk, commandeOptions) => { const { ms, arg, repondre, verifCom, prefixe, nomAuteurMessage, depuis, nomBot, auteurMessage } = commandeOptions;
 
 const imagePath = path.join(__dirname, '../bot/menu.jpg');
 const audioPath = path.join(__dirname, '../bmb/menu1.mp3');
