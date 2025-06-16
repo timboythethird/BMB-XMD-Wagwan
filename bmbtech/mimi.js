@@ -20,7 +20,7 @@ function getBotInfo(mode) {
   return `
 ╭━═「 *B.M.B-TECH* 」═━❂
 ┃⊛╭────••••────➻
-┃⊛│🧑‍💻 *developer*: BMB TEAM
+┃⊛│📌 *Commands*: ${totalCommands}
 ┃⊛│☢️ *mode*: ${mode.toUpperCase()}
 ┃⊛│⌚ *time*: ${currentTime} (EAT)
 ┃⊛│🖥️ *ram*: ${usedRAM} / ${totalRAM}
