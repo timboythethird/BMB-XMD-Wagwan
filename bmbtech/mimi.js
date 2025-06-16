@@ -54,7 +54,7 @@ function buildMenu(coms, prefixe) {
     coms[cat].forEach((cmd) => {
       const line = `${prefixe}${cmd}`;
       const centered = line.padStart((30 + line.length) / 2).padEnd(30);
-      menu += `│${centered}│\n`;
+      menu += `${centered}\n`;
     });
 
     menu += "╰" + "─".repeat(30) + "╯\n";
