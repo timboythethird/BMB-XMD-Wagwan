@@ -1,100 +1,83 @@
-const fs = require('fs-extra');
-const path = require('path');
-const { zokou } = require(__dirname + "/../framework/zokou");
-const os = require("os");
-const moment = require("moment-timezone");
-const s = require(__dirname + "/../set");
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+
+const { zokou } = require("../framework/zokou");
 
 const newsletterContext = {
   contextInfo: {
     forwardingScore: 999,
     isForwarded: true,
     forwardedNewsletterMessageInfo: {
-      newsletterJid: "120363382023564830@newsletter",
-      newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
+      newsletterJid: "120363288304618280@newsletter",
+      newsletterName: "𝐍𝐄𝐗𝐔𝐒-𝐀𝐈",
       serverMessageId: 1
     }
   }
 };
 
-const more = String.fromCharCode(8206);
-const readMore = more.repeat(4001);
-
-zokou({ nomCom: "men", categorie: "General" }, async (dest, zk, commandOptions) => {
-    let { ms, repondre, prefixe, nomAuteurMessage } = commandOptions;
-    let { cm } = require(__dirname + "/../framework/zokou");
-    let commandsByCategory = {};
-    let mode = (s.MODE.toLowerCase() === "yes") ? "PUBLIC" : "PRIVATE";
-
-    cm.map((com) => {
-        if (!commandsByCategory[com.categorie]) commandsByCategory[com.categorie] = [];
-        commandsByCategory[com.categorie].push(com.nomCom);
-    });
-
-    moment.tz.setDefault("Africa/Nairobi");
-    const currentTime = moment().format('HH:mm:ss');
-    const currentDate = moment().format('DD/MM/YYYY');
-
-    let infoMessage = `┏━━━⚡ *B.M.B-TECH-V1* ⚡━━━┓
-┃ 🔥  Hello, *${nomAuteurMessage}*! 🔥
-┣━━━━━━━━━━━━━━━━━━━━━
-┃ 📌 *System Info:*
-┃ 💻 Platform: *${os.platform()}*
-┣━━━━━━━━━━━━━━━━━━━━━
-┃ ⚙️ *Bot Status:*
-┃ 🔘 Mode: *${mode}*
-┃ 🚀 Prefix: *[ ${prefixe} ]*
-┃ ⏳ Time: *${currentTime}*
-┃ 📆 Date: *${currentDate}*
-┣━━━━━━━━━━━━━━━━━━━━━
-┃ ${readMore}
-┃ 🎩 *Command Menu* 🎩
-┣━━━━━━━━━━━━━━━━━━━━━\n`;
-
-    let menuMessage = "";
-
-    for (const category in commandsByCategory) {
-        menuMessage += `┣ 🔹 *${category.toUpperCase()}* 🔹\n`;
-        for (const cmd of commandsByCategory[category]) {
-            menuMessage += `┃   🔸 ${cmd}\n`;
-        }
-        menuMessage += `┣━━━━━━━━━━━━━━━━━━━━━\n`;
-    }
-
-    // Music list from folder
-    const musicFolder = path.join(__dirname, "../bmb");
-    const musicFile = "menu1.mp3";
-    const musicPath = path.join(musicFolder, musicFile);
-
-    if (fs.existsSync(musicPath)) {
-        menuMessage += `┣ 🎵 *Music Playing:* ${musicFile}\n┣━━━━━━━━━━━━━━━━━━━━━\n`;
-    } else {
-        menuMessage += `┣ 🎵 *Music:* No music found\n┣━━━━━━━━━━━━━━━━━━━━━\n`;
-    }
-
-    menuMessage += `┗🌟 *𝙱.𝙼.𝙱-𝚇𝙼𝙳 - Developed by the Best!* 🌟`;
-
-    const imageUrl = "https://files.catbox.moe/7wbud7.jpg";
+zokou(
+  {
+    nomCom: "repo11",
+    catégorie: "Général",
+    reaction: "💥",
+    nomFichier: __filename
+  },
+  async (dest, zk, commandeOptions) => {
+    const githubRepo = 'https://api.github.com/repos/Pkdriller/NEXUS-AI';
+    const img = 'https://files.catbox.moe/v5xs3h.jpg';
+    const audioUrl = 'https://files.catbox.moe/uhfull.mp3';
 
     try {
+      const response = await fetch(githubRepo);
+      const data = await response.json();
+
+      if (data) {
+        const repoInfo = {
+          stars: data.stargazers_count,
+          forks: data.forks_count,
+          lastUpdate: data.updated_at,
+          owner: data.owner.login,
+        };
+
+        const releaseDate = new Date(data.created_at).toLocaleDateString('en-GB');
+        const lastUpdateDate = new Date(data.updated_at).toLocaleDateString('en-GB');
+
+        const gitdata = `*hellow whatsaap user
+this is* *leonard_md.*\n support our channel *by*,  https://whatsapp.com/channel/0029Vad7YNyJuyA77CtIPX0x
+
+_________● *ʟᴇᴏɴᴀʀᴅ* ●____________
+|💥 *ʀᴇᴘᴏsɪᴛᴏʀʏ:* ${data.html_url}
+|🌟 *sᴛᴀʀs:* ${repoInfo.stars}
+|🍽 *ғᴏʀᴋs:* ${repoInfo.forks}
+|⌚️ *ʀᴇʟᴇᴀsᴇ ᴅᴀᴛᴇ:* ${releaseDate}
+|🕐 *ᴜᴘᴅᴀᴛᴇ ᴏɴ:* ${repoInfo.lastUpdate}
+|👨‍💻 *ᴏᴡɴᴇʀ:* *𝐍𝐄𝐗𝐔𝐒-𝐀𝐈*
+|💞 *ᴛʜᴇᴍᴇ:* *𝐍𝐄𝐗𝐔𝐒-𝐀𝐈*
+|🥰*ᴏɴʟʏ ɢᴏᴅ ᴄᴀɴ ᴊᴜᴅɢᴇ ᴍᴇ!👑*
+__________________________________
+            *ᴍᴀᴅᴇ ᴡɪᴛʜ 𝐍𝐄𝐗𝐔𝐒-𝐀𝐈*`;
+
+        // Tuma picha na maandishi
         await zk.sendMessage(dest, {
-            image: { url: imageUrl },
-            caption: infoMessage + menuMessage,
-            footer: "© 𝙱.𝙼.𝙱-𝚇𝙼𝙳",
-            ...newsletterContext
-        }, { quoted: ms });
+          image: { url: img },
+          caption: gitdata,
+          ...newsletterContext
+        });
 
-        if (fs.existsSync(musicPath)) {
-            await zk.sendMessage(dest, {
-                audio: { url: musicPath },
-                mimetype: "audio/mpeg",
-                ptt: true,
-                fileName: "BMB Menu Audio 🎵"
-            }, { quoted: ms });
-        }
+        // Tuma audio
+        await zk.sendMessage(dest, {
+          audio: { url: audioUrl },
+          mimetype: 'audio/mp4',
+          ptt: false,
+          ...newsletterContext
+        });
 
-    } catch (e) {
-        console.log("🥵 Menu error: " + e);
-        repondre("🥵 Menu error: " + e.message);
+      } else {
+        console.log("Could not fetch data");
+      }
+
+    } catch (error) {
+      console.log("Error fetching data:", error);
     }
-});
+  }
+);
