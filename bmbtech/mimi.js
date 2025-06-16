@@ -19,7 +19,7 @@ async function sendUptimeAudio(zk, dest, ms, repondre) {
 }
 
 zokou({
-    nomCom: "uptimee",
+    nomCom: "uptime",
     categorie: "General",
     reaction: "⏱️"
 }, async (dest, zk, { ms, repondre }) => {
@@ -40,8 +40,6 @@ zokou({
 │
 ╰────────────────⳹
 ${config.DESCRIPTION}
-
-🔗 Channel: https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z
 `;
 
     await zk.sendMessage(dest, { text: message }, { quoted: ms });
