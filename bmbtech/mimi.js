@@ -70,7 +70,7 @@ ${topDivider}
 }
 
 async function sendMenuMedia(zk, dest, ms, caption, mentions) {
-  const mediaPath = path.join(__dirname, "../bmb/menu.jpg");
+  const mediaPath = path.join(__dirname, "../bot/menu2.jpg");
 
   if (!fs.existsSync(mediaPath)) {
     return zk.sendMessage(dest, { text: "❌ Menu image not found." }, { quoted: ms });
