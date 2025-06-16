@@ -8,7 +8,8 @@ const { zokou } = require(__dirname + "/../framework/zokou");
 const { format } = require(__dirname + "/../framework/mesfonctions");
 const s = require(__dirname + "/../set");
 
-const topDivider = "❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒";
+const topDivider = "■■■■■■■■■■■■■■■■";
+const categoryDivider = "═════════════";
 
 function getBotInfo(mode, totalCommands) {
   moment.tz.setDefault("Africa/Nairobi");
@@ -33,7 +34,7 @@ function getBotInfo(mode, totalCommands) {
 }
 
 function buildMenu(coms, prefixe) {
-  let menu = `\n📜 *COMMAND INDEX*\n`;
+  let menu = `\n🧾 *COMMAND INDEX*\n\n`;
 
   const categoryStyles = {
     General: "🌐",
@@ -48,16 +49,14 @@ function buildMenu(coms, prefixe) {
   };
 
   for (const cat in coms) {
-    const icon = categoryStyles[cat] || "🌐";
-    menu += `\n╭─── ${icon} *${cat.toUpperCase()}* ───╮\n`;
+    const icon = categoryStyles[cat] || "🚀";
+    menu += `\n${icon} *${cat.toUpperCase()}*\n`;
 
     coms[cat].forEach((cmd) => {
-      const line = `${prefixe}${cmd}`;
-      const centered = line.padStart((30 + line.length) / 2).padEnd(30);
-      menu += `${centered}\n`;
+      menu += `┃❁┃➤ *${prefixe}${cmd}*\n`;
     });
 
-    menu += "╰" + "─".repeat(30) + "╯\n";
+    menu += categoryDivider + "\n";
   }
 
   menu += `
