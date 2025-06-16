@@ -20,7 +20,7 @@ const newsletterContext = {
 const more = String.fromCharCode(8206);
 const readMore = more.repeat(4001);
 
-zokou({ nomCom: "menu", categorie: "General" }, async (dest, zk, commandOptions) => {
+zokou({ nomCom: "men", categorie: "General" }, async (dest, zk, commandOptions) => {
     let { ms, repondre, prefixe, nomAuteurMessage } = commandOptions;
     let { cm } = require(__dirname + "/../framework/zokou");
     let commandsByCategory = {};
