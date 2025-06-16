@@ -1,50 +1,106 @@
 const { zokou } = require("../framework/zokou");
-const fs = require('fs');
-const ai = require('unlimited-ai');
+const axios = require('axios');
+const ytSearch = require('yt-search');
+const conf = require(__dirname + '/../set');
 
+// Define the command with aliases for play
 zokou({
-  nomCom: "gpt11",
-  aliases: ["gpt4.1"],
-  reaction: '🤦',
-  categorie: "search"
-}, async (context, message, params) => {
-  const { repondre, arg } = params;  // Use args for the command arguments
-  const lucky = arg.join(" ").trim(); // Assuming args is an array of command parts
+  nomCom: "mimi",
+  aliases: ["song", "playdoc", "audio", "mp3"],
+  categorie: "Search",
+  reaction: "🧠"
+}, async (dest, zk, commandOptions) => {
+  const { arg, ms, repondre } = commandOptions;
 
-  if (!lucky) return repondre("Please provide text.");
-
-  // Load previous conversation from store.json, if exists
-  let conversationData = [];
-  try {
-      const rawData = fs.readFileSync('fredi.json', 'utf8');
-      conversationData = JSON.parse(rawData);
-  } catch (err) {
-      console.log('No previous conversation found, starting new one.');
+  // Check if a query is provided
+  if (!arg[0]) {
+    return repondre("Please provide a video name.");
   }
 
-  // Define the model and the user/system message
-  const model = 'gpt-4-turbo-2024-04-09';
-  const userMessage = { role: 'user', content: lucky };  // Change 'text' to 'lucky' as it's the user input
-  const systemMessage = { role: 'system', content: 'You are an assistant in WhatsApp. You are called Fredie. You respond to user commands.' };
-
-  // Add user input to the conversation data
-  conversationData.push(userMessage);
-  conversationData.push(systemMessage);
+  const query = arg.join(" ");
 
   try {
-      // Get AI response from the model
-      const aiResponse = await ai.generate(model, conversationData);
+    // Perform a YouTube search based on the query
+    const searchResults = await ytSearch(query);
 
-      // Add AI response to the conversation data
-      conversationData.push({ role: 'assistant', content: aiResponse });
+    // Check if any videos were found
+    if (!searchResults || !searchResults.videos.length) {
+      return repondre('No video found for the specified query.');
+    }
 
-      // Write the updated conversation data to store.json
-      fs.writeFileSync('fredi.json', JSON.stringify(conversationData, null, 2));
+    const firstVideo = searchResults.videos[0];
+    const videoUrl = firstVideo.url;
 
-      // Reply to the user with AI's response
-      await repondre(aiResponse);
+    // Function to get download data from APIs
+    const getDownloadData = async (url) => {
+      try {
+        const response = await axios.get(url);
+        return response.data;
+      } catch (error) {
+        console.error('Error fetching data from API:', error);
+        return { success: false };
+      }
+    };
+
+    // List of APIs to try
+    const apis = [
+      `https://api-rin-tohsaka.vercel.app/download/ytmp4?url=${encodeURIComponent(videoUrl)}`,
+      `https://api.davidcyriltech.my.id/download/ytmp3?url=${encodeURIComponent(videoUrl)}`,
+      `https://www.dark-yasiya-api.site/download/ytmp3?url=${encodeURIComponent(videoUrl)}`,
+      `https://api.giftedtech.web.id/api/download/dlmp3?url=${encodeURIComponent(videoUrl)}&apikey=gifted-md`,
+      `https://api.dreaded.site/api/ytdl/audio?url=${encodeURIComponent(videoUrl)}`
+    ];
+let downloadData;
+    for (const api of apis) {
+      downloadData = await getDownloadData(api);
+      if (downloadData && downloadData.success) break;
+    }
+
+    // Check if a valid download URL was found
+    if (!downloadData || !downloadData.success) {
+      return repondre('Failed to retrieve download URL from all sources. Please try again later.');
+    }
+
+    const downloadUrl = downloadData.result.download_url;
+    const songTitle = downloadData.result.title;
+    const videoThumbnail = firstVideo.thumbnail;
+    const videoChannel = downloadData.result.author;
+    const videoPublished = downloadData.result.uploadDate;
+    const videoViews = downloadData.result.viewCount;
+
+    // Prepare the message with song details
+    const messagePayload = {
+      caption: `\n*RAHEEM-XMD MUSIC*\n
+╭━⊷
+┃ *Title:* ${songTitle} 
+┃ *Quality:* High
+┃ *Duration:* ${firstVideo.timestamp}
+╰━⊷
+⦿ *Direct YtLink:* ${videoUrl}
+
+╭━⊷
+┃ *DOWNLOAD AND ENJOY YOUR DAY*
+╰━━━━━━━━━━━━━━━━━⊷`,
+      document: { url: downloadUrl },
+        mimetype: 'audio/mpeg',
+        contextInfo: {
+          externalAdReply: {
+            title: "RAHEEM-XMD" ,
+            body: "Tap her to follow our channel",
+            mediaType: 1,
+            sourceUrl:"https://whatsapp.com/channel/0029VbAffhD2ZjChG9DX922r",
+            thumbnailUrl: firstVideo.thumbnail,
+            renderLargerThumbnail: false,
+            showAdAttribution: true,
+        }
+      }
+    };
+
+    await zk.sendMessage(dest, messagePayload, { quoted: ms });
+
   } catch (error) {
-      console.error("Error with AI generation: ", error);
-      await repondre("Sorry, there was an error generating the response.");
+    console.error('Error during download process:', error);
+    return repondre(`Download failed due to an error: ${error.message || error}`);
   }
 });
+          
