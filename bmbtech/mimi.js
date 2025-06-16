@@ -1,106 +1,49 @@
-const { zokou } = require('../framework/zokou');
-const { addOrUpdateDataInAlive, getDataFromAlive } = require('../bdd/alive');
-const moment = require("moment-timezone");
-const s = require(__dirname + "/../set");
+const { zokou } = require("../framework/zokou");
+const os = require("os");
 const path = require("path");
 const fs = require("fs");
 
-// Newsletter context
-const newsletterContext = {
-  contextInfo: {
-    forwardingScore: 999,
-    isForwarded: true,
-    forwardedNewsletterMessageInfo: {
-      newsletterJid: "120363382023564830@newsletter",
-      newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
-      serverMessageId: 1
-    }
-  }
+const config = {
+  DESCRIPTION: "🤖 Powered by B.M.B-XMD"
 };
 
-// Function to send audio
-async function sendAliveMusic(zk, dest, ms, repondre) {
-    const audioPath = path.join(__dirname, "../bmb/alive.mp3");
-    if (!fs.existsSync(audioPath)) return repondre(`📁 File not found: ${audioPath}`);
+async function sendUptimeAudio(zk, dest, ms, repondre) {
+    const audioPath = path.join(__dirname, "../bmb/menu1.mp3");
+    if (!fs.existsSync(audioPath)) return repondre("❌ Sauti haijapatikana: menu1.mp3");
     await zk.sendMessage(dest, {
         audio: { url: audioPath },
         mimetype: "audio/mpeg",
         ptt: true,
-        fileName: "🎵 BMB Alive",
-        ...newsletterContext
+        fileName: "🎵 Uptime Sound",
     }, { quoted: ms });
 }
 
-// Function to send image
-async function sendAliveImage(zk, dest, ms, caption, repondre) {
-    const imagePath = path.join(__dirname, "../bot/alive.jpg");
-    if (!fs.existsSync(imagePath)) return repondre(`📁 Image not found: ${imagePath}`);
-    await zk.sendMessage(dest, {
-        image: { url: imagePath },
-        caption: caption,
-        ...newsletterContext
-    }, { quoted: ms });
-}
+zokou({
+    nomCom: "uptimee",
+    categorie: "General",
+    reaction: "⏱️"
+}, async (dest, zk, { ms, repondre }) => {
+    const uptimeSec = os.uptime();
+    const uptimeHours = Math.floor(uptimeSec / 3600);
+    const uptimeMinutes = Math.floor((uptimeSec % 3600) / 60);
+    const uptimeSeconds = Math.floor(uptimeSec % 60);
 
-zokou(
-    {
-        nomCom: 'alive11',
-        categorie: 'General',
-        reaction: "⚡"
-    },
-    async (dest, zk, { ms, arg, repondre, superUser, sender }) => {
-        const data = await getDataFromAlive();
-        const time = moment().tz('Etc/GMT').format('HH:mm:ss');
-        const date = moment().format('DD/MM/YYYY');
-        const mode = (s.MODE.toLowerCase() === "yes") ? "public" : "private";
+    const uptime = `${uptimeHours}h ${uptimeMinutes}m ${uptimeSeconds}s`;
+    const startTime = new Date(Date.now() - uptimeSec * 1000);
 
-        if (!arg || !arg[0]) {
-            let aliveMsg;
+    const message = `
+╭───『 UPTIME 』───⳹
+│
+│ ⏱️ ${uptime}
+│
+│ 🚀 Started: ${startTime.toLocaleString()}
+│
+╰────────────────⳹
+${config.DESCRIPTION}
 
-            if (data) {
-                const { message, lien } = data;
-                aliveMsg = `B.M.B-TECH\n\n◈━━━━━━━━━━━━━━━━◈\n🌲 *🔥 bmb tech is ALIVE!* 🔥\n🌲 *👑 Owner*: ${s.OWNER_NAME}\n🌲 *🌐 Mode*: ${mode}\n🌲 *📅 Date*: ${date}\n🌲 *⏰ Time (GMT)*: ${time}\n🌲 *💬 Message*: ${message}\n🌲 *🤖 Powered by B.M.B-XMD*\n🌲 *📡bot*: 🤖\n◈━━━━━━━━━━━━━━━━◈`;
+🔗 Channel: https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z
+`;
 
-                try {
-                    if (lien) {
-                        if (lien.match(/\.(mp4|gif)$/i)) {
-                            await zk.sendMessage(dest, {
-                                video: { url: lien },
-                                caption: aliveMsg,
-                                ...newsletterContext
-                            }, { quoted: ms });
-                        } else if (lien.match(/\.(jpeg|png|jpg)$/i)) {
-                            await zk.sendMessage(dest, {
-                                image: { url: lien },
-                                caption: aliveMsg,
-                                ...newsletterContext
-                            }, { quoted: ms });
-                        } else {
-                            await sendAliveImage(zk, dest, ms, aliveMsg, repondre);
-                        }
-                    } else {
-                        await sendAliveImage(zk, dest, ms, aliveMsg, repondre);
-                    }
-                } catch (e) {
-                    console.error("Error:", e);
-                    repondre(`❌ Failed to show Alive Message: ${e.message}`);
-                }
-
-                await sendAliveMusic(zk, dest, ms, repondre);
-            } else {
-                aliveMsg = `B.M.B-TECH\n\n◈━━━━━━━━━━━━━━━━◈\n🌲 *🔥 bmb tech is ALIVE!* 🔥\n🌲 *👑 Owner*: ${s.OWNER_NAME}\n🌲 *🌐 Mode*: ${mode}\n🌲 *📅 Date*: ${date}\n🌲*⏰ Time (GMT)*: ${time}\n🌲 *💬 Message*: Yo, I'm bmb tech, ready to rock! Set a custom vibe with *alive [message];[link]*! 😎\n🌲 *🤖 Powered by B.M.B-XMD*\n🌲*📡 bot*: 🤖\n◈━━━━━━━━━━━━━━━━◈`;
-                await sendAliveImage(zk, dest, ms, aliveMsg, repondre);
-                await sendAliveMusic(zk, dest, ms, repondre);
-            }
-        } else {
-            if (!superUser) {
-                repondre("❌ Only the owner can update Alive message.");
-                return;
-            }
-
-            const [texte, tlien] = arg.join(' ').split(';');
-            await addOrUpdateDataInAlive(texte, tlien);
-            repondre(`✅ Alive message updated successfully!`);
-        }
-    }
-);
+    await zk.sendMessage(dest, { text: message }, { quoted: ms });
+    await sendUptimeAudio(zk, dest, ms, repondre);
+});
