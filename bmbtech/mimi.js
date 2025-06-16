@@ -5,6 +5,19 @@ const s = require(__dirname + "/../set");
 const path = require("path");
 const fs = require("fs");
 
+// Newsletter context
+const newsletterContext = {
+  contextInfo: {
+    forwardingScore: 999,
+    isForwarded: true,
+    forwardedNewsletterMessageInfo: {
+      newsletterJid: "120363382023564830@newsletter",
+      newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
+      serverMessageId: 1
+    }
+  }
+};
+
 // Function to send audio
 async function sendAliveMusic(zk, dest, ms, repondre) {
     const audioPath = path.join(__dirname, "../bmb/alive.mp3");
@@ -14,6 +27,7 @@ async function sendAliveMusic(zk, dest, ms, repondre) {
         mimetype: "audio/mpeg",
         ptt: true,
         fileName: "🎵 BMB Alive",
+        ...newsletterContext
     }, { quoted: ms });
 }
 
@@ -23,7 +37,8 @@ async function sendAliveImage(zk, dest, ms, caption, repondre) {
     if (!fs.existsSync(imagePath)) return repondre(`📁 Image not found: ${imagePath}`);
     await zk.sendMessage(dest, {
         image: { url: imagePath },
-        caption: caption
+        caption: caption,
+        ...newsletterContext
     }, { quoted: ms });
 }
 
@@ -51,12 +66,14 @@ zokou(
                         if (lien.match(/\.(mp4|gif)$/i)) {
                             await zk.sendMessage(dest, {
                                 video: { url: lien },
-                                caption: aliveMsg
+                                caption: aliveMsg,
+                                ...newsletterContext
                             }, { quoted: ms });
                         } else if (lien.match(/\.(jpeg|png|jpg)$/i)) {
                             await zk.sendMessage(dest, {
                                 image: { url: lien },
-                                caption: aliveMsg
+                                caption: aliveMsg,
+                                ...newsletterContext
                             }, { quoted: ms });
                         } else {
                             await sendAliveImage(zk, dest, ms, aliveMsg, repondre);
