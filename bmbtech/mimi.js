@@ -5,55 +5,22 @@ const s = require(__dirname + "/../set");
 const path = require("path");
 const fs = require("fs");
 
-// Function to send forwarded channel message
-async function sendForwardedText(zk, dest, ms, text, sender) {
-    await zk.sendMessage(
-        dest,
-        {
-            text,
-            contextInfo: {
-                mentionedJid: [sender],
-                forwardingScore: 999,
-                isForwarded: true,
-                forwardedNewsletterMessageInfo: {
-                    newsletterJid: "120363382023564830@newsletter",
-                    newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
-                    serverMessageId: 143,
-                },
-            },
-        },
-        { quoted: ms }
-    );
-}
-
-// Function to send alive.mp3 from /bot/
+// Function to send audio
 async function sendAliveMusic(zk, dest, ms, repondre) {
-    const audioPath = path.join(__dirname, "../bmb/alive.mp3");
-
-    if (!fs.existsSync(audioPath)) {
-        return repondre(`📁 File not found: ${audioPath}`);
-    }
-
-    await zk.sendMessage(
-        dest,
-        {
-            audio: { url: audioPath },
-            mimetype: "audio/mpeg",
-            ptt: true,
-            fileName: "🎵 BMB Alive",
-        },
-        { quoted: ms }
-    );
+    const audioPath = path.join(__dirname, "../bot/alive.mp3");
+    if (!fs.existsSync(audioPath)) return repondre(`📁 File not found: ${audioPath}`);
+    await zk.sendMessage(dest, {
+        audio: { url: audioPath },
+        mimetype: "audio/mpeg",
+        ptt: true,
+        fileName: "🎵 BMB Alive",
+    }, { quoted: ms });
 }
 
-// Function to send alive.jpg from /bmb/
+// Function to send image
 async function sendAliveImage(zk, dest, ms, caption, repondre) {
-    const imagePath = path.join(__dirname, "../bot/alive.jpg");
-
-    if (!fs.existsSync(imagePath)) {
-        return repondre(`📁 Image not found: ${imagePath}`);
-    }
-
+    const imagePath = path.join(__dirname, "../bmb/alive.jpg");
+    if (!fs.existsSync(imagePath)) return repondre(`📁 Image not found: ${imagePath}`);
     await zk.sendMessage(dest, {
         image: { url: imagePath },
         caption: caption
@@ -62,7 +29,7 @@ async function sendAliveImage(zk, dest, ms, caption, repondre) {
 
 zokou(
     {
-        nomCom: 'alive11',
+        nomCom: 'alive',
         categorie: 'General',
         reaction: "⚡"
     },
@@ -77,7 +44,7 @@ zokou(
 
             if (data) {
                 const { message, lien } = data;
-                aliveMsg = `B.M.B-TECH\n\n◈━━━━━━━━━━━━━━━━◈\n│❒ *🔥 bmb tech is ALIVE!* 🔥\n│❒ *👑 Owner*: ${s.OWNER_NAME}\n│❒ *🌐 Mode*: ${mode}\n│❒ *📅 Date*: ${date}\n│❒ *⏰ Time (GMT)*: ${time}\n│❒ *💬 Message*: ${message}\n│❒ *🤖 Powered by B.M.B-XMD*\n◈━━━━━━━━━━━━━━━━◈`;
+                aliveMsg = `B.M.B-TECH\n\n◈━━━━━━━━━━━━━━━━◈\n│❒ *🔥 bmb tech is ALIVE!* 🔥\n│❒ *👑 Owner*: ${s.OWNER_NAME}\n│❒ *🌐 Mode*: ${mode}\n│❒ *📅 Date*: ${date}\n│❒ *⏰ Time (GMT)*: ${time}\n│❒ *💬 Message*: ${message}\n│❒ *🤖 Powered by B.M.B-XMD*\n│❒ *📡 Channel*: 120363382023564830@newsletter\n◈━━━━━━━━━━━━━━━━◈`;
 
                 try {
                     if (lien) {
@@ -102,12 +69,10 @@ zokou(
                     repondre(`❌ Failed to show Alive Message: ${e.message}`);
                 }
 
-                await sendForwardedText(zk, dest, ms, `*👀 View Channel:*\n\n🔗 https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z`, sender);
                 await sendAliveMusic(zk, dest, ms, repondre);
             } else {
-                aliveMsg = `B.M.B-TECH\n\n◈━━━━━━━━━━━━━━━━◈\n│❒ *🔥 bmb tech is ALIVE!* 🔥\n│❒ *👑 Owner*: ${s.OWNER_NAME}\n│❒ *🌐 Mode*: ${mode}\n│❒ *📅 Date*: ${date}\n│❒ *⏰ Time (GMT)*: ${time}\n│❒ *💬 Message*: Yo, I'm bmb tech, ready to rock! Set a custom vibe with *alive [message];[link]*! 😎\n│❒ *🤖 Powered by B.M.B-XMD*\n◈━━━━━━━━━━━━━━━━◈`;
+                aliveMsg = `B.M.B-TECH\n\n◈━━━━━━━━━━━━━━━━◈\n│❒ *🔥 bmb tech is ALIVE!* 🔥\n│❒ *👑 Owner*: ${s.OWNER_NAME}\n│❒ *🌐 Mode*: ${mode}\n│❒ *📅 Date*: ${date}\n│❒ *⏰ Time (GMT)*: ${time}\n│❒ *💬 Message*: Yo, I'm bmb tech, ready to rock! Set a custom vibe with *alive [message];[link]*! 😎\n│❒ *🤖 Powered by B.M.B-XMD*\n│❒ *📡 Channel*: 120363382023564830@newsletter\n◈━━━━━━━━━━━━━━━━◈`;
                 await sendAliveImage(zk, dest, ms, aliveMsg, repondre);
-                await sendForwardedText(zk, dest, ms, `*👀 View Channel:*\n\n🔗 https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z`, sender);
                 await sendAliveMusic(zk, dest, ms, repondre);
             }
         } else {
