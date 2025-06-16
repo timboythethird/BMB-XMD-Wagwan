@@ -7,7 +7,7 @@ const fs = require("fs");
 
 // Function to send audio
 async function sendAliveMusic(zk, dest, ms, repondre) {
-    const audioPath = path.join(__dirname, "../bot/alive.mp3");
+    const audioPath = path.join(__dirname, "../bmb/alive.mp3");
     if (!fs.existsSync(audioPath)) return repondre(`📁 File not found: ${audioPath}`);
     await zk.sendMessage(dest, {
         audio: { url: audioPath },
@@ -19,7 +19,7 @@ async function sendAliveMusic(zk, dest, ms, repondre) {
 
 // Function to send image
 async function sendAliveImage(zk, dest, ms, caption, repondre) {
-    const imagePath = path.join(__dirname, "../bmb/alive.jpg");
+    const imagePath = path.join(__dirname, "../bot/alive.jpg");
     if (!fs.existsSync(imagePath)) return repondre(`📁 Image not found: ${imagePath}`);
     await zk.sendMessage(dest, {
         image: { url: imagePath },
@@ -29,7 +29,7 @@ async function sendAliveImage(zk, dest, ms, caption, repondre) {
 
 zokou(
     {
-        nomCom: 'alive',
+        nomCom: 'alive11',
         categorie: 'General',
         reaction: "⚡"
     },
