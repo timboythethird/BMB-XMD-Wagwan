@@ -1,93 +1,65 @@
+const { zokou } = require(__dirname + "/../framework/zokou");
+const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
 
-const { zokou } = require("../framework/zokou;
-const axios = require('axios');
-const ytSearch = require('yt-search');
+zokou({ nomCom: "repo11", categorie: "General" }, async (dest, zk, commandeOptions) => {
+    let { ms, repondre } = commandeOptions;
 
-// Define the command with aliases
-zokou({
-  nomCom: "mimi",
-  aliases: ["musicdoc", "ytmp3doc", "audiodoc", "mp3doc"],
-  categorie: "Music",
-  reaction: "🎙️"
-}, async (dest, zk, commandOptions) => {
-  const { arg, ms, repondre } = commandOptions;
+    const repoUrl = "https://api.github.com/repos/bwbxmd/B.M.B-TECH";
+    const imageUrl = "https://files.catbox.moe/o99tj7.jpg";
+    const musicPath = path.join(__dirname, "../bmb/menu1.mp3");
 
-  // Check if a query is provided
-  if (!arg[0]) {
-    return repondre("Please provide a audio document name.");
-  }
+    try {
+        const response = await axios.get(repoUrl);
+        const repo = response.data;
 
-  const query = arg.join(" ");
+        let repoInfo = `
+╭══════════════⊷❍
+┃ 💙 *BMB TECH REPOSITORY* 💙
+┃ ❏ Name: *${repo.name}*
+┃ ❏ Owner: *${repo.owner.login}*
+┃ ❏ Stars: ⭐ *${repo.stargazers_count}*
+┃ ❏ Forks: 🍴 *${repo.forks_count}*
+┃ ❏ Issues: 🛠️ *${repo.open_issues_count}*
+┃ ❏ Watchers: 👀 *${repo.watchers_count}*
+┃ ❏ Language: 🖥️ *${repo.language}*
+┃ ❏ Branch: 🌿 *${repo.default_branch}*
+┃ ❏ Last Updated: 📅 *${new Date(repo.updated_at).toLocaleString()}*
+┃ ❏ Repo Link: 🔗 [Click Here](${repo.html_url})
+╰══════════════⊷❍
+        `;
 
-  try {
-    // Perform a YouTube search based on the query
-    const searchResults = await ytSearch(query);
+        // Send repository info with image
+        await zk.sendMessage(dest, {
+            image: { url: imageUrl },
+            caption: repoInfo,
+            footer: "*BMB TECH GitHub Repository*",
+            contextInfo: {
+                forwardingScore: 999,
+                isForwarded: true,
+                forwardedNewsletterMessageInfo: {
+                    newsletterJid: "120363382023564830@newsletter",
+                    newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
+                    serverMessageId: 1
+                }
+            },
+        }, { quoted: ms });
 
-    // Check if any videos were found
-    if (!searchResults || !searchResults.videos.length) {
-      return repondre('No audio document found for the specified query.');
+        // Check if music file exists
+        if (fs.existsSync(musicPath)) {
+            await zk.sendMessage(dest, {
+                audio: { url: musicPath },
+                mimetype: "audio/mpeg",
+                ptt: true,
+                fileName: "BMB Music 🎵",
+            }, { quoted: ms });
+        } else {
+            repondre("⚠️ Music file not found: bmb/menu1.mp3");
+        }
+
+    } catch (e) {
+        console.log("❌ Error fetching repository data: " + e);
+        repondre("❌ Error fetching repository data, please try again later.");
     }
-
-    const firstVideo = searchResults.videos[0];
-    const videoUrl = firstVideo.url;
-
-    // Function to get download data from APIs
-    const getDownloadData = async (url) => {
-      try {
-        const response = await axios.get(url);
-        return response.data;
-      } catch (error) {
-        console.error('Error fetching data from API:', error);
-        return { success: false };
-      }
-    };
-
-    // List of APIs to try
-    const apis = [
-      `https://api-rin-tohsaka.vercel.app/download/ytmp4?url=${encodeURIComponent(videoUrl)}`,
-      `https://api.davidcyriltech.my.id/download/ytmp3?url=${encodeURIComponent(videoUrl)}`,
-      `https://www.dark-yasiya-api.site/download/ytmp3?url=${encodeURIComponent(videoUrl)}`,
-      `https://api.giftedtech.web.id/api/download/dlmp3?url=${encodeURIComponent(videoUrl)}&apikey=raheem-xmd`,
-      `https://api.dreaded.site/api/ytdl/audio?url=${encodeURIComponent(videoUrl)}`
-    ];
-
-    let downloadData;
-    for (const api of apis) {
-      downloadData = await getDownloadData(api);
-      if (downloadData && downloadData.success) break;
-    }
-
-    // Check if a valid download URL was found
-    if (!downloadData || !downloadData.success) {
-      return repondre('Failed to retrieve download URL from all sources. Please try again later.');
-    }
-
-    const downloadUrl = downloadData.result.download_url;
-    const videoDetails = downloadData.result;
-
-    // Prepare the message payload with external ad details
-    const messagePayload = {
-      document: { url: downloadUrl },
-      mimetype: 'audio/mp4',
-      contextInfo: {
-        externalAdReply: {
-          title: videoDetails.title,
-          body: videoDetails.title,
-          mediaType: 1,
-          sourceUrl: 'https://whatsapp.com/channel/0029VbAffhD2ZjChG9DX922r',
-          thumbnailUrl: firstVideo.thumbnail,
-          renderLargerThumbnail: false,
-          showAdAttribution: true,
-        },
-      },
-    };
-
-    // Send the download link to the user
-    await zk.sendMessage(dest, messagePayload, { quoted: ms });
-
-  } catch (error) {
-    console.error('Error during download process:', error);
-    return repondre(`Download failed due to an error: ${error.message || error}`);
-  }
 });
-      
