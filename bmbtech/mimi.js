@@ -8,8 +8,8 @@ const newsletterContext = {
     forwardingScore: 999,
     isForwarded: true,
     forwardedNewsletterMessageInfo: {
-      newsletterJid: "120363288304618280@newsletter",
-      newsletterName: "𝐍𝐄𝐗𝐔𝐒-𝐀𝐈",
+      newsletterJid: "120363382023564830@newsletter",
+      newsletterName: "𝙱.𝙼.𝙱-𝚇𝙼𝙳",
       serverMessageId: 1
     }
   }
@@ -23,8 +23,8 @@ zokou(
     nomFichier: __filename
   },
   async (dest, zk, commandeOptions) => {
-    const githubRepo = 'https://api.github.com/repos/Pkdriller/NEXUS-AI';
-    const img = 'https://files.catbox.moe/v5xs3h.jpg';
+    const githubRepo = 'https://api.github.com/repos/Zedkazzozoranda091/LEONARD-MD';
+    const gifUrl = 'https://files.catbox.moe/0qk98h.mp4'; // Hii ndio gif mpya (mp4)
     const audioUrl = 'https://files.catbox.moe/uhfull.mp3';
 
     try {
@@ -42,7 +42,8 @@ zokou(
         const releaseDate = new Date(data.created_at).toLocaleDateString('en-GB');
         const lastUpdateDate = new Date(data.updated_at).toLocaleDateString('en-GB');
 
-        const gitdata = `*𝐍𝐄𝐗𝐔𝐒-𝐀𝐈*
+        const gitdata = `*hellow whatsaap user
+this is* *leonard_md.*\n support our channel *by*,  https://whatsapp.com/channel/0029VakLfckBlHpYVxryFJ14
 
 _________● *ʟᴇᴏɴᴀʀᴅ* ●____________
 |💥 *ʀᴇᴘᴏsɪᴛᴏʀʏ:* ${data.html_url}
@@ -50,20 +51,21 @@ _________● *ʟᴇᴏɴᴀʀᴅ* ●____________
 |🍽 *ғᴏʀᴋs:* ${repoInfo.forks}
 |⌚️ *ʀᴇʟᴇᴀsᴇ ᴅᴀᴛᴇ:* ${releaseDate}
 |🕐 *ᴜᴘᴅᴀᴛᴇ ᴏɴ:* ${repoInfo.lastUpdate}
-|👨‍💻 *ᴏᴡɴᴇʀ:* *𝐍𝐄𝐗𝐔𝐒-𝐀𝐈*
-|💞 *ᴛʜᴇᴍᴇ:* *𝐍𝐄𝐗𝐔𝐒-𝐀𝐈*
+|👨‍💻 *ᴏᴡɴᴇʀ:* *ʟᴇᴏɴᴀʀᴅ ᴛᴇᴄʜ*
+|💞 *ᴛʜᴇᴍᴇ:* *ʟᴇᴏɴᴀʀᴅ*
 |🥰*ᴏɴʟʏ ɢᴏᴅ ᴄᴀɴ ᴊᴜᴅɢᴇ ᴍᴇ!👑*
 __________________________________
-            *ᴍᴀᴅᴇ ᴡɪᴛʜ 𝐍𝐄𝐗𝐔𝐒-𝐀𝐈*`;
+            *ᴍᴀᴅᴇ ᴡɪᴛʜ ʟᴇᴏɴᴀʀᴅ ᴛᴇᴄʜ*`;
 
-        // Tuma picha na maandishi
+        // Tuma GIF (mp4) na caption
         await zk.sendMessage(dest, {
-          image: { url: img },
+          video: { url: gifUrl },
           caption: gitdata,
+          gifPlayback: true,
           ...newsletterContext
         });
 
-        // Tuma audio
+        // Tuma Audio
         await zk.sendMessage(dest, {
           audio: { url: audioUrl },
           mimetype: 'audio/mp4',
