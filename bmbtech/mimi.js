@@ -11,7 +11,7 @@ const more = String.fromCharCode(8206);
 const readmore = more.repeat(4001);
 
 zokou(
-  { nomCom: "menu1", categorie: "Menu" },
+  { nomCom: "menu11", categorie: "Menu" },
   async (dest, zk, commandeOptions) => {
     let { ms, repondre, prefixe } = commandeOptions;
     let { cm } = require(__dirname + "/../framework/zokou");
