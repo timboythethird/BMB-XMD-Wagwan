@@ -8,8 +8,8 @@ const { zokou } = require(__dirname + "/../framework/zokou");
 const { format } = require(__dirname + "/../framework/mesfonctions");
 const s = require(__dirname + "/../set");
 
-const topDivider = "❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒";
-const categoryDivider = "❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒❒";
+const topDivider = "❒❒❒❒❒❒❒❒❒❒❒";
+const categoryDivider = "❒❒❒❒❒❒❒❒❒❒❒❒";
 
 function getBotInfo(mode, commandCount) {
   moment.tz.setDefault("Africa/Dar_es_Salaam");
@@ -21,7 +21,6 @@ function getBotInfo(mode, commandCount) {
   return `
 ╭━═「 *B.M.B-TECH* 」═━❂
 ┃⊛╭────••••────➻
-┃⊛│🧑‍💻 *Developer*: @255767862457
 ┃⊛│📅 *Date*: ${currentDate}
 ┃⊛│⌚ *Time*: ${currentTime} (EAT)
 ┃⊛│📦 *Commands Count*: ${commandCount} total
@@ -61,11 +60,7 @@ function buildMenu(coms, prefixe) {
   }
 
   menu += `
-👨‍💻 *DEVELOPERS*
- ┗ @255767862457 (Main Dev)
- ┗ @255767862457 (bmb Team)
-
-📡 Powered by *B.M.B-TECH SYSTEM*
+ *B.M.B-TECH BOT*
 ${topDivider}
 `;
 
