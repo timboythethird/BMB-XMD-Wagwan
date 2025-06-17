@@ -1,3 +1,4 @@
+
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
@@ -5,7 +6,7 @@ var __createBinding = (this && this.__createBinding) || (Object.create ? (functi
     if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
       desc = { enumerable: true, get: function() { return m[k]; } };
     }
-    Object.defineProperty(o, k2, desc); 
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -15,6 +16,7 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
+
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
     var result = {};
@@ -52,8 +54,10 @@ const prefixe = conf.PREFIXE;
 const more = String.fromCharCode(8206)
 const readmore = more.repeat(4001)
 
+
 async function authentification() {
     try {
+       
         //console.log("le data "+data)
         if (!fs.existsSync(__dirname + "/auth/creds.json")) {
             console.log("connexion en cour ...");
@@ -80,7 +84,7 @@ setTimeout(() => {
         const sockOptions = {
             version,
             logger: pino({ level: "silent" }),
-            browser: ['Bmw-Md', "safari", "1.0.0"],
+            browser: ['Raheem_xmd', "safari", "1.0.0"],
             printQRInTerminal: true,
             fireInitQueries: false,
             shouldSyncHistoryMessage: true,
@@ -107,688 +111,46 @@ setTimeout(() => {
             ///////
         };
         const zk = (0, baileys_1.default)(sockOptions);
-store.bind(zk.ev);
-        
-        
+        store.bind(zk.ev);
+        // Replace the status reaction code with this:
 
-// Function to get the current date and time in Kenya
-function getCurrentDateTime() {
-    const options = {
-        timeZone: 'Africa/Nairobi', // Kenya time zone
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-        hour12: false, // 24-hour format
-    };
-    const dateTime = new Intl.DateTimeFormat('en-KE', options).format(new Date());
-    return dateTime;
-}
-
-// Auto Bio Update Interval
-setInterval(async () => {
-    if (conf.AUTO_BIO === "yes") {
-        const currentDateTime = getCurrentDateTime(); // Get the current date and time
-        const bioText = `bmb tech is online!\n${currentDateTime}`; // Format the bio text
-        await zk.updateProfileStatus(bioText); // Update the bio
-        console.log(`Updated Bio: ${bioText}`); // Log the updated bio
-    }
-}, 60000); // Update bio every 60 seconds
-
-// Function to handle deleted messages
-// Other functions (auto-react, anti-delete, etc.) as needed
-        zk.ev.on("call", async (callData) => {
-  if (conf.ANTICALL === 'yes') {
-    const callId = callData[0].id;
-    const callerId = callData[0].from;
-
-    await zk.rejectCall(callId, callerId);
-    await zk.sendMessage(callerId, {
-      text: "Am bmb tech,, My owner is unavailable try again later"
-    });
-  }
-});
-  // Utility function for delay
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-
-// Track the last reaction time to prevent overflow
-let lastReactionTime = 0;
-
-
-// Array of reaction emojis for regular messages and status updates
-// Array of reaction emojis for regular messages and status updates
-const emojiMap = {
-    // General Greetings
-    "hello": ["👋", "🙂", "😊", "🙋‍♂️", "🙋‍♀️"],
-    "hi": ["👋", "🙂", "😁", "🙋‍♂️", "🙋‍♀️"],
-    "good morning": ["🌅", "🌞", "☀️", "🌻", "🌼"],
-    "good night": ["🌙", "🌜", "⭐", "🌛", "💫"],
-    
-    // Farewells
-    "bye": ["👋", "😢", "👋🏻", "🥲", "🚶‍♂️", "🚶‍♀️"],
-    "see you": ["👋", "😊", "👋🏻", "✌️", "🚶‍♂️"],
-    
-    // Casual Conversations
-    "bro": ["🤜🤛", "👊", "💥", "🥊", "👑"],
-    "sister": ["👭", "💁‍♀️", "🌸", "💖", "🙋‍♀️"],
-    "buddy": ["🤗", "👯‍♂️", "👯‍♀️", "🤜🤛", "🤝"],
-    "niaje": ["👋", "😄", "💥", "🔥", "🕺", "💃"],
-    
-    // Names (can be expanded with more names as needed)
-    "fredi": ["😎", "💯", "🔥", "🚀", "👑"],
-    "ezra": ["🔥", "💥", "👑", "💯", "😎"],
-    
-    // Expressions of gratitude
-    "thanks": ["🙏", "😊", "💖", "❤️", "💐"],
-    "thank you": ["🙏", "😊", "🙌", "💖", "💝"],
-    
-    // Love and Affection
-    "love": ["❤️", "💖", "💘", "😍", "😘", "💍", "💑"],
-    "miss you": ["😢", "💔", "😔", "😭", "💖"],
-    
-    // Apologies
-    "sorry": ["😔", "🙏", "😓", "💔", "🥺"],
-    "apologies": ["😔", "💔", "🙏", "😞", "🙇‍♂️", "🙇‍♀️"],
-    
-    // Celebrations
-    "congratulations": ["🎉", "🎊", "🏆", "🎁", "👏"],
-    "well done": ["👏", "💪", "🎉", "🎖️", "👍"],
-    "good job": ["👏", "💯", "👍", "🌟", "🎉"],
-    
-    // Emotions
-    "happy": ["😁", "😊", "🎉", "🎊", "💃", "🕺"],
-    "sad": ["😢", "😭", "😞", "💔", "😓"],
-    "angry": ["😡", "🤬", "😤", "💢", "😾"],
-    "excited": ["🤩", "🎉", "😆", "🤗", "🥳"],
-    "surprised": ["😲", "😳", "😯", "😮", "😲"],
-    
-    // Questions & Inquiries
-    "help": ["🆘", "❓", "🙏", "💡", "👨‍💻", "👩‍💻"],
-    "how": ["❓", "🤔", "😕", "😳", "🧐"],
-    "what": ["❓", "🤷‍♂️", "🤷‍♀️", "😕", "😲"],
-    "where": ["❓", "🌍", "🗺️", "🏙️", "🌎"],
-    
-    // Social Interactions
-    "party": ["🎉", "🥳", "🍾", "🍻", "🎤", "💃", "🕺"],
-    "fun": ["🤣", "😂", "🥳", "🎉", "🎮", "🎲"],
-    "hangout": ["🍕", "🍔", "🍻", "🎮", "🍿", "😆"],
-    
-    // Positive Words
-    "good": ["👍", "👌", "😊", "💯", "🌟"],
-    "awesome": ["🔥", "🚀", "🤩", "👏", "💥"],
-    "cool": ["😎", "👌", "🎮", "🎸", "💥"],
-    
-    // Negative Words
-    "boring": ["😴", "🥱", "🙄", "😑", "🤐"],
-    "tired": ["😴", "🥱", "😌", "💤", "🛌"],
-    
-    // Random / Fun Words
-    "bot": ["🤖", "💻", "⚙️", "🧠", "🔧"],
-    "robot": ["🤖", "⚙️", "💻", "🔋", "🤓"],
-    "cool bot": ["🤖", "😎", "🤘", "💥", "🎮"],
-    
-    // Miscellaneous
-    "love you": ["❤️", "💖", "😘", "💋", "💑"],
-    "thank you bot": ["🙏", "🤖", "😊", "💖", "💐"],
-    "good night bot": ["🌙", "🌛", "⭐", "💤", "😴"],
-    
-    // Words Based on Emotions
-    "laughter": ["😂", "🤣", "😆", "😄", "🤪"],
-    "crying": ["😢", "😭", "😿", "😓", "💔"],
-    
-    // Names & Nicknames
-    "john": ["👑", "🔥", "💥", "😎", "💯"],
-    "mike": ["💪", "🏆", "🔥", "💥", "🚀"],
-    "lisa": ["💖", "👑", "🌸", "😍", "🌺"],
-    "emily": ["💖", "💃", "👑", "🎉", "🎀"],
-    
-    "happy": ["😁", "😄", "😊", "🙌", "🎉", "🥳", "💃", "🕺", "🔥"],
-    "excited": ["🤩", "🎉", "🥳", "🎊", "😆", "🤗", "💥", "🚀"],
-    "love": ["❤️", "💖", "💘", "💝", "😍", "😘", "💍", "💑", "🌹"],
-    "grateful": ["🙏", "💐", "🥰", "❤️", "😊"],
-    "thankful": ["🙏", "💖", "💐", "🤗", "😇"],
-    
-    // Negative emotions
-    "sad": ["😢", "😭", "😞", "💔", "😔", "😓", "😖"],
-    "angry": ["😡", "😠", "🤬", "💢", "👊", "💥", "⚡"],
-    "frustrated": ["😤", "😩", "🤯", "😑", "🌀"],
-    "bored": ["😴", "🥱", "🙄", "😑", "😒"],
-    
-    // Expressions of surprise
-    "surprised": ["😲", "😳", "😮", "😯", "😲", "🙀"],
-    "shocked": ["😱", "😳", "😯", "💥", "🤯"],
-    "wow": ["😲", "😱", "🤩", "🤯", "💥", "🚀"],
-    
-    // Emotions of sadness or loss
-    "crying": ["😭", "😢", "💔", "😞", "😓"],
-    "miss you": ["😭", "💔", "😔", "😢", "❤️"],
-    "lonely": ["😔", "😭", "😢", "💔", "🙁"],
-    
-    // Asking for help
-    "help": ["🆘", "❓", "🤔", "🙋‍♂️", "🙋‍♀️", "💡"],
-    "need assistance": ["🆘", "💁‍♂️", "💁‍♀️", "❓", "🙏"],
-    
-    // Apologies
-    "sorry": ["😔", "🙏", "💔", "😓", "🥺", "🙇‍♂️", "🙇‍♀️"],
-    "apology": ["😔", "😞", "🙏", "💔", "🙇‍♂️", "🙇‍♀️"],
-    
-    // Motivation and encouragement
-    "good job": ["👏", "💯", "🎉", "🌟", "👍", "👏"],
-    "well done": ["👏", "🎉", "🎖️", "💪", "🔥", "🏆"],
-    "you can do it": ["💪", "🔥", "💯", "🚀", "🌟"],
-    
-    // Celebrations
-    "congratulations": ["🎉", "🏆", "🎊", "🎁", "👏", "🍾"],
-    "cheers": ["🥂", "🍻", "🍾", "🍷", "🥳", "🎉"],
-    
-    // Casual goodbyes
-    "goodbye": ["👋", "😢", "💔", "👋🏻", "🚶‍♂️", "🚶‍♀️"],
-    "bye": ["👋", "👋🏻", "🥲", "🚶‍♂️", "🚶‍♀️"],
-    "see you": ["👋", "👋🏻", "🤗", "✌️", "🙋‍♂️", "🙋‍♀️"],
-    
-    // Greetings and hellos
-    "hello": ["👋", "🙂", "😊", "🙋‍♂️", "🙋‍♀️"],
-    "hi": ["👋", "🙂", "😁", "🙋‍♂️", "🙋‍♀️"],
-    
-    // Fun and games
-    "party": ["🎉", "🥳", "🎤", "💃", "🕺", "🍻", "🎶"],
-    "fun": ["🎮", "🎲", "🤣", "🎉", "🃏"],
-    "play": ["🎮", "🏀", "⚽", "🎾", "🎱", "🎲", "🏆"],
-    
-    // Daily life
-    "work": ["💻", "🖥️", "💼", "📅", "📝"],
-    "school": ["📚", "🏫", "🎒", "👨‍🏫", "👩‍🏫"],
-    "study": ["📖", "📝", "💡", "📚", "🎓"],
-    
-    // Seasons & Nature
-    "summer": ["🌞", "🏖️", "🌴", "🍉", "🌻"],
-    "winter": ["❄️", "☃️", "🎿", "🔥", "⛄"],
-    "autumn": ["🍁", "🍂", "🎃", "🍂", "🍁"],
-    "spring": ["🌸", "🌼", "🌷", "🌱", "🌺"],
-    
-    // Special Days
-    "birthday": ["🎂", "🎉", "🎁", "🎈", "🎊"],
-    "anniversary": ["💍", "🎉", "🎁", "🎈", "💑"],
-    
-    // Miscellaneous
-    "robot": ["🤖", "⚙️", "🔧", "🤖", "🧠"],
-    "bot": ["🤖", "🧠", "⚙️", "💻", "🖥️"],
-    "thanks": ["🙏", "💖", "😊", "❤️", "💐"],
-    "good luck": ["🍀", "🍀", "💯", "🍀", "🎯"],
-    
-    // Greetings by names
-    "john": ["👑", "🔥", "💥", "😎", "💯"],
-    "mike": ["💪", "🏆", "🔥", "💥", "🚀"],
-    "lisa": ["💖", "👑", "🌸", "😍", "🌺"],
-    "emily": ["💖", "💃", "👑", "🎉", "🎀"],
-    
-    // Others
-    "food": ["🍕", "🍔", "🍟", "🍲", "🍣", "🍩"],
-    "drink": ["🍺", "🍷", "🥂", "🍾", "🥤"],
-    "coffee": ["☕", "🥤", "🍵", "🥶"],
-    "tea": ["🍵", "🫖", "🍂", "🍃"],
-                
-
-    // Emotions and Moods
-    "excited": ["🤩", "🎉", "🥳", "💥", "🚀", "😆", "😜"],
-    "nervous": ["😬", "😰", "🤞", "🧠", "👐"],
-    "confused": ["🤔", "😕", "🧐", "😵", "🤷‍♂️", "🤷‍♀️"],
-    "embarrassed": ["😳", "😳", "🙈", "😳", "😬", "😅"],
-    "hopeful": ["🤞", "🌠", "🙏", "🌈", "💫"],
-    "shy": ["😊", "😳", "🙈", "🫣", "🫶"],
-    
-    // People and Relationships
-    "family": ["👨‍👩‍👧‍👦", "👩‍👧", "👩‍👧‍👦", "👨‍👩‍👧", "💏", "👨‍👨‍👧‍👦", "👩‍👩‍👧‍👦"],
-    "friends": ["👯‍♂️", "👯‍♀️", "🤗", "🫶", "💫", "🤝"],
-    "relationship": ["💑", "❤️", "💍", "🥰", "💏", "💌"],
-    "couple": ["👩‍❤️‍👨", "👨‍❤️‍👨", "👩‍❤️‍👩", "💍", "💑", "💏"],
-    "best friend": ["🤗", "💖", "👯‍♀️", "👯‍♂️", "🙌"],
-    "love you": ["❤️", "😘", "💖", "💘", "💓", "💗"],
-    
-    // Travel and Adventure
-    "vacation": ["🏖️", "🌴", "✈️", "🌊", "🛳️", "🏞️", "🏕️"],
-    "beach": ["🏖️", "🌊", "🏄‍♀️", "🩴", "🏖️", "🌴", "🦀"],
-    "road trip": ["🚗", "🚙", "🛣️", "🌄", "🌟"],
-    "mountain": ["🏞️", "⛰️", "🏔️", "🌄", "🏕️", "🌲"],
-    "city": ["🏙️", "🌆", "🗽", "🌇", "🚖", "🏙️"],
-    "exploration": ["🌍", "🧭", "🌎", "🌍", "🧳", "📍", "⛵"],
-    
-    // Time and Date
-    "morning": ["🌅", "☀️", "🌞", "🌄", "🌻", "🕶️"],
-    "afternoon": ["🌞", "🌤️", "⛅", "🌻", "🌇"],
-    "night": ["🌙", "🌛", "🌜", "⭐", "🌚", "💫"],
-    "evening": ["🌙", "🌛", "🌇", "🌓", "💫"],
-    "goodnight": ["🌙", "😴", "💤", "🌜", "🛌", "🌛", "✨"],
-    
-    // Work and Productivity
-    "productivity": ["💻", "📊", "📝", "💼", "📅", "📈"],
-    "office": ["🖥️", "💼", "🗂️", "📅", "🖋️"],
-    "workout": ["🏋️‍♀️", "💪", "🏃‍♂️", "🏃‍♀️", "🤸‍♀️", "🚴‍♀️", "🏋️‍♂️"],
-    "study hard": ["📚", "📝", "📖", "💡", "💼"],
-    "focus": ["🔍", "🎯", "💻", "🧠", "🤓"],
-    
-    // Food and Drinks
-    "food": ["🍕", "🍔", "🍟", "🍖", "🍖", "🥗", "🍣", "🍲"],
-    "drink": ["🍹", "🥤", "🍷", "🍾", "🍸", "🍺", "🥂", "☕"],
-    "coffee": ["☕", "🧃", "🍵", "🥤", "🍫"],
-    "cake": ["🍰", "🎂", "🍩", "🍪", "🍫", "🧁"],
-    "ice cream": ["🍦", "🍧", "🍨", "🍪"],
-    
-    // Animals
-    "cat": ["🐱", "😺", "🐈", "🐾"],
-    "dog": ["🐶", "🐕", "🐩", "🐕‍🦺", "🐾"],
-    "bird": ["🐦", "🦉", "🦅", "🐦"],
-    "fish": ["🐟", "🐠", "🐡", "🐡", "🐙"],
-    "rabbit": ["🐰", "🐇", "🐹", "🐾"],
-    "lion": ["🦁", "🐯", "🐅", "🐆"],
-    "bear": ["🐻", "🐨", "🐼", "🐻‍❄️"],
-    "elephant": ["🐘", "🐘"],
-    
-    // Nature and Outdoors
-    "sun": ["☀️", "🌞", "🌄", "🌅", "🌞"],
-    "rain": ["🌧️", "☔", "🌈", "🌦️", "🌧️"],
-    "snow": ["❄️", "⛄", "🌨️", "🌬️", "❄️"],
-    "wind": ["💨", "🌬️", "🌪️", "🌬️"],
-    "earth": ["🌍", "🌏", "🌎", "🌍", "🌱", "🌳"],
-    
-    // Technology
-    "phone": ["📱", "☎️", "📞", "📲", "📡"],
-    "computer": ["💻", "🖥️", "⌨️", "🖱️", "🖥️"],
-    "internet": ["🌐", "💻", "📶", "📡", "🔌"],
-    "software": ["💻", "🖥️", "🧑‍💻", "🖱️", "💡"],
-    
-    // Miscellaneous
-    "star": ["⭐", "🌟", "✨", "🌠", "💫"],
-    "light": ["💡", "🔦", "✨", "🌟", "🔆"],
-    "money": ["💵", "💰", "💸", "💳", "💶"],
-    "victory": ["✌️", "🏆", "🎉", "🎖️", "🎊"],
-    "gift": ["🎁", "🎀", "🎉", "🎁"],
-    "fire": ["🔥", "💥", "🌋", "🔥", "💣"],
-    
-    // Hobbies and Interests
-    "music": ["🎵", "🎶", "🎧", "🎤", "🎸", "🎹"],
-    "sports": ["⚽", "🏀", "🏈", "🎾", "🏋️‍♂️", "🏃‍♀️", "🏆", "🥇"],
-    "games": ["🎮", "🕹️", "🎲", "🎯", "🧩"],
-    "art": ["🎨", "🖌️", "🖼️", "🎭", "🖍️"],
-    "photography": ["📷", "📸", "📸", "🖼️", "🎥"],
-    "reading": ["📚", "📖", "📚", "📰"],
-    "craft": ["🧵", "🪡", "✂️", "🪢", "🧶"],
-
-    "hello": ["👋", "🙂", "😊"],
-    "hey": ["👋", "🙂", "😊"],
-    "hi": ["👋", "🙂", "😊"],
-    "bye": ["👋", "😢", "👋"],
-    "goodbye": ["👋", "😢", "🙋‍♂️"],
-    "thanks": ["🙏", "😊", "🌹"],
-    "thank you": ["🙏", "😊", "🌸"],
-    "welcome": ["😊", "😄", "🌷"],
-    "congrats": ["🎉", "👏", "🥳"],
-    "congratulations": ["🎉", "👏", "🥳"],
-    "good job": ["👏", "👍", "🙌"],
-    "great": ["👍", "💪", "😄"],
-    "cool": ["😎", "🤙", "🔥"],
-    "ok": ["👌", "👍", "✅"],
-    
-    // Emotions
-    "love": ["❤️", "💕", "💖"],
-    "like": ["👍", "❤️", "👌"],
-    "happy": ["😊", "😁", "🙂"],
-    "joy": ["😁", "😆", "😂"],
-    "laugh": ["😂", "🤣", "😁"],
-    "sad": ["😢", "😭", "☹️"],
-    "cry": ["😭", "😢", "😿"],
-    "angry": ["😡", "😠", "💢"],
-    "mad": ["😠", "😡", "😤"],
-    "shocked": ["😲", "😱", "😮"],
-    "scared": ["😱", "😨", "😧"],
-    "sleep": ["😴", "💤", "😌"],
-    "bored": ["😐", "😑", "🙄"],
-    "excited": ["🤩", "🥳", "🎉"],
-    "party": ["🥳", "🎉", "🍾"],
-    "kiss": ["😘", "💋", "😍"],
-    "hug": ["🤗", "❤️", "💕"],
-    "peace": ["✌️", "🕊️", "✌️"],
-
-    // Food and Drinks (and so on for other categories)
-    "pizza": ["🍕", "🥖", "🍟"],
-    "coffee": ["☕", "🥤", "🍵"],
-    "water": ["💧", "💦", "🌊"],
-    "wine": ["🍷", "🍸", "🍾"],
-    // Utility function for delay
-
-    // Greetings and Social Expressions
-    "hello": ["👋", "🙂", "😊", "😃", "😄"],
-    "hey": ["👋", "😊", "🙋", "😄", "😁"],
-    "hi": ["👋", "😀", "😁", "😃", "🙂"],
-    "bye": ["👋", "😢", "🙋‍♂️", "😞", "😔"],
-    "goodbye": ["👋", "😢", "🙋‍♀️", "😔", "😭"],
-    "thanks": ["🙏", "😊", "🌹", "🤲", "🤗"],
-    "thank you": ["🙏", "💐", "🤲", "🥰", "😌"],
-    "welcome": ["😊", "😄", "🌸", "🙂", "💖"],
-    "congrats": ["🎉", "👏", "🥳", "💐", "🎊"],
-    "congratulations": ["🎉", "👏", "🥳", "🎊", "🍾"],
-    "good job": ["👏", "👍", "🙌", "💪", "🤩"],
-    "great": ["👍", "💪", "😄", "🔥", "✨"],
-    "cool": ["😎", "🤙", "🔥", "👌", "🆒"],
-    "ok": ["👌", "👍", "✅", "😌", "🤞"],
-    
-    // Emotions
-    "love": ["❤️", "💕", "💖", "💗", "😍"],
-    "like": ["👍", "❤️", "👌", "😌", "💓"],
-    "happy": ["😊", "😁", "🙂", "😃", "😄"],
-    "joy": ["😁", "😆", "😂", "😊", "🤗"],
-    "laugh": ["😂", "🤣", "😁", "😹", "😄"],
-    "sad": ["😢", "😭", "☹️", "😞", "😔"],
-    "cry": ["😭", "😢", "😿", "💧", "😩"],
-    "angry": ["😡", "😠", "💢", "😤", "🤬"],
-    "mad": ["😠", "😡", "😤", "💢", "😒"],
-    "shocked": ["😲", "😱", "😮", "😯", "😧"],
-    "scared": ["😱", "😨", "😧", "😰", "😳"],
-    "sleep": ["😴", "💤", "😌", "😪", "🛌"],
-    "bored": ["😐", "😑", "🙄", "😒", "🤦"],
-    "excited": ["🤩", "🥳", "🎉", "😄", "✨"],
-    "party": ["🥳", "🎉", "🎊", "🍾", "🎈"],
-    "kiss": ["😘", "💋", "😍", "💖", "💏"],
-    "hug": ["🤗", "❤️", "💕", "💞", "😊"],
-    "peace": ["✌️", "🕊️", "🤞", "💫", "☮️"],
-
-    // Food and Drinks
-    "pizza": ["🍕", "🥖", "🍟", "🍔", "🍝"],
-    "burger": ["🍔", "🍟", "🥓", "🥪", "🌭"],
-    "fries": ["🍟", "🍔", "🥤", "🍿", "🧂"],
-    "coffee": ["☕", "🥤", "🍵", "🫖", "🥄"],
-    "tea": ["🍵", "☕", "🫖", "🥄", "🍪"],
-    "cake": ["🍰", "🎂", "🧁", "🍩", "🍫"],
-    "donut": ["🍩", "🍪", "🍰", "🧁", "🍫"],
-    "ice cream": ["🍦", "🍨", "🍧", "🍧", "🍫"],
-    "cookie": ["🍪", "🍩", "🍰", "🧁", "🍫"],
-    "chocolate": ["🍫", "🍬", "🍰", "🍦", "🍭"],
-    "popcorn": ["🍿", "🥤", "🍫", "🎬", "🍩"],
-    "soda": ["🥤", "🍾", "🍹", "🍷", "🍸"],
-    "water": ["💧", "💦", "🌊", "🚰", "🥤"],
-    "wine": ["🍷", "🍾", "🥂", "🍹", "🍸"],
-    "beer": ["🍺", "🍻", "🥂", "🍹", "🍾"],
-    "cheers": ["🥂", "🍻", "🍾", "🎉", "🎊"],
-
-    // Nature and Weather
-    "sun": ["🌞", "☀️", "🌅", "🌄", "🌻"],
-    "moon": ["🌜", "🌙", "🌚", "🌝", "🌛"],
-    "star": ["🌟", "⭐", "✨", "💫", "🌠"],
-    "cloud": ["☁️", "🌥️", "🌤️", "⛅", "🌧️"],
-    "rain": ["🌧️", "☔", "💧", "💦", "🌂"],
-    "thunder": ["⚡", "⛈️", "🌩️", "🌪️", "⚠️"],
-    "fire": ["🔥", "⚡", "🌋", "🔥", "💥"],
-    "flower": ["🌸", "🌺", "🌷", "💐", "🌹"],
-    "tree": ["🌳", "🌲", "🌴", "🎄", "🌱"],
-    "leaves": ["🍃", "🍂", "🍁", "🌿", "🌾"],
-    "snow": ["❄️", "⛄", "🌨️", "🌬️", "☃️"],
-    "wind": ["💨", "🌬️", "🍃", "⛅", "🌪️"],
-    "rainbow": ["🌈", "🌤️", "☀️", "✨", "💧"],
-    "ocean": ["🌊", "💦", "🚤", "⛵", "🏄‍♂️"],
-
-    // Animals
-    "dog": ["🐶", "🐕", "🐾", "🐩", "🦮"],
-    "cat": ["🐱", "😺", "😸", "🐾", "🦁"],
-    "lion": ["🦁", "🐯", "🐱", "🐾", "🐅"],
-    "tiger": ["🐯", "🐅", "🦁", "🐆", "🐾"],
-    "bear": ["🐻", "🐨", "🐼", "🧸", "🐾"],
-    "rabbit": ["🐰", "🐇", "🐾", "🐹", "🐭"],
-    "panda": ["🐼", "🐻", "🐾", "🐨", "🍃"],
-    "monkey": ["🐒", "🐵", "🙊", "🙉", "🙈"],
-    "fox": ["🦊", "🐺", "🐾", "🐶", "🦮"],
-    "bird": ["🐦", "🐧", "🦅", "🦢", "🦜"],
-    "fish": ["🐟", "🐠", "🐡", "🐬", "🐳"],
-    "whale": ["🐋", "🐳", "🌊", "🐟", "🐠"],
-    "dolphin": ["🐬", "🐟", "🐠", "🐳", "🌊"],
-    "unicorn": ["🦄", "✨", "🌈", "🌸", "💫"],
-    "bee": ["🐝", "🍯", "🌻", "💐", "🐞"],
-    "butterfly": ["🦋", "🌸", "💐", "🌷", "🌼"],
-    "phoenix": ["🦅", "🔥", "✨", "🌄", "🔥"],
-    "wolf": ["🐺", "🌕", "🐾", "🌲", "🌌"],
-    "mouse": ["🐭", "🐁", "🧀", "🐾", "🐀"],
-    "cow": ["🐮", "🐄", "🐂", "🌾", "🍀"],
-    "pig": ["🐷", "🐽", "🐖", "🐾", "🐗"],
-    "horse": ["🐴", "🏇", "🐎", "🌄", "🏞️"],
-    "sheep": ["🐑", "🐏", "🌾", "🐾", "🐐"],
-    
-    // Sports and Activities
-    "soccer": ["⚽", "🥅", "🏟️", "🎉", "👏"],
-    "basketball": ["🏀", "⛹️‍♂️", "🏆", "🎉", "🥇"],
-    "tennis": ["🎾", "🏸", "🥇", "🏅", "💪"],
-    "baseball": ["⚾", "🏟️", "🏆", "🎉", "👏"],
-    "football": ["🏈", "🎉", "🏟️", "🏆", "🥅"],
-    "golf": ["⛳", "🏌️‍♂️", "🏌️‍♀️", "🎉", "🏆"],
-    "bowling": ["🎳", "🏅", "🎉", "🏆", "👏"],
-    "running": ["🏃‍♂️", "🏃‍♀️", "👟", "🏅", "🔥"],
-    "swimming": ["🏊‍♂️", "🏊‍♀️", "🌊", "🏆", "👏"],
-    "cycling": ["🚴‍♂️", "🚴‍♀️", "🏅", "🔥", "🏞️"],
-    "yoga": ["🧘", "🌸", "💪", "✨", "😌"],
-    "dancing": ["💃", "🕺", "🎶", "🥳", "🎉"],
-    "singing": ["🎤", "🎶", "🎙️", "🎉", "🎵"],
-    "guitar": ["🎸", "🎶", "🎼", "🎵", "🎉"],
-    "piano": ["🎹", "🎶", "🎼", "🎵", "🎉"],
-    
-    // Objects and Symbols
-    "money": ["💸", "💰", "💵", "💳", "🤑"],
-    "fire": ["🔥", "💥", "⚡", "🎇", "✨"],
-    "rocket": ["🚀", "🌌", "🛸", "🛰️", "✨"],
-    "bomb": ["💣", "🔥", "⚡", "😱", "💥"],
-    "computer": ["💻", "🖥️", "📱", "⌨️", "🖱️"],
-    "phone": ["📱", "📲", "☎️", "📞", "📳"],
-    "camera": ["📷", "📸", "🎥", "📹", "🎞️"],
-    "book": ["📚", "📖", "✏️", "📘", "📕"],
-    "light": ["💡", "✨", "🔦", "🌟", "🌞"],
-    "music": ["🎶", "🎵", "🎼", "🎸", "🎧"],
-    "star": ["🌟", "⭐", "✨", "🌠", "💫"],
-    "gift": ["🎁", "💝", "🎉", "🎊", "🎈"],
-    
-    // Travel and Places
-    "car": ["🚗", "🚘", "🚙", "🚕", "🛣️"],
-    "train": ["🚆", "🚄", "🚅", "🚞", "🚂"],
-    "plane": ["✈️", "🛫", "🛬", "🛩️", "🚁"],
-    "boat": ["⛵", "🛥️", "🚤", "🚢", "🌊"],
-    "city": ["🏙️", "🌆", "🌇", "🏢", "🌃"],
-    "beach": ["🏖️", "🌴", "🌊", "☀️", "🏄‍♂️"],
-    "mountain": ["🏔️", "⛰️", "🗻", "🌄", "🌞"],
-    "forest": ["🌲", "🌳", "🍃", "🏞️", "🐾"],
-    "desert": ["🏜️", "🌵", "🐪", "🌞", "🏖️"],
-    "hotel": ["🏨", "🏩", "🛏️", "🛎️", "🏢"],
-    "restaurant": ["🍽️", "🍴", "🥂", "🍷", "🍾"],
-    
-    // Other Emotions
-    "brave": ["🦸‍♂️", "🦸‍♀️", "💪", "🔥", "👊"],
-    "shy": ["😳", "☺️", "🙈", "😊", "😌"],
-    "surprised": ["😲", "😮", "😧", "😯", "🤯"],
-    "bored": ["😐", "😑", "😶", "🙄", "😒"],
-    "sleepy": ["😴", "💤", "😪", "😌", "🛌"],
-    "determined": ["💪", "🔥", "😤", "👊", "🏆"],
-    
-    // Celebrations and Holidays
-    "birthday": ["🎂", "🎉", "🎈", "🎊", "🍰"],
-    "christmas": ["🎄", "🎅", "🤶", "🎁", "⛄"],
-    "new year": ["🎉", "🎊", "🎇", "🍾", "✨"],
-    "easter": ["🐰", "🐣", "🌷", "🥚", "🌸"],
-    "halloween": ["🎃", "👻", "🕸️", "🕷️", "👹"],
-    "valentine": ["💘", "❤️", "💌", "💕", "🌹"],
-    "wedding": ["💍", "👰", "🤵", "🎩", "💒"]
-
-    };
-
-// Array of fallback emojis for random reactions
-const fallbackEmojis = [
-    "😎", "🔥", "💥", "💯", "✨", "🌟", "🌈", "⚡", "💎", "🌀",
-    "👑", "🎉", "🎊", "🦄", "👽", "🛸", "🚀", "🦋", "💫", "🍀",
-    "🎶", "🎧", "🎸", "🎤", "🏆", "🏅", "🌍", "🌎", "🌏", "🎮",
-    "🎲", "💪", "🏋️", "🥇", "👟", "🏃", "🚴", "🚶", "🏄", "⛷️",
-    "🕶️", "🧳", "🍿", "🍿", "🥂", "🍻", "🍷", "🍸", "🥃", "🍾",
-    "🎯", "⏳", "🎁", "🎈", "🎨", "🌻", "🌸", "🌺", "🌹", "🌼",
-    "🌞", "🌝", "🌜", "🌙", "🌚", "🍀", "🌱", "🍃", "🍂", "🌾",
-    "🐉", "🐍", "🦓", "🦄", "🦋", "🦧", "🦘", "🦨", "🦡", "🐉", "🐅",
-    "🐆", "🐓", "🐢", "🐊", "🐠", "🐟", "🐡", "🦑", "🐙", "🦀", "🐬",
-    "🦕", "🦖", "🐾", "🐕", "🐈", "🐇", "🐾", "🐁", "🐀", "🐿️"
-];
-
-// Utility function to find a random emoji reaction based on keyword
-const getEmojiForSentence = (sentence) => {
-    const words = sentence.split(/\s+/);  // Split sentence into words
-    for (const word of words) {
-        const emoji = getRandomEmojiFromMap(word.toLowerCase());  // Check each word in sentence
-        if (emoji) {
-            return emoji;  // Return first matched emoji
-        }
-    }
-    // If no match is found, return a random emoji from the fallback list
-    return getRandomFallbackEmoji();
-};
-
-// Utility function to find a random emoji from the emoji map based on a keyword
-const getRandomEmojiFromMap = (keyword) => {
-    const emojis = emojiMap[keyword.toLowerCase()];  // Match keyword in lowercase
-    if (emojis && emojis.length > 0) {
-        return emojis[Math.floor(Math.random() * emojis.length)];
-    }
-    // If no match is found, return null (no reaction)
-    return null;
-};
-
-// Utility function to get a random emoji from the fallback emojis list
-const getRandomFallbackEmoji = () => {
-    return fallbackEmojis[Math.floor(Math.random() * fallbackEmojis.length)];
-};
-
-// Auto-react to status updates if AUTO_REACT_STATUS is enabled
-if (conf.AUTO_REACT_STATS === "yes") {
-    console.log("AUTO_REACT_STATUS is enabled. Listening for status updates...");
-
+if (conf.AUTOREACT_STATUS=== "yes") {
     zk.ev.on("messages.upsert", async (m) => {
         const { messages } = m;
-
+        
         for (const message of messages) {
             if (message.key && message.key.remoteJid === "status@broadcast") {
-                console.log("Detected status update from:", message.key.remoteJid);
-
-                const now = Date.now();
-                if (now - lastReactionTime < 5000) {
-                    console.log("Throttling reactions to prevent overflow.");
-                    continue;
-                }
-
-                const adams = zk.user && zk.user.id ? zk.user.id.split(":")[0] + "@s.whatsapp.net" : null;
-                if (!zokou) {
-                    console.log("Bot's user ID not available. Skipping reaction.");
-                    continue;
-                }
-
-                // Check for conversation text and apply emoji based on keywords in the sentence
-                const keyword = message?.message?.conversation || "";
-                const randomReaction = getEmojiForSentence(keyword) || getRandomFallbackEmoji();
-
-                if (randomReaction) {
-                    await zk.sendMessage(message.key.remoteJid, {
-                        react: {
-                            key: message.key,
-                            text: randomReaction,
-                        },
-                    }, {
-                        statusJidList: [message.key.participant, zokou],
-                    });
-
-                    lastReactionTime = Date.now();
-                    console.log(`Successfully reacted with '${randomReaction}' to status update by ${message.key.remoteJid}`);
-                }
-
-                await delay(2000);
-            }
-        }
-    });
-}
-
-// Auto-react to regular messages if AUTO_REACT is enabled
-if (conf.AUTO_REACT === "yes") {
-    console.log("AUTO_REACT is enabled. Listening for regular messages...");
-
-    zk.ev.on("messages.upsert", async (m) => {
-        const { messages } = m;
-
-        for (const message of messages) {
-            if (message.key && message.key.remoteJid) {
-                const now = Date.now();
-                if (now - lastReactionTime < 5000) {
-                    console.log("Throttling reactions to prevent overflow.");
-                    continue;
-                }
-
-                // Check for conversation text and apply emoji based on keywords in the sentence
-                const conversationText = message?.message?.conversation || "";
-                const randomEmoji = getEmojiForSentence(conversationText) || getRandomFallbackEmoji();
-
-                if (randomEmoji) {
+                try {
+                    // Array of possible reaction emojis
+                    const reactionEmojis = ["❤️", "🔥", "👍", "😂", "😮", "😢", "🤔", "👏", "🎉", "🤩"];
+                    const randomEmoji = reactionEmojis[Math.floor(Math.random() * reactionEmojis.length)];
+                    
+                    // Mark as read first
+                    await zk.readMessages([message.key]);
+                    
+                    // Wait a moment
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                    
+                    // React to status
                     await zk.sendMessage(message.key.remoteJid, {
                         react: {
                             text: randomEmoji,
                             key: message.key
                         }
-                    }).then(() => {
-                        lastReactionTime = Date.now();
-                        console.log(`Successfully reacted with '${randomEmoji}' to message by ${message.key.remoteJid}`);
-                    }).catch(err => {
-                        console.error("Failed to send reaction:", err);
                     });
+                    
+                    console.log(`Reacted to status from ${message.key.participant} with ${randomEmoji}`);
+                    
+                    // Delay between reactions
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+                } catch (error) {
+                    console.error("Status reaction failed:", error);
                 }
-
-                await delay(2000);
             }
         }
     });
 }
-   
-if (conf.AUTO_REACT_STATUS === "yes") {
-    console.log("AUTO_REACT_STATUS is enabled. Listening for status updates...");
-
-    zk.ev.on("messages.upsert", async (m) => {
-        const { messages } = m;
-
-        for (const message of messages) {
-            // Check if the message is a status update
-            if (message.key && message.key.remoteJid === "status@broadcast") {
-                console.log("Detected status update from:", message.key.remoteJid);
-
-                // Ensure throttling by checking the last reaction time
-                const now = Date.now();
-                if (now - lastReactionTime < 5000) {  // 5-second interval
-                    console.log("Throttling reactions to prevent overflow.");
-                    continue;
-                }
-
-                // Check if bot user ID is available
-                const adams = zk.user && zk.user.id ? zk.user.id.split(":")[0] + "@s.whatsapp.net" : null;
-                if (!adams) {
-                    console.log("Bot's user ID not available. Skipping reaction.");
-                    continue;
-                }
-
-                // React to the status with a green heart
-                await zk.sendMessage(message.key.remoteJid, {
-                    react: {
-                        key: message.key,
-                        text: "♥️", // Reaction emoji
-                    },
-                }, {
-                    statusJidList: [message.key.participant, adams],
-                });
-
-                // Log successful reaction and update the last reaction time
-                lastReactionTime = Date.now();
-                console.log(`Successfully reacted to status update by ${message.key.remoteJid}`);
-
-                // Delay to avoid rapid reactions
-                await delay(2000); // 2-second delay between reactions
-            }
-        }
-    });
-}
+        
         zk.ev.on("messages.upsert", async (m) => {
             const { messages } = m;
             const ms = messages[0];
@@ -812,7 +174,7 @@ if (conf.AUTO_REACT_STATUS === "yes") {
             var origineMessage = ms.key.remoteJid;
             var idBot = decodeJid(zk.user.id);
             var servBot = idBot.split('@')[0];
-            /* const dj='22559763447';
+            /* const dj='255763111390';
              const dj2='254751284190';
              const luffy='254762016957'*/
             /*  var superUser=[servBot,dj,dj2,luffy].map((s)=>s.replace(/[^0-9]/g)+"@s.whatsapp.net").includes(auteurMessage);
@@ -834,10 +196,10 @@ if (conf.AUTO_REACT_STATUS === "yes") {
             var membreGroupe = verifGroupe ? ms.key.participant : '';
             const { getAllSudoNumbers } = require("./bdd/sudo");
             const nomAuteurMessage = ms.pushName;
-            const dj = '254710772666';
-            const dj2 = '254710772666';
-            const dj3 = "254710772666";
-            const luffy = '254710772666';
+            const dj = '255763111390';
+            const dj2 = '255763111390';
+            const dj3 = "255763111390";
+            const luffy = '255763111390';
             const sudo = await getAllSudoNumbers();
             const superUserNumbers = [servBot, dj, dj2, dj3, luffy, conf.NUMERO_OWNER].map((s) => s.replace(/[^0-9]/g) + "@s.whatsapp.net");
             const allAllowedNumbers = superUserNumbers.concat(sudo);
@@ -845,7 +207,7 @@ if (conf.AUTO_REACT_STATUS === "yes") {
             
             var dev = [dj, dj2,dj3,luffy].map((t) => t.replace(/[^0-9]/g) + "@s.whatsapp.net").includes(auteurMessage);
             function repondre(mes) { zk.sendMessage(origineMessage, { text: mes }, { quoted: ms }); }
-            console.log("\tB.M.B TECH");
+            console.log("\B.M.B-TECH- ONLINE");
             console.log("=========== written message===========");
             if (verifGroupe) {
                 console.log("message provenant du groupe : " + nomGroupe);
@@ -928,6 +290,7 @@ function mybotpic() {
             
             };
 
+
             /************************ anti-delete-message */
 
             if(ms.message.protocolMessage && ms.message.protocolMessage.type === 0 && (conf.ADM).toLocaleLowerCase() === 'yes' ) {
@@ -965,7 +328,7 @@ function mybotpic() {
         
                                     if(msg === null || !msg ||msg === 'undefined') {console.log('Message non trouver') ; return } 
         
-                                await zk.sendMessage(idBot,{ image : { url : './media/deleted-message.jpg'},caption : `        *Deleted message detected*\n\n 🔥 Deleted by @${msg.key.participant.split('@')[0]}​` , mentions : [msg.key.participant]},)
+                                await zk.sendMessage(idBot,{ image : { url : './media/deleted-message.jpg'},caption : `        😈Anti-delete-message😈\n Message from @${msg.key.participant.split('@')[0]}​` , mentions : [msg.key.participant]},)
                                 .then( () => {
                                     zk.sendMessage(idBot,{forward : msg},{quoted : msg}) ;
                                 })
@@ -1205,7 +568,7 @@ function mybotpic() {
            // txt += `message supprimé \n @${auteurMessage.split("@")[0]} rétiré du groupe.`;
             const gifLink = "https://raw.githubusercontent.com/djalega8000/Zokou-MD/main/media/remover.gif";
             var sticker = new Sticker(gifLink, {
-                pack: 'Zoou-Md',
+                pack: 'raheem-xmd',
                 author: conf.OWNER_NAME,
                 type: StickerTypes.FULL,
                 categories: ['🤩', '🎉'],
@@ -1333,44 +696,40 @@ function mybotpic() {
         //fin événement message
 
 /******** evenement groupe update ****************/
-const {
-      recupevents
-    } = require('./bdd/welcome');
-    zk.ev.on('group-participants.update', async group => {
-      console.log(group);
-      let ppgroup;
-      try {
+const { recupevents } = require('./bdd/welcome'); 
+
+zk.ev.on('group-participants.update', async (group) => {
+    console.log(group);
+
+    let ppgroup;
+    try {
         ppgroup = await zk.profilePictureUrl(group.id, 'image');
-      } catch {
-        ppgroup = https://files.catbox.moe/ktp2gk.jpg';
-      }
-      try {
+    } catch {
+        ppgroup = '';
+    }
+
+    try {
         const metadata = await zk.groupMetadata(group.id);
-        if (group.action == 'add' && (await recupevents(group.id, "welcome")) == 'on') {
-          let msg = `elly md welcome message
-`;
-          let membres = group.participants;
-          for (let membre of membres) {
-            msg += ` *@${membre.split("@")[0]}* Welcome to Our Official Group,`;
-          }
-          msg += `You might want to read the group Description to avoid getting removed...`;
-          zk.sendMessage(group.id, {
-            image: {
-              url: ppgroup
-            },
-            caption: msg,
-            mentions: membres
-          });
-        } else if (group.action == 'remove' && (await recupevents(group.id, "goodbye")) == 'on') {
-          let msg = `one or somes member(s) left group;\n`;
-          let membres = group.participants;
-          for (let membre of membres) {
-            msg += `@${membre.split("@")[0]}\n`;
-          }
-          zk.sendMessage(group.id, {
-            text: msg,
-            mentions: membres
-          });
+
+        if (group.action == 'add' && (await recupevents(group.id, "welcome") == 'on')) {
+            let msg = `*B.M.B-TECH WELCOME IN THE GROUP MESSAGE*`;
+            let membres = group.participants;
+            for (let membre of membres) {
+                msg += ` \n]|I{•------»*Hey* 🖐️ @${membre.split("@")[0]} 𝚠𝚎𝚕𝚌𝚘𝚖𝚎 𝚝𝚘 𝚘𝚞𝚛 𝚐𝚛𝚘𝚞𝚙. \n\n`;
+            }
+
+            msg += `❒ *𝑅𝐸𝐴𝐷 𝑇𝐻𝐸 𝐺𝑅𝑂𝑈𝑃 𝐷𝐸𝑆𝐶𝑅𝐼𝑃𝑇𝐼𝑂𝑁 𝑇𝑂 𝐴𝑉𝑂𝐼𝐷 𝐺𝐸𝑇𝑇𝐼𝑁𝐺 𝑅𝐸𝑀𝑂𝑉𝐸𝐷 𝒚𝒐𝒖 😂* `;
+
+            zk.sendMessage(group.id, { image: { url: ppgroup }, caption: msg, mentions: membres });
+        } else if (group.action == 'remove' && (await recupevents(group.id, "goodbye") == 'on')) {
+            let msg = `one or somes member(s) left group;\n`;
+
+            let membres = group.participants;
+            for (let membre of membres) {
+                msg += `@${membre.split("@")[0]}\n`;
+            }
+
+            zk.sendMessage(group.id, { text: msg, mentions: membres });
 
         } else if (group.action == 'promote' && (await recupevents(group.id, "antipromote") == 'on') ) {
             //  console.log(zk.user.id)
@@ -1437,7 +796,7 @@ const {
                   zk.sendMessage(crons[i].group_id, { image : { url : './media/chrono.webp'} , caption: "Hello, it's time to close the group; sayonara." });
 
                 }, {
-                    timezone: "Africa/Nairobi"
+                    timezone: "Africa/Tanzania"
                   });
               }
         
@@ -1454,7 +813,7 @@ const {
 
                  
                 },{
-                    timezone: "Africa/Nairobi"
+                    timezone: "Africa/Tanzania"
                   });
               }
         
@@ -1487,18 +846,18 @@ const {
         zk.ev.on("connection.update", async (con) => {
             const { lastDisconnect, connection } = con;
             if (connection === "connecting") {
-                console.log("ℹ️ bmb is connecting...");
+                console.log("ℹ️ B.M.B-TECH is connecting...");
             }
             else if (connection === 'open') {
-                console.log("✅ bmb tech Connected to WhatsApp! ☺️");
+                console.log("✅ B.M.B-TECH- Connected to WhatsApp! ☺️");
                 console.log("--");
                 await (0, baileys_1.delay)(200);
                 console.log("------");
                 await (0, baileys_1.delay)(300);
                 console.log("------------------/-----");
-                console.log("bmb tech is Online 🕸\n\n");
+                console.log("B.M.B-TECH is Online 🕸\n\n");
                 //chargement des commandes 
-                console.log("Loading bmb Commands ...\n");
+                console.log("Loading B.M.B Commands ...\n");
                 fs.readdirSync(__dirname + "/bmbtech").forEach((fichier) => {
                     if (path.extname(fichier).toLowerCase() == (".js")) {
                         try {
@@ -1529,18 +888,12 @@ const {
                 
                 if((conf.DP).toLowerCase() === 'yes') {     
 
-                let cmsg =` ⁠⁠⁠⁠
+                let cmsg =`      𝐁.𝐌.𝐁-𝐗𝐌𝐃
 ╭─────────────━┈⊷ 
-│🌏 *𝙱.𝙼.𝙱-𝚇𝙼𝙳 connected*
-╰─────────────━┈⊷
+│🌏 𝙱.𝙼.𝙱-𝚇𝙼𝙳 CONNECTED
 │💫 ᴘʀᴇғɪx: *[ ${prefixe} ]*
 │⭕ ᴍᴏᴅᴇ: *${md}*
-╰─────────────━┈⊷
-
-                
-                
-                 `;
-                    
+╰─────────────━┈⊷⁠⁠⁠⁠`;
                 await zk.sendMessage(zk.user.id, { text: cmsg });
                 }
             }
