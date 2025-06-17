@@ -21,7 +21,7 @@ function getBotInfo(mode, commandCount) {
 ╭━═「 *B.M.B-TECH* 」═━❂
 ┃📅 *Date*: ${currentDate}
 ┃⌚ *Time*: ${currentTime} (EAT)
-┃📦 *Total Commands*: ${commandCount}
+┃📦 *Commands*: ${commandCount}
 ┃☢️ *Mode*: ${mode.toUpperCase()}
 ┃🖥️ *RAM Usage*: ${usedRAM} / ${totalRAM}
 ┃🌐 *Developer*: 𝙱.𝙼.𝙱-𝚇𝙼𝙳
@@ -117,7 +117,7 @@ zokou({
     const finalText = infoText + menuText;
     const sender = ms.key.participant || ms.key.remoteJid;
 
-    const imagePath = path.join(__dirname, "../bot/menu.jpg");
+    const imagePath = path.join(__dirname, "../bot/menu.jpg"); // ✅ Hii hapa ndiyo imebadilishwa
 
     await sendMenuImage(zk, dest, ms, imagePath, finalText, [sender]);
     await sendFixedVoice(zk, dest, ms, reply);
