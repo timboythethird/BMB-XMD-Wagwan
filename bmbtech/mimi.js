@@ -1,4 +1,3 @@
-const util = require("util");
 const fs = require("fs-extra");
 const path = require("path");
 const os = require("os");
@@ -20,54 +19,39 @@ function getBotInfo(mode, commandCount) {
 
   return `
 ╭━═「 *B.M.B-TECH* 」═━❂
-┃⊛╭────••••────➻
-┃⊛│📅 *Date*: ${currentDate}
-┃⊛│⌚ *Time*: ${currentTime} (EAT)
-┃⊛│📦 *Commands Count*: ${commandCount} total
-┃⊛│☢️ *Mode*: ${mode.toUpperCase()}
-┃⊛│🖥️ *RAM*: ${usedRAM} / ${totalRAM}
-┃⊛│⚙️ *Status:* ONLINE
-┃⊛│🌐 *Creator*: 𝙱.𝙼.𝙱-𝚇𝙼𝙳
-┃⊛└────••••────➻
+┃📅 *Date*: ${currentDate}
+┃⌚ *Time*: ${currentTime} (EAT)
+┃📦 *Total Commands*: ${commandCount}
+┃☢️ *Mode*: ${mode.toUpperCase()}
+┃🖥️ *RAM Usage*: ${usedRAM} / ${totalRAM}
+┃🌐 *Developer*: 𝙱.𝙼.𝙱-𝚇𝙼𝙳
 ╰─━━━━══──══━━━❂
 `;
 }
 
-function buildMenu(coms, prefixe) {
+function buildMenu(coms, prefix) {
   let menu = `\n🧾 *COMMAND INDEX*\n\n`;
 
-  const categoryStyles = {
-    General: "🌐",
-    Group: "👥",
-    Mods: "🛡️",
-    Fun: "🎉",
-    Search: "🔎",
-    Logo: "🎨",
-    Utilities: "🧰",
-    Adult: "🔞",
-    Download: "📥",
+  const categoryIcons = {
+    General: "🌐", Group: "👥", Mods: "🛡️", Fun: "🎉",
+    Search: "🔎", Logo: "🎨", Utilities: "🧰",
+    Adult: "🔞", Download: "📥",
   };
 
-  for (const cat in coms) {
-    const icon = categoryStyles[cat] || "🌐";
-    menu += `\n${icon} *${cat.toUpperCase()}*\n`;
-
-    coms[cat].forEach((cmd) => {
-      menu += `⚙️ *${prefixe}${cmd}*\n`;
+  for (const category in coms) {
+    const icon = categoryIcons[category] || "🌐";
+    menu += `\n${icon} *${category.toUpperCase()}*\n`;
+    coms[category].forEach(cmd => {
+      menu += `⚙️ *${prefix}${cmd}*\n`;
     });
-
     menu += categoryDivider + "\n";
   }
 
-  menu += `
- *B.M.B-TECH BOT*
-${topDivider}
-`;
-
+  menu += `\n *POWERED BY B.M.B-TECH*\n${topDivider}\n`;
   return menu;
 }
 
-async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
+async function sendMenuImage(zk, dest, ms, imagePath, caption, mentions) {
   const contextInfo = {
     forwardingScore: 999,
     isForwarded: true,
@@ -79,101 +63,66 @@ async function sendMenuMedia(zk, dest, ms, mediaUrl, caption, mentions) {
     },
   };
 
-  if (mediaUrl.match(/\.(mp4|gif)$/i)) {
-    await zk.sendMessage(
-      dest,
-      {
-        video: { url: mediaUrl },
-        caption,
-        footer: "⚡ BMB-XBOT ⚡",
-        mentions,
-        gifPlayback: true,
-        contextInfo,
-      },
-      { quoted: ms }
-    );
-  } else if (mediaUrl.match(/\.(jpeg|jpg|png)$/i)) {
-    await zk.sendMessage(
-      dest,
-      {
-        image: { url: mediaUrl },
-        caption,
-        footer: "⚡ BMB-XBOT ⚡",
-        mentions,
-        contextInfo,
-      },
-      { quoted: ms }
-    );
-  } else {
-    await zk.sendMessage(
-      dest,
-      {
-        text: caption,
-        mentions,
-        contextInfo,
-      },
-      { quoted: ms }
-    );
+  if (!fs.existsSync(imagePath)) {
+    return zk.sendMessage(dest, {
+      text: "❌ Menu image not found.",
+      mentions,
+      contextInfo,
+    }, { quoted: ms });
   }
+
+  await zk.sendMessage(dest, {
+    image: { url: imagePath },
+    caption,
+    footer: "⚡ BMB-XBOT ⚡",
+    mentions,
+    contextInfo,
+  }, { quoted: ms });
 }
 
-async function sendRandomVoiceNote(zk, dest, ms, repondre) {
-  const folder = path.join(__dirname, "../bmb/");
-  if (!fs.existsSync(folder)) {
-    return repondre(`📁 Audio folder not found at:\n${folder}`);
+async function sendFixedVoice(zk, dest, ms, reply) {
+  const audioPath = path.join(__dirname, "../bmb/menu1.mp3");
+  if (!fs.existsSync(audioPath)) {
+    return reply("❌ Voice note not found at: bmb/menu1.mp3");
   }
 
-  const audioFiles = fs.readdirSync(folder).filter((f) => f.endsWith(".mp3"));
-  if (!audioFiles.length) {
-    return repondre(`⚠️ No audio files found in folder.`);
-  }
-
-  const randomAudio = audioFiles[Math.floor(Math.random() * audioFiles.length)];
-  const audioPath = path.join(folder, randomAudio);
-
-  await zk.sendMessage(
-    dest,
-    {
-      audio: { url: audioPath },
-      mimetype: "audio/mpeg",
-      ptt: true,
-      fileName: `🗣 BMB VOICE`,
-    },
-    { quoted: ms }
-  );
+  await zk.sendMessage(dest, {
+    audio: { url: audioPath },
+    mimetype: "audio/mpeg",
+    ptt: true,
+    fileName: "🗣 BMB VOICE",
+  }, { quoted: ms });
 }
 
-zokou(
-  {
-    nomCom: "menu7",
-    categorie: "General",
-    reaction: "⚡",
-  },
-  async (dest, zk, commandeOptions) => {
-    const { ms, repondre, prefixe } = commandeOptions;
-    const { cm } = require(__dirname + "/../framework/zokou");
+zokou({
+  nomCom: "menu7",
+  categorie: "General",
+  reaction: "⚡",
+}, async (dest, zk, options) => {
+  const { ms, repondre: reply, prefixe: prefix } = options;
+  const { cm } = require(__dirname + "/../framework/zokou");
 
-    let coms = {};
-    let mode = s.MODE.toLowerCase() !== "yes" ? "private" : "public";
+  let commands = {};
+  const mode = s.MODE.toLowerCase() !== "yes" ? "private" : "public";
 
-    for (const com of cm) {
-      if (!coms[com.categorie]) coms[com.categorie] = [];
-      coms[com.categorie].push(com.nomCom);
-    }
-
-    try {
-      const commandCount = cm.length;
-      const infoText = getBotInfo(mode, commandCount);
-      const menuText = buildMenu(coms, prefixe);
-      const finalText = infoText + menuText;
-      const sender = ms.key.participant || ms.key.remoteJid;
-      const mediaUrl = "https://files.catbox.moe/hflcbc.jpg";
-
-      await sendMenuMedia(zk, dest, ms, mediaUrl, finalText, [sender]);
-      await sendRandomVoiceNote(zk, dest, ms, repondre);
-    } catch (err) {
-      console.error(`[DEBUG menu error]: ${err}`);
-      repondre(`❌ Failed to load menu:\n${err.message}`);
-    }
+  for (const command of cm) {
+    if (!commands[command.categorie]) commands[command.categorie] = [];
+    commands[command.categorie].push(command.nomCom);
   }
-);
+
+  try {
+    const commandCount = cm.length;
+    const infoText = getBotInfo(mode, commandCount);
+    const menuText = buildMenu(commands, prefix);
+    const finalText = infoText + menuText;
+    const sender = ms.key.participant || ms.key.remoteJid;
+
+    const imagePath = path.join(__dirname, "../bot/menu.jpg");
+
+    await sendMenuImage(zk, dest, ms, imagePath, finalText, [sender]);
+    await sendFixedVoice(zk, dest, ms, reply);
+  } catch (err) {
+    console.error(`[MENU ERROR]: ${err}`);
+    reply(`❌ Error generating menu:\n${err.message}`);
+  }
+});
