@@ -4,7 +4,7 @@ const fetch = require("node-fetch");
 
 //======================[ VIDEO COMMAND - .mp4 ]======================//
 zokou({
-  nomCom: "video",
+  nomCom: "video1",
   aliases: ["video"],
   reaction: "🎥",
   categorie: "main",
@@ -96,8 +96,8 @@ zokou({
 
 //======================[ AUDIO COMMAND - .song ]======================//
 zokou({
-  nomCom: "song",
-  aliases: ["ytdl3", "play"],
+  nomCom: "song1",
+  aliases: ["ytdl3", "play1"],
   reaction: "🎶",
   categorie: "main",
   description: "Download YouTube song",
