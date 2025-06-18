@@ -1,48 +1,45 @@
+const axios = require('axios');
 const { zokou } = require(__dirname + "/../framework/zokou");
-const yts = require("yt-search");
-const ytdl = require("ytdl-core");
 
-zokou(
-  {
-    nomCom: "play9",
-    categorie: "Download",
-    reaction: "🎵",
-  },
-  async (dest, zk, { ms, repondre, arg }) => {
-    if (!arg) return repondre("Please provide a song name.");
-    const search = await yts(arg);
-    const video = search.videos[0];
-    if (!video) return repondre("Song not found.");
-    
-    const audioStream = ytdl(video.url, { filter: "audioonly" });
+async function getCodeFromGitHub(fileName) {
+  const username = 'bwbxmd'; // GitHub username
+  const repo = 'B.M.B-TECH'; // GitHub repository
+  const branch = 'main'; // Branch name
+  const filePath = `commands/${fileName}.js`; // Adjust path if needed
+  const url = `https://raw.githubusercontent.com/${username}/${repo}/${branch}/${filePath}`;
 
-    await zk.sendMessage(dest, {
-      audio: { stream: audioStream },
-      mimetype: "audio/mpeg",
-      ptt: false,
-      fileName: `${video.title}.mp3`,
-      caption: `🎵 ${video.title}`,
-    }, { quoted: ms });
+  try {
+    const response = await axios.get(url);
+    return response.data;
+  } catch (error) {
+    return null;
   }
-);
+}
 
 zokou(
   {
-    nomCom: "video9",
-    categorie: "Download",
-    reaction: "🎬",
+    nomCom: "get",
+    categorie: "General",
+    reaction: "📂",
+    fromMe: true,
+    desc: "Fetch the source code of a command from GitHub",
   },
-  async (dest, zk, { ms, repondre, arg }) => {
-    if (!arg) return repondre("Please provide a video name.");
-    const search = await yts(arg);
-    const video = search.videos[0];
-    if (!video) return repondre("Video not found.");
+  async (dest, zk, { ms, repondre, args }) => {
+    if (!args || args.length === 0) {
+      return repondre("❌ Usage: .get <command>");
+    }
 
-    const videoStream = ytdl(video.url, { quality: "18" }); // mp4 medium quality
+    const fileName = args[0];
+    const code = await getCodeFromGitHub(fileName);
 
-    await zk.sendMessage(dest, {
-      video: { stream: videoStream },
-      caption: `🎬 ${video.title}`,
-    }, { quoted: ms });
+    if (!code) {
+      return repondre(`❌ Could not retrieve code for: ${fileName}`);
+    }
+
+    if (code.length > 4000) {
+      return repondre("❌ Code is too long to display.");
+    }
+
+    repondre(`📂 Source code for *${fileName}*:\n\n\`\`\`js\n${code}\n\`\`\``);
   }
 );
