@@ -1,45 +1,44 @@
-const axios = require('axios');
+const fs = require("fs");
+const path = require("path");
 const { zokou } = require(__dirname + "/../framework/zokou");
-
-async function getCodeFromGitHub(fileName) {
-  const username = 'bwbxmd'; // GitHub username
-  const repo = 'B.M.B-TECH'; // GitHub repository
-  const branch = 'main'; // Branch name
-  const filePath = `commands/${fileName}.js`; // Adjust path if needed
-  const url = `https://raw.githubusercontent.com/${username}/${repo}/${branch}/${filePath}`;
-
-  try {
-    const response = await axios.get(url);
-    return response.data;
-  } catch (error) {
-    return null;
-  }
-}
 
 zokou(
   {
     nomCom: "get",
-    categorie: "General",
-    reaction: "📂",
-    fromMe: true,
-    desc: "Fetch the source code of a command from GitHub",
+    categorie: "Mods",
+    reaction: "📦",
   },
-  async (dest, zk, { ms, repondre, args }) => {
-    if (!args || args.length === 0) {
-      return repondre("❌ Usage: .get <command>");
+  async (dest, zk, options) => {
+    const { ms, repondre, arg } = options;
+
+    if (!arg || arg.length < 1) {
+      return repondre("Please provide a filename to get. Example: .get menu");
     }
 
-    const fileName = args[0];
-    const code = await getCodeFromGitHub(fileName);
+    const fileName = arg.trim();
+    const filePath = path.join(__dirname, `../bmbtech/${fileName}.js`);
 
-    if (!code) {
-      return repondre(`❌ Could not retrieve code for: ${fileName}`);
+    if (!fs.existsSync(filePath)) {
+      return repondre(`❌ File not found: ${fileName}.js`);
     }
 
-    if (code.length > 4000) {
-      return repondre("❌ Code is too long to display.");
-    }
+    try {
+      const fileContent = fs.readFileSync(filePath, "utf-8");
 
-    repondre(`📂 Source code for *${fileName}*:\n\n\`\`\`js\n${code}\n\`\`\``);
+      if (fileContent.length > 4000) {
+        return repondre("❌ File too large to display.");
+      }
+
+      await zk.sendMessage(
+        dest,
+        {
+          text: `📁 *File:* ${fileName}.js\n\n` + fileContent,
+        },
+        { quoted: ms }
+      );
+    } catch (err) {
+      console.error("[GET CMD ERROR]:", err);
+      return repondre("❌ Failed to read file.");
+    }
   }
 );
