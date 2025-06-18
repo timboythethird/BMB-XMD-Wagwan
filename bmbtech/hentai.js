@@ -5,7 +5,7 @@ const gis = require("g-i-s");
 const axios = require("axios");
 const conf = require(__dirname + "/../set");
 zokou({
-  'nomCom': "img",
+  'nomCom': "img1",
   'aliases': ["image", "images"],
   'categorie': "search",
   'reaction': '☘️'
