@@ -52,7 +52,7 @@ Hello ${nomAuteurMessage},,
 ✔Tap on heroku deploy tab  given there. First thing you should do is getting your *Heroku Api Key* insert it to the required space .
 ✔Enter the valid *heroku app name* and again repeat it to the blank space asking for app name accordingly.Fill everything and press on the below tab Deploy
 ✔In some heroku apps the buld logs might not show but it will eventually deploy 
-✔Now click on this devs number and give queen-m owner credits https://wa.me/255767862457
+✔Now click on this devs number and give bmb tech owner credits https://wa.me/255767862457
 ╰────────────────────☆`;
 let menuMsg = `
      𝐑𝐞𝐠𝐚𝐫𝐝𝐬 dev bmb tech`;
