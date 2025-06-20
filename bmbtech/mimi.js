@@ -1,51 +1,60 @@
 const { zokou } = require("../framework/zokou");
 const axios = require("axios");
 const fs = require("fs");
-const FormData = require("form-data");
-const path = require("path");
 const os = require("os");
+const path = require("path");
+const FormData = require("form-data");
 
 zokou({
   nomCom: "imgscan",
   aliases: ["scanimg", "imagescan"],
   categorie: "utility",
-  reaction: "🔍"
+  reaction: "🧠"
 }, async (jid, sock, { ms, repondre }) => {
   try {
-    const quoted = ms.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+    const quoted = ms.quoted;
 
-    if (!quoted || (!quoted.imageMessage && !quoted?.message?.imageMessage)) {
+    if (!quoted || !quoted.message || !quoted.type || !quoted.type.includes('image')) {
       return repondre("❌ Please reply to an image (JPEG/PNG).");
     }
 
-    // Download the image buffer
-    const buffer = await sock.downloadMediaMessage({
-      key: ms.message.extendedTextMessage.contextInfo.stanzaId,
-      message: quoted
-    });
+    // Download image using sock
+    const stream = await sock.downloadContentFromMessage(quoted.message.imageMessage, "image");
+    let buffer = Buffer.from([]);
 
-    const tempPath = path.join(os.tmpdir(), `img_${Date.now()}.jpg`);
-    fs.writeFileSync(tempPath, buffer);
+    for await (const chunk of stream) {
+      buffer = Buffer.concat([buffer, chunk]);
+    }
 
+    // Save to temp file
+    const ext = ".jpg";
+    const tempFilePath = path.join(os.tmpdir(), `imgscan_${Date.now()}${ext}`);
+    fs.writeFileSync(tempFilePath, buffer);
+
+    // Upload to catbox
     const form = new FormData();
-    form.append("fileToUpload", fs.createReadStream(tempPath));
+    form.append("fileToUpload", fs.createReadStream(tempFilePath));
     form.append("reqtype", "fileupload");
 
-    const catbox = await axios.post("https://catbox.moe/user/api.php", form, {
+    const upload = await axios.post("https://catbox.moe/user/api.php", form, {
       headers: form.getHeaders()
     });
 
-    fs.unlinkSync(tempPath); // Delete temp file
+    fs.unlinkSync(tempFilePath); // cleanup
 
-    const imageUrl = catbox.data;
+    const imageUrl = upload.data;
 
-    const res = await axios.get(`https://apis.davidcyriltech.my.id/imgscan?url=${encodeURIComponent(imageUrl)}`);
-    if (!res.data.success) throw res.data.message || "Failed to scan image.";
+    // Call scan API
+    const scan = await axios.get(`https://apis.davidcyriltech.my.id/imgscan?url=${encodeURIComponent(imageUrl)}`);
 
-    await repondre(`🔍 *Image Analysis*\n\n${res.data.result}`);
+    if (!scan.data.success) {
+      throw scan.data.message || "Failed to scan image";
+    }
 
-  } catch (error) {
-    console.error("Image Scan Error:", error);
-    await repondre(`❌ Error: ${error.message || error}`);
+    await repondre(`🔍 *Image Analysis*\n\n${scan.data.result}`);
+
+  } catch (err) {
+    console.error("ImageScan Error:", err);
+    await repondre(`❌ Error: ${err.message || err}`);
   }
 });
