@@ -1,60 +1,74 @@
 const { zokou } = require("../framework/zokou");
 const axios = require("axios");
-const fs = require("fs");
-const os = require("os");
-const path = require("path");
 const FormData = require("form-data");
+const fs = require("fs");
+const path = require("path");
+const os = require("os");
+
+// Format bytes helper
+function formatBytes(bytes) {
+  if (bytes === 0) return "0 Bytes";
+  const k = 1024;
+  const sizes = ["Bytes", "KB", "MB", "GB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+}
 
 zokou({
-  nomCom: "imgscan",
-  aliases: ["scanimg", "imagescan"],
-  categorie: "utility",
-  reaction: "🧠"
+  nomCom: "rmbg",
+  aliases: ["removebg"],
+  categorie: "img_edit",
+  reaction: "📸"
 }, async (jid, sock, { ms, repondre }) => {
   try {
-    const quoted = ms.quoted;
+    if (!ms.quoted || !ms.quoted.message) {
+      return repondre("❌ Please reply to an image.");
+    }
 
-    if (!quoted || !quoted.message || !quoted.type || !quoted.type.includes('image')) {
+    const mime = Object.keys(ms.quoted.message)[0];
+    if (!["imageMessage"].includes(mime)) {
       return repondre("❌ Please reply to an image (JPEG/PNG).");
     }
 
-    // Download image using sock
-    const stream = await sock.downloadContentFromMessage(quoted.message.imageMessage, "image");
-    let buffer = Buffer.from([]);
+    // Download image
+    const mediaBuffer = await sock.downloadMediaMessage(ms.quoted);
+    const fileSize = formatBytes(mediaBuffer.length);
 
-    for await (const chunk of stream) {
-      buffer = Buffer.concat([buffer, chunk]);
-    }
+    const extension = mime === "imageMessage" ? ".jpg" : "";
+    const tempFilePath = path.join(os.tmpdir(), `rmbg_${Date.now()}${extension}`);
+    fs.writeFileSync(tempFilePath, mediaBuffer);
 
-    // Save to temp file
-    const ext = ".jpg";
-    const tempFilePath = path.join(os.tmpdir(), `imgscan_${Date.now()}${ext}`);
-    fs.writeFileSync(tempFilePath, buffer);
-
-    // Upload to catbox
+    // Upload to Catbox
     const form = new FormData();
     form.append("fileToUpload", fs.createReadStream(tempFilePath));
     form.append("reqtype", "fileupload");
 
-    const upload = await axios.post("https://catbox.moe/user/api.php", form, {
+    const catboxRes = await axios.post("https://catbox.moe/user/api.php", form, {
       headers: form.getHeaders()
     });
 
-    fs.unlinkSync(tempFilePath); // cleanup
+    fs.unlinkSync(tempFilePath); // delete file
 
-    const imageUrl = upload.data;
-
-    // Call scan API
-    const scan = await axios.get(`https://apis.davidcyriltech.my.id/imgscan?url=${encodeURIComponent(imageUrl)}`);
-
-    if (!scan.data.success) {
-      throw scan.data.message || "Failed to scan image";
+    const imageUrl = catboxRes.data;
+    if (!imageUrl || !imageUrl.includes("https")) {
+      return repondre("❌ Failed to upload image to server.");
     }
 
-    await repondre(`🔍 *Image Analysis*\n\n${scan.data.result}`);
+    // Call removebg API
+    const apiRes = await axios.get(`https://apis.davidcyriltech.my.id/removebg?url=${encodeURIComponent(imageUrl)}`, {
+      responseType: "arraybuffer"
+    });
 
-  } catch (err) {
-    console.error("ImageScan Error:", err);
-    await repondre(`❌ Error: ${err.message || err}`);
+    const imageBuffer = Buffer.from(apiRes.data, "binary");
+
+    // Send back image
+    await sock.sendMessage(jid, {
+      image: imageBuffer,
+      caption: `✅ *Background removed!*\n\n_Powered by NEXUS-XMD 🎭_`
+    }, { quoted: ms });
+
+  } catch (error) {
+    console.error("rmbg error:", error);
+    repondre("❌ Error occurred: " + (error.message || "Unknown error"));
   }
 });
