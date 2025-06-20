@@ -2,17 +2,8 @@ const { zokou } = require("../framework/zokou");
 const axios = require("axios");
 const FormData = require("form-data");
 const fs = require("fs");
-const path = require("path");
 const os = require("os");
-
-// Format bytes helper
-function formatBytes(bytes) {
-  if (bytes === 0) return "0 Bytes";
-  const k = 1024;
-  const sizes = ["Bytes", "KB", "MB", "GB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
-}
+const path = require("path");
 
 zokou({
   nomCom: "rmbg",
@@ -25,50 +16,49 @@ zokou({
       return repondre("❌ Please reply to an image.");
     }
 
-    const mime = Object.keys(ms.quoted.message)[0];
-    if (!["imageMessage"].includes(mime)) {
-      return repondre("❌ Please reply to an image (JPEG/PNG).");
+    const msg = ms.quoted.message;
+    const type = Object.keys(msg)[0];
+
+    if (type !== "imageMessage") {
+      return repondre("❌ Please reply to a valid image (JPG/PNG).");
     }
 
-    // Download image
-    const mediaBuffer = await sock.downloadMediaMessage(ms.quoted);
-    const fileSize = formatBytes(mediaBuffer.length);
+    const stream = await sock.downloadContentFromMessage(msg.imageMessage, "image");
+    let buffer = Buffer.from([]);
+    for await (const chunk of stream) {
+      buffer = Buffer.concat([buffer, chunk]);
+    }
 
-    const extension = mime === "imageMessage" ? ".jpg" : "";
-    const tempFilePath = path.join(os.tmpdir(), `rmbg_${Date.now()}${extension}`);
-    fs.writeFileSync(tempFilePath, mediaBuffer);
+    // Hifadhi image kwa muda
+    const tmpPath = path.join(os.tmpdir(), `nexus_rmbg_${Date.now()}.jpg`);
+    fs.writeFileSync(tmpPath, buffer);
 
-    // Upload to Catbox
+    // Upload to catbox
     const form = new FormData();
-    form.append("fileToUpload", fs.createReadStream(tempFilePath));
+    form.append("fileToUpload", fs.createReadStream(tmpPath));
     form.append("reqtype", "fileupload");
 
-    const catboxRes = await axios.post("https://catbox.moe/user/api.php", form, {
+    const catbox = await axios.post("https://catbox.moe/user/api.php", form, {
       headers: form.getHeaders()
     });
 
-    fs.unlinkSync(tempFilePath); // delete file
+    fs.unlinkSync(tmpPath); // Futa file
 
-    const imageUrl = catboxRes.data;
-    if (!imageUrl || !imageUrl.includes("https")) {
-      return repondre("❌ Failed to upload image to server.");
-    }
+    const imageUrl = catbox.data;
+    if (!imageUrl.includes("http")) return repondre("❌ Failed to upload image.");
 
-    // Call removebg API
-    const apiRes = await axios.get(`https://apis.davidcyriltech.my.id/removebg?url=${encodeURIComponent(imageUrl)}`, {
+    // Request API ya kuondoa background
+    const remove = await axios.get(`https://apis.davidcyriltech.my.id/removebg?url=${encodeURIComponent(imageUrl)}`, {
       responseType: "arraybuffer"
     });
 
-    const imageBuffer = Buffer.from(apiRes.data, "binary");
-
-    // Send back image
     await sock.sendMessage(jid, {
-      image: imageBuffer,
-      caption: `✅ *Background removed!*\n\n_Powered by NEXUS-XMD 🎭_`
+      image: Buffer.from(remove.data, "binary"),
+      caption: `✅ *Background removed successfully!*\n_Powered by B.M.B-XMD_`
     }, { quoted: ms });
 
-  } catch (error) {
-    console.error("rmbg error:", error);
-    repondre("❌ Error occurred: " + (error.message || "Unknown error"));
+  } catch (err) {
+    console.error(err);
+    repondre("❌ Error: " + (err.message || "Something went wrong"));
   }
 });
