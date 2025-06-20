@@ -1,64 +1,28 @@
-const { zokou } = require("../framework/zokou");
 const axios = require("axios");
-const FormData = require("form-data");
-const fs = require("fs");
-const os = require("os");
-const path = require("path");
+const { zokou } = require("../framework/zokou");
 
 zokou({
-  nomCom: "rmbg",
-  aliases: ["removebg"],
-  categorie: "img_edit",
-  reaction: "📸"
-}, async (jid, sock, { ms, repondre }) => {
+  nomCom: "rw",
+  categorie: "wallpapers",
+  reaction: "🌌"
+}, async (jid, sock, { arg, ms, repondre }) => {
   try {
-    if (!ms.quoted || !ms.quoted.message) {
-      return repondre("❌ Please reply to an image.");
+    const query = arg.join(" ") || "random";
+    const apiUrl = `https://pikabotzapi.vercel.app/random/randomwall/?apikey=anya-md&query=${encodeURIComponent(query)}`;
+
+    const { data } = await axios.get(apiUrl);
+
+    if (data.status && data.imgUrl) {
+      const caption = `🌌 *Random Wallpaper: ${query}*\n\n> *© Powered by Nexus Tech*`;
+      await sock.sendMessage(jid, {
+        image: { url: data.imgUrl },
+        caption
+      }, { quoted: ms });
+    } else {
+      repondre(`❌ No wallpaper found for *"${query}"*.`);
     }
-
-    const msg = ms.quoted.message;
-    const type = Object.keys(msg)[0];
-
-    if (type !== "imageMessage") {
-      return repondre("❌ Please reply to a valid image (JPG/PNG).");
-    }
-
-    const stream = await sock.downloadContentFromMessage(msg.imageMessage, "image");
-    let buffer = Buffer.from([]);
-    for await (const chunk of stream) {
-      buffer = Buffer.concat([buffer, chunk]);
-    }
-
-    // Hifadhi image kwa muda
-    const tmpPath = path.join(os.tmpdir(), `nexus_rmbg_${Date.now()}.jpg`);
-    fs.writeFileSync(tmpPath, buffer);
-
-    // Upload to catbox
-    const form = new FormData();
-    form.append("fileToUpload", fs.createReadStream(tmpPath));
-    form.append("reqtype", "fileupload");
-
-    const catbox = await axios.post("https://catbox.moe/user/api.php", form, {
-      headers: form.getHeaders()
-    });
-
-    fs.unlinkSync(tmpPath); // Futa file
-
-    const imageUrl = catbox.data;
-    if (!imageUrl.includes("http")) return repondre("❌ Failed to upload image.");
-
-    // Request API ya kuondoa background
-    const remove = await axios.get(`https://apis.davidcyriltech.my.id/removebg?url=${encodeURIComponent(imageUrl)}`, {
-      responseType: "arraybuffer"
-    });
-
-    await sock.sendMessage(jid, {
-      image: Buffer.from(remove.data, "binary"),
-      caption: `✅ *Background removed successfully!*\n_Powered by B.M.B-XMD_`
-    }, { quoted: ms });
-
-  } catch (err) {
-    console.error(err);
-    repondre("❌ Error: " + (err.message || "Something went wrong"));
+  } catch (error) {
+    console.error("Wallpaper Error:", error);
+    repondre("❌ An error occurred while fetching the wallpaper. Please try again.");
   }
 });
