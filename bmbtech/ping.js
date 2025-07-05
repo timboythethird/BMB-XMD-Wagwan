@@ -5,7 +5,7 @@ const set = require(__dirname + '/../set');
 moment.tz.setDefault(set.TZ || "Africa/Nairobi");
 
 zokou({
-  nomCom: "ping",
+  nomCom: "ping2",
   categorie: "General",
   reaction: "🟢" // itareact pia, kama unataka
 }, async (dest, zk, commandeOptions) => {
