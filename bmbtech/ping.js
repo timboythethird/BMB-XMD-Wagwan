@@ -1,22 +1,25 @@
 const { zokou } = require(__dirname + '/../framework/zokou');
 const moment = require("moment-timezone");
 const set = require(__dirname + '/../set');
+
 moment.tz.setDefault(set.TZ);
 
 zokou({
   nomCom: "ping11",
   categorie: "General"
 }, async (dest, zk, commandeOptions) => {
-  let { ms, sender } = commandeOptions;
-
+  const { ms, sender } = commandeOptions;
+  const jid = sender;
   const time = moment().format("HH:mm:ss");
   const date = moment().format("DD/MM/YYYY");
-  const latency = Math.floor(Math.random() * 100) + 1;
+  const latency = Math.floor(Math.random() * 100) + 20;
 
-  const jid = sender;
-  const pfp = await zk.profilePictureUrl(jid, 'image').catch(() =>
-    "https://i.ibb.co/4fV2Z4p/user.png"
-  );
+  let pfp;
+  try {
+    pfp = await zk.profilePictureUrl(jid, "image");
+  } catch {
+    pfp = "https://i.ibb.co/4fV2Z4p/user.png";
+  }
 
   const message = `*✅ 𝙿𝙸𝙽𝙶 𝚁𝙴𝚂𝚄𝙻𝚃*\n\n` +
                   `👤 *Sender:* @${jid.split('@')[0]} ✅\n` +
