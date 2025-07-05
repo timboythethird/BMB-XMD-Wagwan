@@ -7,8 +7,11 @@ zokou({
   reaction: "🏓",
 }, async (dest, zk, commandeOptions) => {
   const { ms, sender } = commandeOptions;
+
+  // Anza kupima speed
   const start = Date.now();
 
+  // Jaribu kupata picha ya aliyeandika
   const profilePic = await zk.profilePictureUrl(sender, "image").catch(() =>
     "https://i.ibb.co/0jfxPFB/default.jpg"
   );
@@ -16,9 +19,10 @@ zokou({
   const pingTime = Date.now() - start;
   const senderNum = sender.split("@")[0];
 
+  // Tuma majibu ya ping
   await zk.sendMessage(dest, {
     image: { url: profilePic },
-    caption: `🎯 *Pong:* ${pingTime}ms\n👑 *Creator:* ${s.OWNER_NAME}\n📱 *JID:* ${sender}`,
+    caption: `🎯 *Pong:* ${pingTime}ms\n👑 *Creator:* ${s.OWNER_NAME}\n🆔 *JID:* ${sender}`,
     contextInfo: {
       mentionedJid: [sender],
       forwardingScore: 999,
@@ -27,7 +31,8 @@ zokou({
         title: `✅ VERIFIED USER`,
         body: `Command by @${senderNum}`,
         thumbnailUrl: profilePic,
-        showAdAttribution: true,
+        mediaType: 1,
+        renderLargerThumbnail: true,
         sourceUrl: "https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z"
       },
       forwardedNewsletterMessageInfo: {
