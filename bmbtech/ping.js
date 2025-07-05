@@ -1,35 +1,33 @@
 const { zokou } = require("../framework/zokou");
+const s = require("../set");
 
 zokou({
   nomCom: "ping11",
   categorie: "General",
   reaction: "🏓",
 }, async (dest, zk, commandeOptions) => {
-  const { ms, repondre, sender } = commandeOptions;
-
+  const { ms, sender } = commandeOptions;
   const start = Date.now();
-  const profilePicUrl = await zk.profilePictureUrl(sender, "image").catch(() =>
+
+  const profilePic = await zk.profilePictureUrl(sender, "image").catch(() =>
     "https://i.ibb.co/0jfxPFB/default.jpg"
   );
 
   const pingTime = Date.now() - start;
+  const senderNum = sender.split("@")[0];
 
-  const message = {
-    image: { url: profilePicUrl },
-    caption: `✅ *Pong:* ${pingTime}ms\n👑 *Bot by:* 𝙱.𝙼.𝙱-𝚃𝙴𝙲𝙷`,
+  await zk.sendMessage(dest, {
+    image: { url: profilePic },
+    caption: `🎯 *Pong:* ${pingTime}ms\n👑 *Creator:* ${s.OWNER_NAME}\n📱 *JID:* ${sender}`,
     contextInfo: {
       mentionedJid: [sender],
       forwardingScore: 999,
       isForwarded: true,
-      isFromMe: false,
-      participant: sender,
       externalAdReply: {
+        title: `✅ VERIFIED USER`,
+        body: `Command by @${senderNum}`,
+        thumbnailUrl: profilePic,
         showAdAttribution: true,
-        title: "𝙱.𝙼.𝙱-𝚇𝙼𝙳 VERIFIED ✅",
-        body: `.ping by @${sender.split("@")[0]}`,
-        thumbnailUrl: profilePicUrl,
-        mediaType: 1,
-        renderLargerThumbnail: true,
         sourceUrl: "https://whatsapp.com/channel/0029VawO6hgF6sn7k3SuVU3z"
       },
       forwardedNewsletterMessageInfo: {
@@ -38,7 +36,5 @@ zokou({
         serverMessageId: 1
       }
     }
-  };
-
-  await zk.sendMessage(dest, message, { quoted: ms });
+  }, { quoted: ms });
 });
