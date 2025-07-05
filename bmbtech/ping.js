@@ -1,38 +1,29 @@
 const { zokou } = require(__dirname + '/../framework/zokou');
 const moment = require("moment-timezone");
 const set = require(__dirname + '/../set');
-const { downloadMediaMessage } = require("@whiskeysockets/baileys"); // Hakikisha hii iko kwenye project yako
 
 moment.tz.setDefault(set.TZ || "Africa/Nairobi");
 
 zokou({
-  nomCom: "ping2",
+  nomCom: "ping",
   categorie: "General",
-  reaction: "🟢"
+  reaction: "🟢" // itareact pia, kama unataka
 }, async (dest, zk, commandeOptions) => {
   const { ms, sender } = commandeOptions;
 
   const time = moment().format("HH:mm:ss");
   const date = moment().format("DD/MM/YYYY");
-  const jid = sender;
 
+  const jid = sender;
   const response = `
-╭───[ 𝗣𝗜𝗡𝗚 𝗥𝗘𝗦𝗣𝗢𝗡𝗦𝗘 ]───⬣
+╭───[ 𝗕.𝗠.𝗕-𝗧𝗘𝗖𝗛 𝗣𝗜𝗡𝗚 ]───⬣
 │ 📅 Date: ${date}
 │ 🕒 Time: ${time}
-│ 👤 Creator: 𝙱.𝙼.𝙱-𝚃𝙴𝙲𝙃
+│ 👤 Creator: 𝙱.𝙼.𝙱-𝚃𝙴𝙲𝙷
 │ 📍 JID: ${jid}
-╰───⬣`;
+╰───────────⬣`;
 
   try {
-    // Jaribu kupata profile pic ya mtumiaji
-    let ppUrl;
-    try {
-      ppUrl = await zk.profilePictureUrl(sender, "image");
-    } catch {
-      ppUrl = "https://telegra.ph/file/0c225f7da5616cdcbec80.jpg"; // fallback ikiwa hapatikani
-    }
-
     await zk.sendMessage(dest, {
       text: response,
       contextInfo: {
@@ -40,9 +31,9 @@ zokou({
         forwardingScore: 999,
         isForwarded: true,
         externalAdReply: {
-          title: "✅ Verified User",
-          body: "Ping by verified account",
-          thumbnailUrl: ppUrl,
+          title: "𝗕.𝗠.𝗕-𝗧𝗘𝗖𝗛 BOT",
+          body: "Ping response from the system",
+          thumbnailUrl: "https://github.com/bmbxmd1/BMB-DATA/raw/refs/heads/main/background.jpg",
           mediaType: 1,
           renderSmallThumbnail: true,
           showAdAttribution: true
@@ -54,11 +45,8 @@ zokou({
         }
       }
     }, { quoted: ms });
-
   } catch (err) {
     console.log("Ping error:", err);
-    await zk.sendMessage(dest, {
-      text: "❌ Ping failed. Check logs."
-    }, { quoted: ms });
+    await zk.sendMessage(dest, { text: "❌ Ping failed. Check logs." }, { quoted: ms });
   }
 });
