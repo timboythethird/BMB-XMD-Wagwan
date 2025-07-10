@@ -16,13 +16,15 @@ zokou({
   const time = moment().format("HH:mm:ss");
   const date = moment().format("DD/MM/YYYY");
 
-  // Chagua picha randomly kutoka folder ya scs/
-  const randomNumber = Math.floor(Math.random() * 10) + 1; // 1 - 10
-  const imagePath = path.join(__dirname, "..", "scs", `menu${randomNumber}.jpg`);
-
-  if (!fs.existsSync(imagePath)) {
-    return zk.sendMessage(dest, { text: "❌ Menu image not found." }, { quoted: ms });
+  // Random image from /scs/file folder
+  const scsFolder = path.join(__dirname, "../scs/file");
+  const images = fs.readdirSync(scsFolder).filter(f => /^menu\d+\.jpg$/i.test(f));
+  if (images.length === 0) {
+    return zk.sendMessage(dest, { text: "❌ No menu images found in /scs/file." }, { quoted: ms });
   }
+
+  const randomImage = images[Math.floor(Math.random() * images.length)];
+  const imagePath = path.join(scsFolder, randomImage);
 
   const response = `
 ┏━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -31,12 +33,12 @@ zokou({
 ┃ 📅 Date    : ${date}      
 ┃ 🕒 Time    : ${time}      
 ┃ 👑 Owner   : ${set.OWNER_NAME}   
-┃ 🤖 Bot Name: ${set.BOT_NAME}  
+┃ 🤖 Bot Name: ${set.BOT_NAME || "B.M.B-XMD"}  
 ┗━━━━━━━━━━━━━━━━━━━━━━━┛`;
 
   try {
     await zk.sendMessage(dest, {
-      image: { url: imagePath },
+      image: fs.readFileSync(imagePath),
       caption: response,
       contextInfo: {
         mentionedJid: [sender],
@@ -44,8 +46,8 @@ zokou({
         isForwarded: true,
         externalAdReply: {
           title: set.BOT_NAME || "𝗕.𝗠.𝗕-𝗧𝗘𝗖𝗛 BOT",
-          body: "Alive menu status",
-          thumbnailUrl: "https://github.com/bmbxmd1/BMB-DATA/raw/refs/heads/main/background.jpg",
+          body: "Alive status",
+          thumbnail: fs.readFileSync(imagePath),
           mediaType: 1,
           renderSmallThumbnail: true,
           showAdAttribution: true
