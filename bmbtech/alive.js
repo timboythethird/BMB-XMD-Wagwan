@@ -14,22 +14,22 @@ zokou({
   const time = moment().format("HH:mm:ss");
   const date = moment().format("DD/MM/YYYY");
 
+  // Jaribu kupata profile pic ya mtumiaji
   let pfpUrl;
   try {
     pfpUrl = await zk.profilePictureUrl(sender, "image");
   } catch {
-    pfpUrl = "https://telegra.ph/file/8b8c6d6d95b3f34e88db8.jpg";
+    pfpUrl = "https://telegra.ph/file/8b8c6d6d95b3f34e88db8.jpg"; // picha default kama hana profile pic
   }
 
   const response = `
 ┏━━━━━━━━━━━━━━━━━━━━━━━┓
-┃      𝗕.𝗠.𝗕-𝗧𝗘𝗖𝗛 𝗔𝗟𝗜𝗩𝗘     ┃
+┃     𝗕.𝗠.𝗕-𝗧𝗘𝗖𝗛 𝗔𝗟𝗜𝗩𝗘      ┃
 ┣━━━━━━━━━━━━━━━━━━━━━━━┫
 ┃ 📅 Date    : ${date}      
 ┃ 🕒 Time    : ${time}      
 ┃ 👑 Owner   : ${set.OWNER_NAME}   
-┃ 🤖 Bot Name: ${set.BOT_NAME || "B.M.B-XMD"}  
-┃ 💻 Platform: ${set.PLATFORM || "Node.js"}  
+┃ 🤖 Bot Name: ${set.BOT_NAME || "B.M.B-XMD"}   
 ┗━━━━━━━━━━━━━━━━━━━━━━━┛`;
 
   try {
@@ -41,7 +41,7 @@ zokou({
         forwardingScore: 999,
         isForwarded: true,
         externalAdReply: {
-          title: set.BOT_NAME || "𝗕.𝗠.𝗕-𝗧𝗘𝗖𝗛 𝗕𝗢𝗧",
+          title: set.BOT_NAME || "𝗕.𝗠.𝗕-𝗧𝗘𝗖𝗛 BOT",
           body: "Alive response from the system",
           thumbnailUrl: "https://github.com/bmbxmd1/BMB-DATA/raw/refs/heads/main/background.jpg",
           mediaType: 1,
@@ -57,6 +57,6 @@ zokou({
     }, { quoted: ms });
   } catch (err) {
     console.log("Alive error:", err);
-    await zk.sendMessage(dest, { text: "❌ Alive command failed. Check logs." }, { quoted: ms });
+    await zk.sendMessage(dest, { text: "❌ Alive failed. Check logs." }, { quoted: ms });
   }
 });
