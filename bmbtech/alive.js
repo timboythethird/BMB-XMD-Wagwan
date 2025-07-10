@@ -52,7 +52,7 @@ zokou(
 ┃ 📅 Date    : ${date}      
 ┃ 🕒 Time    : ${time}      
 ┃ 👑 Owner   : ${s.OWNER_NAME}   
-┃ 🤖 Bot Name : ${s.BOT_NAME}  
+┃ 🤖 mode : ${s.PUBLIC_MODE}  
 ┗━━━━━━━━━━━━━━━━━━━━━━━┛`;
 
             try {
