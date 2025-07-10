@@ -1,6 +1,8 @@
 const { zokou } = require(__dirname + '/../framework/zokou');
 const moment = require("moment-timezone");
 const set = require(__dirname + '/../set');
+const path = require("path");
+const fs = require("fs");
 
 moment.tz.setDefault(set.TZ || "Africa/Nairobi");
 
@@ -14,12 +16,12 @@ zokou({
   const time = moment().format("HH:mm:ss");
   const date = moment().format("DD/MM/YYYY");
 
-  // Jaribu kupata profile pic ya mtumiaji
-  let pfpUrl;
-  try {
-    pfpUrl = await zk.profilePictureUrl(sender, "image");
-  } catch {
-    pfpUrl = "https://telegra.ph/file/8b8c6d6d95b3f34e88db8.jpg"; // picha default kama hana profile pic
+  // Chagua picha randomly kutoka folder ya scs/
+  const randomNumber = Math.floor(Math.random() * 10) + 1; // 1 - 10
+  const imagePath = path.join(__dirname, "..", "scs", `menu${randomNumber}.jpg`);
+
+  if (!fs.existsSync(imagePath)) {
+    return zk.sendMessage(dest, { text: "❌ Menu image not found." }, { quoted: ms });
   }
 
   const response = `
@@ -29,12 +31,12 @@ zokou({
 ┃ 📅 Date    : ${date}      
 ┃ 🕒 Time    : ${time}      
 ┃ 👑 Owner   : ${set.OWNER_NAME}   
-┃ 🤖 Bot Name: ${set.BOT_NAME || "B.M.B-XMD"}   
+┃ 🤖 Bot Name: ${set.BOT_NAME}  
 ┗━━━━━━━━━━━━━━━━━━━━━━━┛`;
 
   try {
     await zk.sendMessage(dest, {
-      image: { url: pfpUrl },
+      image: { url: imagePath },
       caption: response,
       contextInfo: {
         mentionedJid: [sender],
@@ -42,7 +44,7 @@ zokou({
         isForwarded: true,
         externalAdReply: {
           title: set.BOT_NAME || "𝗕.𝗠.𝗕-𝗧𝗘𝗖𝗛 BOT",
-          body: "Alive response from the system",
+          body: "Alive menu status",
           thumbnailUrl: "https://github.com/bmbxmd1/BMB-DATA/raw/refs/heads/main/background.jpg",
           mediaType: 1,
           renderSmallThumbnail: true,
@@ -56,7 +58,7 @@ zokou({
       }
     }, { quoted: ms });
   } catch (err) {
-    console.log("Alive error:", err);
+    console.log("Alive command error:", err);
     await zk.sendMessage(dest, { text: "❌ Alive failed. Check logs." }, { quoted: ms });
   }
 });
