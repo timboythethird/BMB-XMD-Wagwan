@@ -1,6 +1,7 @@
 const { zokou } = require(__dirname + '/../framework/zokou');
+const { addOrUpdateDataInAlive, getDataFromAlive } = require('../bdd/alive');
 const moment = require("moment-timezone");
-const set = require(__dirname + '/../set');
+const s = require(__dirname + "/../set");
 const path = require("path");
 const fs = require("fs");
 
@@ -33,7 +34,7 @@ zokou({
 ┃ 📅 Date    : ${date}      
 ┃ 🕒 Time    : ${time}      
 ┃ 👑 Owner   : ${set.OWNER_NAME}   
-┃ 🤖 Bot Name: ${set.BOT_NAME || "B.M.B-XMD"}  
+┃ 🤖 Bot Name: ${set.BOT_NAME}  
 ┗━━━━━━━━━━━━━━━━━━━━━━━┛`;
 
   try {
