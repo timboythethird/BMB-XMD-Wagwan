@@ -36,9 +36,9 @@ async function sendAliveImage(zk, dest, ms, caption, repondre) {
 
 zokou(
     {
-        nomCom: 'alive11',
+        nomCom: 'alive',
         categorie: 'General',
-        reaction: "⚡"
+        reaction: "🟢"
     },
     async (dest, zk, { ms, arg, repondre, superUser }) => {
         const data = await getDataFromAlive();
@@ -52,7 +52,7 @@ zokou(
 ┃ 📅 Date    : ${date}      
 ┃ 🕒 Time    : ${time}      
 ┃ 👑 Owner   : ${s.OWNER_NAME}   
-┃ 🤖 Bot Name: ${s.BOT_NAME}  
+┃ 🤖 Bot Name: ${set.BOT_NAME}  
 ┗━━━━━━━━━━━━━━━━━━━━━━━┛`;
 
             try {
