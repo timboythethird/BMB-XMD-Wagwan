@@ -1,77 +1,84 @@
+</div>
 
-[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Rockstar-ExtraBold&size=85&pause=100000000&color=FFFF00&lines=true&vCenter=true&width=815&height=100&lines=B.M.B-XMD-TECH)](https://git.io/typing-svg) 
-  
+<p align="center">
+  <h1 align="center" style="font-family: 'Orbitron', sans-serif; text-shadow: 0 0 10px #00ffff, 0 0 20px #0088ff;">𝗕.𝗠.𝗕-𝗧𝗘𝗖𝗛</h1>
+</p>
 
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Orbitron&weight=600&size=25&duration=4000&pause=1000&color=00F7FF&center=true&vCenter=true&width=500&lines=ULTIMATE+WHATSAPP+BOT;MULTI-DEVICE+SUPPORT;POWERED+BY+BAILEYS;FAST++SECURE++RELIABLE" alt="Animated Typing SVG" />
+</p>
 
+<div align="center">
+  <a href="https://github.com/bmbxmd1/followers"><img title="Followers" src="https://img.shields.io/github/followers/bmbxmd1?color=EB5406&style=for-the-badge&logo=github&logoColor=white"></a>
+  <a href="https://github.com/bmbxmd1/BMB-XMD/stargazers/"><img title="Stars" src="https://img.shields.io/github/stars/bmbxmd1/BMB-XMD?color=FFCE44&style=for-the-badge&logo=reverbnation&logoColor=white"></a>
+  <a href="https://github.com/bmbxmd1/BMB-XMD/network/members"><img title="Forks" src="https://img.shields.io/github/forks/bmbxmd1/BMB-XMD?color=FF007F&style=for-the-badge&logo=git&logoColor=white"></a>
+  <a href="https://github.com/bmbxmd1/BMB-XMD/"><img title="Size" src="https://img.shields.io/github/repo-size/bmbxmd1/BMB-XMD?style=for-the-badge&color=FFFF33&logo=docusign&logoColor=white"></a>
+  <a href="https://github.com/bmbxmd1/BMB-XMD/graphs/commit-activity"><img height="28" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge&logo=gitpod&logoColor=white"></a>
+</
 
+<!-- Banner Image -->
+<p align="center">
+  <a href="https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/bmb.jpg">
+    <img src="https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/image/readme.jpg" width="100%" height="auto">
+  </a>
+</p>
 
-
-
-
-
-[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Rockstar-ExtraBold&size=50&pause=4800color=RRGGBB&lines=true&vCenter=true&width=815&height=100&lines=DEVELOPER-B.M.B+🇹🇿+𝟮𝟬𝟮𝟱)](https://git.io/typing-svg) 
-
-
-  
-
-<p align="centre"><img src="https://files.catbox.moe/cain8h.jpg" width="790" heigh="250"
-
-
-
-[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Rockstar-ExtraBold&size=50&pause=4000&color=00FF00&lines=true&vCenter=true&width=815&height=100&lines=B.M.B-XMD+👩‍💻+𝟮𝟬𝟮𝟱)](https://git.io/typing-svg) 
-
-<a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
-
-[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Rockstar-ExtraBold&size=50&pause=4000&color=RRGGBB&lines=true&vCenter=true&width=815&height=100&lines=DEVELOPER-𝐁.𝐌.𝐁-𝐗𝐌𝐃+🇹🇿+𝟮𝟬𝟮𝟱)](https://git.io/typing-svg) 
+---
 
 <a><img src='https://i.imgur.com/LyHic3i.gif'/></a>
 
 
   <p align="center">
-<a href="https://github.com/bwbxmd?tab=followers"><img title="Followers" src="https://img.shields.io/github/followers/bwbxmd?label=Followers&style=social"></a>
-<a href="https://github.com/bwbxmd/B.M.B-TECH/stargazers"><img title="STARS" src="https://img.shields.io/github/stars/bwbxmd/B.M.B-TECH?&style=social"></a>
-<a href="https://github.com/bwbxmd/B.M.B-TECH/fork/network/members"><img title="Forks" src="https://img.shields.io/github/forks/bwbxmd/B.M.B-TECH?style=social"></a>
-<a href="https://github.com/bwbxmd/B.M.B-TECH/watchers"><img title="Watching" src="https://img.shields.io/github/watchers/bwbxmd/B.M.B-TECH?label=Watching&style=social"></a>
+<a href="https://github.com/bmbxmd1?tab=followers"><img title="Followers" src="https://img.shields.io/github/followers/bmbxmd1?label=Followers&style=social"></a>
+<a href="https://github.com/bmbxmd/BMB-XMD/stargazers"><img title="STARS" src="https://img.shields.io/github/stars/bmbxmd1/BMB-XMD?&style=social"></a>
+<a href="https://github.com/bmbxmd1/BMB-XMD/fork/network/members"><img title="Forks" src="https://img.shields.io/github/forks/bmbxmd1/BMB-XMD?style=social"></a>
+<a href="https://github.com/bmbxmd1/BMB-XMD/watchers"><img title="Watching" src="https://img.shields.io/github/watchers/bmbxmd1/BMB-XMD?label=Watching&style=social"></a>
 
 
 ---
 
+### 🟢 FOLLOW 
+[![GITHUB](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/follow_github_text.png)](https://github.com/novaxmd)
 
 ---
 
-<a href='https://github.com/bwbxmd/B.M.B-TECH/fork' target="_blank">
-<img alt='Pairing Code' src='https://img.shields.io/badge/fork%20repo%20bmb-tech?style=for-the-badge&logo=opencv&logoColor=black'/>
-</a>
-<br> 
+### 🔵 FORK 
+[![fork](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/fork_repo_text.png)](https://github.com/novaxmd/NOVA-XMD/fork)
 
-----------
-<a href='https://bmb-tech-pair-site.onrender.com/pair' target="_blank">
-<img alt='Pairing Code' src='https://img.shields.io/badge/Get%20Pairing%20Code-darkpink?style=for-the-badge&logo=opencv&logoColor=black'/>
-</a>
-<br>
+---
 
---------------
+### ⚪ PAIR  
+[![pair](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/pair_code_text.png)](https://bmb-tech-pair-site.onrender.com/wasiqr)
 
+---
 
-[![Typing SVG](https://readme-typing-svg.herokuapp.com?font=Rockstar-ExtraBold&size=85&pause=100000000&color=FFFF00&lines=true&vCenter=true&width=815&height=100&lines=LIST-DEPLOY-NOW)](https://git.io/typing-svg) 
+### 🔴 QR CODE  
+[![qr](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/qr_code_text.png)](https://bmb-tech-pair-site.onrender.com/QR)
 
------
+---
 
-   - <a align="center"><a href="https://website-bmb.vercel.app/">
- <img src="https://img.shields.io/badge/DEPLOY%20HEROKU%20NOW-blue?style=for-the-badge&logo=heroku" width="220" height="38.45"/></a></p>
- 
- ----------
- 
-   - <a align="center"><a href="https://render.com"> <img src="https://img.shields.io/badge/DEPLOY%20RENDER-blue?style=for-the-badge&logo=render" width="220" height="38.45"/></a></p>
+## 🚀 DEPLOY YOUR BOT
 
+---
 
-----------
- 
-  - <a href="https://railway.com"><img src="https://img.shields.io/badge/DEPLOY RAILWAY NOW-h?color=red&style=for-the-badge&logo=msi" width="220" height="38.45"/></a></p>
+### 🟣 HEROKU  
+[![Heroku](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_heroku_text.png)](https://website-bmb.vercel.app/)
 
+---
 
+### 🟡 RAILWAY  
+[![Railway](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_railway_text.png)](https://railway.app/new)
 
-----------
+---
 
-   - <a href="https://koyeb.com"><img title="Deploy Now" src="https://img.shields.io/badge/DEPLOY KOYEB NOW-h?color=red&style=for-the-badge&logo=msi" width="220" height="38.45"/></a></p>
+### 🔴 RENDER  
+[![Render](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_render_text.png)](https://dashboard.render.com/web/new)
 
+---
+
+### 🔵 KOYEB  
+[![Koyeb](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_koyeb_text.png)](https://app.koyeb.com)
+
+---
+
+</div>
