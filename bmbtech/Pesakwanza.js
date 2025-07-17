@@ -9,66 +9,77 @@ const more = String.fromCharCode(8206)
 const readmore = more.repeat(4001)
 
 zokou({ nomCom: "payment", categorie: "General" }, async (dest, zk, commandeOptions) => {
-    let { ms, repondre ,prefixe,nomAuteurMessage,mybotpic} = commandeOptions;
-    let { cm } = require(__dirname + "/../framework//zokou");
+    let { ms, repondre, prefixe, nomAuteurMessage, mybotpic } = commandeOptions;
+    let { cm } = require(__dirname + "/../framework/zokou");
     var coms = {};
-    var mode = "public";
-    
-    if ((s.MODE).toLocaleLowerCase() != "yes") {
-        mode = "private";
-    }
+    var mode = (s.MODE).toLowerCase() !== "yes" ? "private" : "public";
+    const jid = ms.sender;
 
-
-    
-
-    cm.map(async (com, index) => {
-        if (!coms[com.categorie])
-            coms[com.categorie] = [];
+    cm.map(async (com) => {
+        if (!coms[com.categorie]) coms[com.categorie] = [];
         coms[com.categorie].push(com.nomCom);
     });
 
-    moment.tz.setDefault('Etc/GMT');
+    moment.tz.setDefault('Africa/Dar_es_Salaam');
+    const temps = moment().format('HH:mm:ss');
+    const date = moment().format('DD/MM/YYYY');
 
-// Créer une date et une heure en GMT
-const temps = moment().format('HH:mm:ss');
-const date = moment().format('DD/MM/YYYY');
+    let infoMsg = `
+┏━━━━━━━━━━━━━━━━━━
+┃ 💳 *PAYMENT DETAILS*
+┃ 
+┃ 👤 Name: *SAILAS ANTIM MAMSERI*
+┃ 📱 Number: *0767862457* (Vodacom)
+┃ 🌍 Country: *Tanzania 🇹🇿*
+┃ 💼 Method: *Online Payment*
+┃ 🧑 Requester: *${nomAuteurMessage}*
+┃ 📅 Date: *${date}*
+┃ 🕒 Time: *${temps}*
+┗━━━━━━━━━━━━━━━━━`;
 
-let infoMsg =  `
-1.\n> Recipient Name:** SAILAS ANTIM MAMSERI 
-2.\n> Mobile Number:** 0767862457 (Vodacom) 
-3.\n> Hello 👋\n${nomAuteurMessage}
-5.\n> Payment Method:** Online Payment  
-6.\n> Country:** Tanzania 🇹🇿
-`;
-let menuMsg = `
-  `;
-   var lien = mybotpic();
+    let menuMsg = "";
 
-   if (lien.match(/\.(mp4|gif)$/i)) {
+    var lien = mybotpic();
+
     try {
-        zk.sendMessage(dest, { video: { url: lien }, caption:infoMsg + menuMsg, footer: "Je suis *bmb-md*, déveloper b.m.b Tech" , gifPlayback : true }, { quoted: ms });
+        if (lien.match(/\.(mp4|gif)$/i)) {
+            await zk.sendMessage(dest, {
+                video: { url: lien },
+                caption: infoMsg + menuMsg,
+                footer: "© B.M.B XMD | Payment Info",
+                gifPlayback: true,
+                contextInfo: {
+                    mentionedJid: [jid],
+                    forwardingScore: 999,
+                    isForwarded: true,
+                    forwardedNewsletterMessageInfo: {
+                        newsletterJid: "120363382023564830@newsletter",
+                        newsletterName: "𝗡𝗢𝗩𝗔-𝗫𝗠𝗗",
+                        serverMessageId: 1
+                    }
+                }
+            }, { quoted: ms });
+        } else if (lien.match(/\.(jpeg|png|jpg)$/i)) {
+            await zk.sendMessage(dest, {
+                image: { url: lien },
+                caption: infoMsg + menuMsg,
+                footer: "© B.M.B XMD | Payment Info",
+                contextInfo: {
+                    mentionedJid: [jid],
+                    forwardingScore: 999,
+                    isForwarded: true,
+                    forwardedNewsletterMessageInfo: {
+                        newsletterJid: "120363382023564830@newsletter",
+                        newsletterName: "𝗡𝗢𝗩𝗔-𝗫𝗠𝗗",
+                        serverMessageId: 1
+                    }
+                }
+            }, { quoted: ms });
+        } else {
+            repondre(infoMsg + menuMsg);
+        }
+    } catch (e) {
+        console.log("🥵🥵 Menu error " + e);
+        repondre("🥵🥵 Menu error " + e);
     }
-    catch (e) {
-        console.log("🥵🥵 Menu erreur " + e);
-        repondre("🥵🥵 Menu erreur " + e);
-    }
-} 
-// Vérification pour .jpeg ou .png
-else if (lien.match(/\.(jpeg|png|jpg)$/i)) {
-    try {
-        zk.sendMessage(dest, { image: { url: lien }, caption:infoMsg + menuMsg, footer: "Je suis *b.m.b-md*, déveloper b.m.b Tech" }, { quoted: ms });
-    }
-    catch (e) {
-        console.log("🥵🥵 Menu erreur " + e);
-        repondre("🥵🥵 Menu erreur " + e);
-    }
-} 
-else {
-    
-    repondre(infoMsg + menuMsg);
-    
-}
-
-}); 
-
-      
+});
