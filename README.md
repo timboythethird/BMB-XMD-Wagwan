@@ -36,22 +36,18 @@
 
 
 ---
-
 ### 🟢 FOLLOW 
 [![GITHUB](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/follow_dev.png)](https://github.com/novaxmd)
 
 ---
-
 ### 🔵 FORK 
 [![fork](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/fork_repo.png)](https://github.com/novaxmd/NOVA-XMD/fork)
 
 ---
-
 ### ⚪ PAIR  
 [![pair](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/pair_site.png)](https://bmb-tech-pair-site.onrender.com/wasiqr)
 
 ---
-
 ### 🔴 QR CODE  
 [![qr](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/qr_code.png)](https://bmb-tech-pair-site.onrender.com/QR)
 
@@ -60,25 +56,14 @@
 ## 🚀 DEPLOY YOUR BOT
 
 ---
-
 ### 🟣 HEROKU  
 [![Heroku](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_heroku.png)](https://website-bmb.vercel.app/)
 
 ---
-
 ### 🟡 RAILWAY  
 [![Railway](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_railway.png)](https://railway.app/new)
 
 ---
-
 ### 🔴 RENDER  
-[![Render](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_render_text.pn)](https://dashboard.render.com/web/new)
-
----
-
-### 🔵 KOYEB  
-[![Koyeb](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_koyeb_text.png)](https://app.koyeb.com)
-
----
-
+[![Render](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_render.png)](https://dashboard.render.com/web/new)
 </div>
