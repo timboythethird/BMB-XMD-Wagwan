@@ -38,12 +38,12 @@
 ---
 
 ### 🟢 FOLLOW 
-[![GITHUB](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/follow_github_text.png)](https://github.com/novaxmd)
+[![GITHUB](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/follow_dev.png)](https://github.com/novaxmd)
 
 ---
 
 ### 🔵 FORK 
-[![fork](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/fork_repo_text.png)](https://github.com/novaxmd/NOVA-XMD/fork)
+[![fork](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/fork_repo.png)](https://github.com/novaxmd/NOVA-XMD/fork)
 
 ---
 
@@ -67,12 +67,12 @@
 ---
 
 ### 🟡 RAILWAY  
-[![Railway](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_railway_text.png)](https://railway.app/new)
+[![Railway](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_railway.png)](https://railway.app/new)
 
 ---
 
 ### 🔴 RENDER  
-[![Render](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_render_text.png)](https://dashboard.render.com/web/new)
+[![Render](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_render_text.pn)](https://dashboard.render.com/web/new)
 
 ---
 
