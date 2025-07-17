@@ -36,17 +36,7 @@ zokou({ nomCom: "about", categorie: "General" }, async (dest, zk, commandeOption
 
     await zk.sendMessage(dest, {
       image: fs.readFileSync(imagePath),
-      caption: infoMsg,
-      contextInfo: {
-        forwardingScore: 999,
-        isForwarded: true,
-        mentionedJid: [ms.sender],
-        forwardedNewsletterMessageInfo: {
-          newsletterJid: "120363382023564830@newsletter", // badilisha kama unataka
-          newsletterName: "𝙽𝙾𝚅𝙰-𝚇𝙼𝙳",
-          serverMessageId: 123
-        }
-      }
+      caption: infoMsg
     }, { quoted: ms });
 
   } catch (e) {
