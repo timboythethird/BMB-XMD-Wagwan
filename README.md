@@ -62,7 +62,7 @@
 ---
 
 ### 🟣 HEROKU  
-[![Heroku](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_heroku_text.png)](https://website-bmb.vercel.app/)
+[![Heroku](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_heroku.png)](https://website-bmb.vercel.app/)
 
 ---
 
