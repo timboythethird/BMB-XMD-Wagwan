@@ -23,7 +23,7 @@ zokou({
 
   // Check if the command is issued by the owner
   if (!superUser) {
-    return repondre("thís cσmmαnd ís rєstríctєd tσ thє вσt σwnєr. σr bmb tech σwnєr");
+    return repondre("thís cσmmαnd ís rєstríctєd tσ thє вσt σwnєr. σr hαppínєss хmd σwnєr");
   }
 
   // Validate user input and respond accordingly
@@ -750,7 +750,7 @@ zokou({
 });
 
 zokou({
-  nomCom: 'settings',
+  nomCom: 'setting',
   categorie: "HEROKU-CLIENT"
 }, async (chatId, messagingService, context) => {
   const { ms, repondre, superUser, auteurMessage } = context;

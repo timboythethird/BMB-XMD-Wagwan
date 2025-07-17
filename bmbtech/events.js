@@ -13,7 +13,7 @@ async function events(nomCom) {
                 repondre(nomCom + ' ' + ' on to active and ' + ' ' + nomCom + ' ' + 'off to put off');
             } else {
                 if (arg[0] === 'on' || arg[0] === 'off') {
-                    
+
                     await attribuerUnevaleur(dest, nomCom, arg[0]);
                     repondre( nomCom + "is actualised on " + arg[0]);
                 } else {

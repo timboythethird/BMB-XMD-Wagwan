@@ -1,44 +1,49 @@
 const { zokou } = require("../framework/zokou")
-//const { getGroupe } = require("../bdd/groupe")
 const { Sticker, StickerTypes } = require('wa-sticker-formatter');
-const {ajouterOuMettreAJourJid,mettreAJourAction,verifierEtatJid} = require("../bdd/antilien")
-const {atbajouterOuMettreAJourJid,atbverifierEtatJid} = require("../bdd/antibot")
+const { ajouterOuMettreAJourJid, mettreAJourAction, verifierEtatJid } = require("../bdd/antilien")
+const { atbajouterOuMettreAJourJid, atbverifierEtatJid } = require("../bdd/antibot")
 const fs = require("fs-extra");
 const conf = require("../set");
 const { default: axios } = require('axios');
 
-
 zokou({ nomCom: "tagadmin", categorie: 'Group', reaction: "🪰" }, async (dest, zk, commandeOptions) => {
-
   const { ms, repondre, arg, verifGroupe, nomGroupe, infosGroupe, nomAuteurMessage, verifAdmin, superUser } = commandeOptions;
 
-  if (!verifGroupe) { 
-    repondre(" thís cσmmαnd ís rєsєrvєd fσr grσups"); 
-    return; 
-  }
+  if (!verifGroupe) return repondre("❌ This command is for groups only.");
+  if (!verifAdmin && !superUser) return repondre("❌ You must be an admin or superuser to use this command.");
 
-  if (!verifAdmin && !superUser) { 
-    repondre("cσmmαnd ís rєsєrvєd fσr grσups"); 
-    return; 
-  }
+  let mess = arg && arg.length > 0 ? arg.join(' ') : 'No Message';
 
-  let mess = arg && arg !== ' ' ? arg.join(' ') : 'Aucun Message';
+  let adminsGroupe = infosGroupe.participants.filter(m => m.admin);
 
-  let adminsGroupe = infosGroupe.participants.filter(membre => membre.admin); // Filtering only admins
+  let tag = `┏━━━━━━━━━━━━━━━━━━
+┃ 🏷️ *Group:* ${nomGroupe}
+┃ 🙋 *Sender:* ${nomAuteurMessage}
+┃ 📢 *Message:* ${mess}
+┣━━━━━━━━━━━━━━━━━━\n`;
 
-  let tag = `  
-*Group :* ${nomGroupe} 
-*Hey :* ${nomAuteurMessage}* 
-*Message :* *${mess}* 
-`;
-
-  let emoji = ['🤔', '🥏'];
+  let emoji = ['🤔', '🥏', '📛', '🫡', '🚨'];
   let random = Math.floor(Math.random() * emoji.length);
 
   for (const membre of adminsGroupe) {
-    tag += `${emoji[random]} @${membre.id.split("@")[0]}\n`;
+    tag += `┃ ${emoji[random]} @${membre.id.split("@")[0]}\n`;
   }
 
-  zk.sendMessage(dest, { text: tag, mentions: adminsGroupe.map(i => i.id) }, { quoted: ms });
+  tag += `┗━━━━━━━━━━━━━━━━━━`;
+
+  zk.sendMessage(dest, {
+    text: tag,
+    mentions: adminsGroupe.map(i => i.id),
+    contextInfo: {
+      forwardingScore: 999,
+      isForwarded: true,
+      mentionedJid: adminsGroupe.map(i => i.id),
+      forwardedNewsletterMessageInfo: {
+        newsletterJid: "120363382023564830@newsletter",
+        newsletterName: "𝙽𝙾𝚅𝙰-𝚇𝙼𝙳",
+        serverMessageId: 1
+      }
+    }
+  }, { quoted: ms });
 
 });
