@@ -48,12 +48,12 @@
 ---
 
 ### ⚪ PAIR  
-[![pair](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/pair_code_text.png)](https://bmb-tech-pair-site.onrender.com/wasiqr)
+[![pair](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/pair_site.png)](https://bmb-tech-pair-site.onrender.com/wasiqr)
 
 ---
 
 ### 🔴 QR CODE  
-[![qr](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/qr_code_text.png)](https://bmb-tech-pair-site.onrender.com/QR)
+[![qr](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/qr_code.png)](https://bmb-tech-pair-site.onrender.com/QR)
 
 ---
 
