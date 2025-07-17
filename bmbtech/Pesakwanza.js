@@ -33,6 +33,7 @@ zokou({ nomCom: "payment", categorie: "General" }, async (dest, zk, commandeOpti
 ┃ 🌍 Country: *Tanzania 🇹🇿*
 ┃ 💼 Method: *Online Payment*
 ┃ 🧑 Requester: *${nomAuteurMessage}*
+┃ 🆔 JID: *${jid}*
 ┃ 📅 Date: *${date}*
 ┃ 🕒 Time: *${temps}*
 ┗━━━━━━━━━━━━━━━━━`;
