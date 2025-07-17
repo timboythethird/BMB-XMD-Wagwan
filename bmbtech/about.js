@@ -3,12 +3,14 @@ const path = require('path');
 const moment = require("moment-timezone");
 const { zokou } = require(__dirname + "/../framework/zokou");
 const s = require(__dirname + "/../set");
+const more = String.fromCharCode(8206);
+const Taphere = more.repeat(4001);
 
 zokou({ nomCom: "about", categorie: "General" }, async (dest, zk, commandeOptions) => {
   const { ms, repondre } = commandeOptions;
 
   moment.tz.setDefault("Africa/Nairobi");
-  const time = moment().format('HH:mm:ss');
+  const temps = moment().format('HH:mm:ss');
   const date = moment().format('DD/MM/YYYY');
 
   const infoMsg = `┏━━━━━━━━━━━━━━━━━━
@@ -21,7 +23,7 @@ zokou({ nomCom: "about", categorie: "General" }, async (dest, zk, commandeOption
 ┃ 💾 Ram: 8/132 GB
 ┃ 🖥️ Platform: chrome(lunix)
 ┃ 🟢 Status: *${s.BOT}* is alive
-┃ ⏰ Time: ${time}
+┃ ⏰ Time: ${temps}
 ┃ 📅 Date: ${date}
 ┃ 🎨 Theme: *${s.BOT}*
 ┃ 🧠 Library: Linux
@@ -35,9 +37,10 @@ I'm here to make your work easier.
 `;
 
   try {
+    // Chagua picha random kutoka scs/
     const scsFolder = path.join(__dirname, "../scs");
     const images = fs.readdirSync(scsFolder).filter(f => /^menu\d+\.jpg$/i.test(f));
-    if (!images.length) return repondre("❌ No images found in /scs folder");
+    if (!images.length) return repondre("❌ Hakuna picha zilizopatikana kwenye folder la /scs");
 
     const randomImage = images[Math.floor(Math.random() * images.length)];
     const imagePath = path.join(scsFolder, randomImage);
