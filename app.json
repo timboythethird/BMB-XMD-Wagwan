@@ -1,6 +1,6 @@
 {
   "name": "B.M.B-TECH",
-  "description": "ʙᴇsᴛ ᴡʜᴀᴛsᴀᴘᴘ ʙᴏᴛ ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ ʙᴍʙ ᴛᴇᴄʜ🇹🇿",
+  "description": "ʙᴇsᴛ ᴡʜᴀᴛsᴀᴘᴘ ʙᴏᴛ ᴅᴇᴠᴇʟᴏᴘᴇᴅ ʙʏ ʙᴍʙ ᴛᴇᴄʜ 🇹🇿",
   "keywords": ["bot", "node", "baileys", "whatsapp"],
   "logo": "https://files.catbox.moe/hflcbc.jpg",
   "repository": "https://github.com/ekitale/maths-project",
@@ -13,7 +13,7 @@
       "required": true
     },
     "AUTO_READ_STATUS": {
-      "description": "Your contact status will be read automatically(type yes to active or no to deactive  ; don't write in capital letter)",
+      "description": "Your contact status will be read automatically(type yes to active or no to deactive ; don't write in capital letter)",
       "value": "yes",
       "required": false
     },
@@ -23,7 +23,7 @@
       "required": false
     },
     "AUTO_READ": {
-      "description": "Your contact will be read messages automatically(type yes to active or no to deactive  ; don't write in capital letter)",
+      "description": "Your contact  will be read messages automatically(type yes to active or no to deactive ; don't write in capital letter)",
       "value": "no",
       "required": false
     },
@@ -106,9 +106,14 @@
       "value": "no",
       "required": true
     },
-    "AUTO_BIO": {
-      "description": "Enable auto bio update (type yes to activate or no to deactivate)",
-      "value": "yes",
+    "CHAT_BOT": {
+      "description": "Turn on the chatbot reply system (yes = active, no = deactive)",
+      "value": "no",
+      "required": false
+    },
+    "AUDIO_CHAT_BOT": {
+      "description": "Enable audio response in chatbot (yes = active, no = deactive)",
+      "value": "no",
       "required": false
     }
   },
@@ -123,4 +128,5 @@
       "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest"
     }
   ]
-}
+  }
+    
