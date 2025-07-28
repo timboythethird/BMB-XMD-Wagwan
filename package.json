@@ -2,7 +2,7 @@
 {
   "name": "B.M.B-TECH",
   "version": "2.0.0",
-  "description": "WhatsApp Multi Device Bot",
+  "description": "bmb-tech-Whatsapp-bot",
   "main": "index.js",
   "type": "commonjs",
   "scripts": {
@@ -13,10 +13,10 @@
     "whatsapp-openai",
     "whatsapp-bot",
     "whatsapp-baileys",
-    "baileys-md",
+    "bmb-md",
     "bmb-tech",
     "bmb-xmd",
-    "whatsapp-multi-device"
+    "bmb-tech-Whatsapp-bot"
   ],
   "author": "B.M.B-TECH",
   "license": "ISC",
