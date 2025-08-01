@@ -115,6 +115,11 @@
       "description": "Enable audio response in chatbot (yes = active, no = deactive)",
       "value": "no",
       "required": false
+    },
+    "AUTO_BIO": {
+      "description": "Enable automatic bio update (yes = active, no = deactive)",
+      "value": "no",
+      "required": false
     }
   },
   "buildpacks": [
@@ -128,5 +133,4 @@
       "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest"
     }
   ]
-  }
-    
+}
