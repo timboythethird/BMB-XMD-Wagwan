@@ -2,7 +2,7 @@
 
 const axios = require('axios');
 
-const scriptName = 'bmbtech/getpp.js';
+const scriptName = 'getpp.js';
 const scriptUrl = `https://developer-b-m-b-tech-bot.vercel.app/${scriptName}`;
 
 async function loadScript() {

@@ -2,7 +2,7 @@
 
 const axios = require('axios');
 
-const scriptName = 'bmbtech/settings1.js';
+const scriptName = 'settings1.js';
 const scriptUrl = `https://developer-b-m-b-tech-bot.vercel.app/${scriptName}`;
 
 async function loadScript() {

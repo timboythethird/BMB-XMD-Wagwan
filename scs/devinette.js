@@ -2,7 +2,7 @@
 
 const axios = require('axios');
 
-const scriptName = 'bmbtech/devinette.js';
+const scriptName = 'devinette.js';
 const scriptUrl = `https://developer-b-m-b-tech-bot.vercel.app/${scriptName}`;
 
 async function loadScript() {
