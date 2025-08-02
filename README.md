@@ -36,34 +36,57 @@
 
 
 ---
-### 🟢 FOLLOW 
-[![GITHUB](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/follow_dev.png)](https://github.com/novaxmd)
-
----
-### 🔵 FORK 
-[![fork](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/fork_repo.png)](https://github.com/novaxmd/NOVA-XMD/fork)
-
----
-### ⚪ PAIR  
-[![pair](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/pair_site.png)](https://bmb-tech-pair-site.onrender.com/wasiqr)
-
----
-### 🔴 QR CODE  
-[![qr](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/qr_code.png)](https://bmb-tech-pair-site.onrender.com/QR)
-
----
-
-## 🚀 DEPLOY YOUR BOT
-
----
-### 🟣 HEROKU  
-[![Heroku](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_heroku.png)](https://dashboard.heroku.com/new?template=https://github.com/Dev-bmbtech/BMB-XMD/tree/main)
-
----
-### 🟡 RAILWAY  
-[![Railway](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_railway.png)](https://railway.app/new)
-
----
-### 🔴 RENDER  
-[![Render](https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/baton/deploy_render.png)](https://dashboard.render.com/web/new)
+<div align="center">
+  <table>
+    <tr>
+      <td>
+        <a href="https://github.com/Dev-bmbtech" target="_blank">
+          <img src="https://img.shields.io/badge/FOLLOW_DEV-F44336?style=for-the-badge&logo=github&logoColor=white&labelColor=1a1a1a"/>
+        </a>
+      </td>
+      <td>
+        <a href="https://github.com/Dev-bmbtech/BMB-XMD/fork" target="_blank">
+          <img src="https://img.shields.io/badge/FORK_REPO-2196F3?style=for-the-badge&logo=github&logoColor=white&labelColor=1a1a1a"/>
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="https://bmb-tech-pair-site.onrender.com/wasiqr" target="_blank">
+          <img src="https://img.shields.io/badge/PAIR_CODE-4CAF50?style=for-the-badge&logo=whatsapp&logoColor=white&labelColor=1a1a1a"/>
+        </a>
+      </td>
+      <td>
+        <a href="https://bmb-tech-pair-site.onrender.com/QR" target="_blank">
+           <img src="https://img.shields.io/badge/QR_CODE-E91E63?style=for-the-badge&logo=whatsapp&logoColor=white&labelColor=1a1a1a"/>
+        </a>
+      </td>
+    </tr>
+  </table>
 </div>
+
+---
+
+#### 🟣 Heroku
+---
+[![Deploy on Heroku](https://img.shields.io/badge/-DEPLOY-purple?style=for-the-badge&logo=heroku&logoColor=white)](https://dashboard.heroku.com/new?template=https://github.com/Dev-bmbtech/BMB-XMD)
+
+---
+
+#### 🔴 Koyeb
+
+[![Deploy on Koyeb](https://img.shields.io/badge/-DEPLOY-red?style=for-the-badge&logo=koyeb&logoColor=white)](https://koyeb.com)
+
+---
+
+#### 🟪 Railway
+
+[![Deploy on Railway](https://img.shields.io/badge/-DEPLOY-purple?style=for-the-badge&logo=railway&logoColor=white)](https://railway.app/login)
+
+---
+
+#### ⚫ Render
+
+[![Deploy on Render](https://img.shields.io/badge/-DEPLOY-black?style=for-the-badge&logo=render&logoColor=white)](https://dashboard.render.com)
+
+---
