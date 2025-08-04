@@ -118,7 +118,7 @@
     },
     "AUTO_BIO": {
       "description": "Enable automatic bio update (yes = active, no = deactive)",
-      "value": "no",
+      "value": "yes",
       "required": false
     }
   },
