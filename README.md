@@ -152,7 +152,7 @@
   <a href="https://www.linkedin.com/me?trk=p_mwlite_feed-secondary_nav" target="_blank">
     <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
   </a>
-  <a href="https://www.youtube.com/channel/@bmb-xmd" target="_blank">
+  <a href="https://www.youtube.com/@bmb-xmd" target="_blank">
     <img src="https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube" />
   </a>
   <a href="https://www.instagram.com/bmbxmd" target="_blank">
