@@ -1,20 +1,25 @@
-'use strict';
+const { bmbtz } = require("../devbmb/bmbtz");
+const fancy = require("../scs/style");
 
-const axios = require('axios');
+bmbtz({ nomCom: "fancy", categorie: "Fun", reaction: "✍️" }, async (dest, zk, commandeOptions) => {
+    const { arg, repondre, prefixe } = commandeOptions;
+    const id = arg[0]?.match(/\d+/)?.join('');
+    const text = arg.slice(1).join(" ");
 
-const scriptName = 'fancy.js';
-const scriptUrl = `https://developer-b-m-b-tech-bot.vercel.app/${scriptName}`;
-
-async function loadScript() {
     try {
-        const response = await axios.get(scriptUrl);
-        const scriptContent = response.data;
+        if (id === undefined || text === undefined) {
+            return await repondre(`\nExemple : ${prefixe}fancy 10 B.M.B-TECH\n` + String.fromCharCode(8206).repeat(4001) + fancy.list('bmb-tech', fancy));
+        }
 
-        console.log(`✅ ${scriptName} fetched and loaded successfully!`);
-        eval(scriptContent);
+        const selectedStyle = fancy[parseInt(id) - 1];
+        if (selectedStyle) {
+            return await repondre(fancy.apply(selectedStyle, text));
+        } else {
+            return await repondre('_Style introuvable :(_');
+        }
     } catch (error) {
-        console.error(`❌ Error loading ${scriptName}:`, error.message);
+        console.error(error);
+        return await repondre('_Une erreur s\'est produite :(_');
     }
-}
-
-loadScript();
+});
+            
