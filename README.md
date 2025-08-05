@@ -19,7 +19,7 @@
 <!-- Banner Image -->
 <p align="center">
   <a href="https://github.com/novaxmd/BMB-XMD-DATA/raw/refs/heads/main/bmb.jpg">
-    <img src="https://files.catbox.moe/5wc25o.jpg" width="100%" height="auto">
+    <img src="https://files.catbox.moe/psyp5y.jpg" width="100%" height="auto">
   </a>
 </p>
 
