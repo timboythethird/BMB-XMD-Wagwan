@@ -152,7 +152,7 @@
   <a href="https://www.linkedin.com/me?trk=p_mwlite_feed-secondary_nav" target="_blank">
     <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
   </a>
-  <a href="https://www.youtube.com/channel/bmb-xmd" target="_blank">
+  <a href="https://www.youtube.com/channel/@bmb-xmd" target="_blank">
     <img src="https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="YouTube" />
   </a>
   <a href="https://www.instagram.com/bmbxmd" target="_blank">
@@ -164,7 +164,7 @@
   <a href="bmbxmd@gmail.com" target="_blank">
     <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" />
   </a>
-  <a href="https://t.me/bm_xmd" target="_blank">
+  <a href="https://t.me/@bmb_xmd" target="_blank">
     <img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white" alt="Telegram" />
   </a>
 </p>
