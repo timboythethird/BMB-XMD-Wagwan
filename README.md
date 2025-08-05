@@ -23,10 +23,10 @@
 
 
   <p align="center">
-<a href="https://github.com/bmbxmd1?tab=followers"><img title="Followers" src="https://img.shields.io/github/followers/bmbxmd1?label=Followers&style=social"></a>
-<a href="https://github.com/bmbxmd/BMB-XMD/stargazers"><img title="STARS" src="https://img.shields.io/github/stars/bmbxmd1/BMB-XMD?&style=social"></a>
-<a href="https://github.com/bmbxmd1/BMB-XMD/fork/network/members"><img title="Forks" src="https://img.shields.io/github/forks/bmbxmd1/BMB-XMD?style=social"></a>
-<a href="https://github.com/bmbxmd1/BMB-XMD/watchers"><img title="Watching" src="https://img.shields.io/github/watchers/bmbxmd1/BMB-XMD?label=Watching&style=social"></a>
+<a href="https://github.com/Dev-bmbtech?tab=followers"><img title="Followers" src="https://img.shields.io/github/followers/Dev-bmbtech?label=Followers&style=social"></a>
+<a href="https://github.com/Dev-bmbtech/BMB-XMD/stargazers"><img title="STARS" src="https://img.shields.io/github/stars/Dev-bmbtech/BMB-XMD?&style=social"></a>
+<a href="https://github.com/Dev-bmbtech/BMB-XMD/fork/network/members"><img title="Forks" src="https://img.shields.io/github/forks/Dev-bmbtech/BMB-XMD?style=social"></a>
+<a href="https://github.com/Dev-bmbtech/BMB-XMD/watchers"><img title="Watching" src="https://img.shields.io/github/watchers/Dev-bmbtech/BMB-XMD?label=Watching&style=social"></a>
 
 
 ---
