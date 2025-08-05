@@ -3,11 +3,11 @@
 </p>
 
 <div align="center">
-  <a href="https://github.com/bmbxmd1/followers"><img title="Followers" src="https://img.shields.io/github/followers/bmbxmd1?color=EB5406&style=for-the-badge&logo=github&logoColor=white"></a>
-  <a href="https://github.com/bmbxmd1/BMB-XMD/stargazers/"><img title="Stars" src="https://img.shields.io/github/stars/bmbxmd1/BMB-XMD?color=FFCE44&style=for-the-badge&logo=reverbnation&logoColor=white"></a>
-  <a href="https://github.com/bmbxmd1/BMB-XMD/network/members"><img title="Forks" src="https://img.shields.io/github/forks/bmbxmd1/BMB-XMD?color=FF007F&style=for-the-badge&logo=git&logoColor=white"></a>
-  <a href="https://github.com/bmbxmd1/BMB-XMD/"><img title="Size" src="https://img.shields.io/github/repo-size/bmbxmd1/BMB-XMD?style=for-the-badge&color=FFFF33&logo=docusign&logoColor=white"></a>
-  <a href="https://github.com/bmbxmd1/BMB-XMD/graphs/commit-activity"><img height="28" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge&logo=gitpod&logoColor=white"></a>
+  <a href="https://github.com/Dev-bmbtech/followers"><img title="Followers" src="https://img.shields.io/github/followers/Dev-bmbtech?color=EB5406&style=for-the-badge&logo=github&logoColor=white"></a>
+  <a href="https://github.com/Dev-bmbtech/BMB-XMD/stargazers/"><img title="Stars" src="https://img.shields.io/github/stars/Dev-bmbtech/BMB-XMD?color=FFCE44&style=for-the-badge&logo=reverbnation&logoColor=white"></a>
+  <a href="https://github.com/Dev-bmbtech/BMB-XMD/network/members"><img title="Forks" src="https://img.shields.io/github/forks/Dev-bmbtech/BMB-XMD?color=FF007F&style=for-the-badge&logo=git&logoColor=white"></a>
+  <a href="https://github.com/Dev-bmbtech/BMB-XMD/"><img title="Size" src="https://img.shields.io/github/repo-size/Dev-bmbtech/BMB-XMD?style=for-the-badge&color=FFFF33&logo=docusign&logoColor=white"></a>
+  <a href="https://github.com/Dev-bmbtech/BMB-XMD/graphs/commit-activity"><img height="28" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge&logo=gitpod&logoColor=white"></a>
 </
 
 <!-- Banner Image -->
