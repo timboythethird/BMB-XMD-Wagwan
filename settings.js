@@ -12,7 +12,7 @@ module.exports = {
     session: process.env.SESSION_ID || '',
     PREFIXE: process.env.PREFIX || "+",
     OWNER_NAME: process.env.OWNER_NAME || "B.M.B-TECH",
-    NUMERO_OWNER : process.env.NUMERO_OWNER || "254 769 529791",              
+    NUMERO_OWNER : process.env.NUMERO_OWNER || "255767862457",              
     AUTO_READ_STATUS: process.env.AUTO_READ_STATUS || "yes",
     AUTO_DOWNLOAD_STATUS: process.env.AUTO_DOWNLOAD_STATUS || 'no',
     BOT : process.env.BOT_NAME || 'B.M.B-TECH',
@@ -20,7 +20,7 @@ module.exports = {
     MODE: process.env.PUBLIC_MODE || "yes",
     PM_PERMIT: process.env.PM_PERMIT || 'yes',
     HEROKU_APP_NAME : process.env.HEROKU_APP_NAME,
-    HEROKU_API_KEY : process.env.HEROKU_API_KEY, // ✅
+    HEROKU_API_KEY : process.env.HEROKU_API_KEY, 
     WARN_COUNT : process.env.WARN_COUNT || '3',
     ETAT : process.env.PRESENCE || '',
     ANTICALL : process.env.ANTICALL || 'yes',   
@@ -30,7 +30,8 @@ module.exports = {
     AUTO_REACT : process.env.AUTO_REACT || 'no',
     AUTO_REACT_STATUS : process.env.AUTO_REACT_STATUS || 'yes',
     AUTO_READ : process.env.AUTO_READ || 'yes',
-    CHAT_BOT: process.env.CHAT_BOT || 'yes', // ✅
+    CHAT_BOT: process.env.CHAT_BOT || 'yes',
+    AUDIO_REPLY: process.env.AUDIO_REPLY || 'no',
     DATABASE_URL,
     DATABASE: DATABASE_URL === databasePath
         ? "postgresql://postgres:bKlIqoOUWFIHOAhKxRWQtGfKfhGKgmRX@viaduct.proxy.rlwy.net:47738/railway"
