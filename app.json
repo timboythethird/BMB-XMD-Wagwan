@@ -23,7 +23,7 @@
       "required": false
     },
     "AUTO_READ": {
-      "description": "Your contact  will be read messages automatically(type yes to active or no to deactive ; don't write in capital letter)",
+      "description": "Your contact will be read messages automatically(type yes to active or no to deactive ; don't write in capital letter)",
       "value": "no",
       "required": false
     },
@@ -84,7 +84,7 @@
     "NUMERO_OWNER": {
       "desc": "Your number , dont put '+' and put you area code(exemple of kenya '254')",
       "required": true,
-      "value": "25567862457"
+      "value": "255767862457"
     },
     "WARN_COUNT": {
       "desc": "this is the limit of warn for warning commandes",
@@ -116,14 +116,14 @@
       "value": "no",
       "required": false
     },
-    "AUDIO_REPLY": {
-      "description": "Enable automatic audio reply to messages (yes = active, no = deactive)",
-      "value": "yes",
-      "required": false
-    },
     "AUTO_BIO": {
       "description": "Enable automatic bio update (yes = active, no = deactive)",
       "value": "yes",
+      "required": false
+    },
+    "AUDIO_REPLY": {
+      "description": "Enable automatic audio replies (yes = active, no = deactive)",
+      "value": "no",
       "required": false
     }
   },
@@ -138,4 +138,4 @@
       "url": "https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest"
     }
   ]
-    }
+}
