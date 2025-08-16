@@ -1,7 +1,7 @@
 const { bmbtz } = require("../devbmb/bmbtz");
 const fancy = require("../scs/style");
 
-bmbtz({ nomCom: "fancy", categorie: "Fun", reaction: "✍️" }, async (dest, zk, commandeOptions) => {
+bmbtz({ nomCom: "fancy", categorie: "Conversion", reaction: "✍️" }, async (dest, zk, commandeOptions) => {
     const { arg, repondre, prefixe } = commandeOptions;
     const id = arg[0]?.match(/\d+/)?.join('');
     const text = arg.slice(1).join(" ");
