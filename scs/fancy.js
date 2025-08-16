@@ -1,5 +1,5 @@
 const { bmbtz } = require("../devbmb/bmbtz");
-const fancy = require("../commandes/style");
+const fancy = require("../scs/style");
 
 bmbtz({ nomCom: "fancy", categorie: "Fun", reaction: "✍️" }, async (dest, zk, commandeOptions) => {
     const { arg, repondre, prefixe } = commandeOptions;
